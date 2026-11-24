@@ -1,0 +1,161 @@
+{
+  "_label": "SYNTHETIC DEMO DATA. Invented for the Prasthan hackathon demo. Not real people, bookings, operators or shops. Quick-commerce view (CUT FIRST). City-out demand near boarding points and the shift to hometown demand. No partner APIs, no scraping.",
+  "cells": [
+    {
+      "zone": "MAJESTIC",
+      "date": "2027-01-13",
+      "window": "16:00-21:00",
+      "travellersLeaving": 6000,
+      "topAsks": [
+        "kids' gift",
+        "snacks for the bus",
+        "dry-fruit box"
+      ],
+      "fulfilment": "doorstep_before_departure"
+    },
+    {
+      "zone": "MAJESTIC",
+      "date": "2027-01-14",
+      "window": "16:00-21:00",
+      "travellersLeaving": 10440,
+      "topAsks": [
+        "puja kit",
+        "phone power bank",
+        "sweets box"
+      ],
+      "fulfilment": "pickup_near_boarding_point"
+    },
+    {
+      "zone": "SATELLITE",
+      "date": "2027-01-13",
+      "window": "16:00-21:00",
+      "travellersLeaving": 1800,
+      "topAsks": [
+        "snacks for the bus",
+        "phone power bank",
+        "dry-fruit box"
+      ],
+      "fulfilment": "pickup_near_boarding_point"
+    },
+    {
+      "zone": "SATELLITE",
+      "date": "2027-01-14",
+      "window": "16:00-21:00",
+      "travellersLeaving": 3120,
+      "topAsks": [
+        "snacks for the bus",
+        "puja kit",
+        "phone power bank"
+      ],
+      "fulfilment": "pickup_near_boarding_point"
+    },
+    {
+      "zone": "SHANTINAGAR",
+      "date": "2027-01-13",
+      "window": "16:00-21:00",
+      "travellersLeaving": 3480,
+      "topAsks": [
+        "kids' gift",
+        "puja kit",
+        "sweets box"
+      ],
+      "fulfilment": "doorstep_before_departure"
+    },
+    {
+      "zone": "SHANTINAGAR",
+      "date": "2027-01-14",
+      "window": "16:00-21:00",
+      "travellersLeaving": 2880,
+      "topAsks": [
+        "kids' gift",
+        "snacks for the bus",
+        "sweets box"
+      ],
+      "fulfilment": "doorstep_before_departure"
+    },
+    {
+      "zone": "KR_PURAM",
+      "date": "2027-01-13",
+      "window": "16:00-21:00",
+      "travellersLeaving": 1680,
+      "topAsks": [
+        "kids' gift",
+        "sweets box",
+        "snacks for the bus"
+      ],
+      "fulfilment": "doorstep_before_departure"
+    },
+    {
+      "zone": "KR_PURAM",
+      "date": "2027-01-14",
+      "window": "16:00-21:00",
+      "travellersLeaving": 2880,
+      "topAsks": [
+        "snacks for the bus",
+        "phone power bank",
+        "puja kit"
+      ],
+      "fulfilment": "pickup_near_boarding_point"
+    },
+    {
+      "zone": "ELECTRONIC_CITY",
+      "date": "2027-01-13",
+      "window": "16:00-21:00",
+      "travellersLeaving": 960,
+      "topAsks": [
+        "dry-fruit box",
+        "snacks for the bus",
+        "puja kit"
+      ],
+      "fulfilment": "doorstep_before_departure"
+    },
+    {
+      "zone": "ELECTRONIC_CITY",
+      "date": "2027-01-14",
+      "window": "16:00-21:00",
+      "travellersLeaving": 2760,
+      "topAsks": [
+        "dry-fruit box",
+        "puja kit",
+        "kids' gift"
+      ],
+      "fulfilment": "pickup_near_boarding_point"
+    },
+    {
+      "zone": "hometown:Hubballi",
+      "date": "2027-01-15",
+      "window": "06:00-12:00",
+      "travellersArriving": 13080,
+      "topAsks": [
+        "sweets box",
+        "puja kit",
+        "dry-fruit box"
+      ],
+      "fulfilment": "hometown_delivery"
+    },
+    {
+      "zone": "hometown:Madurai",
+      "date": "2027-01-15",
+      "window": "06:00-12:00",
+      "travellersArriving": 10320,
+      "topAsks": [
+        "sweets box",
+        "puja kit",
+        "dry-fruit box"
+      ],
+      "fulfilment": "hometown_delivery"
+    },
+    {
+      "zone": "hometown:Vijayawada",
+      "date": "2027-01-15",
+      "window": "06:00-12:00",
+      "travellersArriving": 7080,
+      "topAsks": [
+        "sweets box",
+        "puja kit",
+        "dry-fruit box"
+      ],
+      "fulfilment": "hometown_delivery"
+    }
+  ]
+}

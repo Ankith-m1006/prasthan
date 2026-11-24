@@ -1,0 +1,27 @@
+{
+  "_label": "Public booking sites. DEEP LINKS ONLY: no scraping, no prices, no comparison, no logos. Show the provider name as plain text. 'homepage' is safe. 'searchTemplate' is a GUESS at the site's search URL and is UNVERIFIED: open each one in a browser at 09:30 on 25 Nov; if it does not land on a useful page, set useTemplate=false and the app uses the homepage.",
+  "providers": [
+    { "id": "redbus", "name": "redBus", "modes": ["bus"], "homepage": "https://www.redbus.in/", "searchTemplate": null, "useTemplate": false, "note": "Search URL format not verified; homepage only." },
+    { "id": "abhibus", "name": "AbhiBus", "modes": ["bus"], "homepage": "https://www.abhibus.com/", "searchTemplate": null, "useTemplate": false },
+    { "id": "zingbus", "name": "Zingbus", "modes": ["bus"], "homepage": "https://www.zingbus.com/", "searchTemplate": null, "useTemplate": false },
+    { "id": "flixbus", "name": "FlixBus", "modes": ["bus"], "homepage": "https://www.flixbus.in/", "searchTemplate": null, "useTemplate": false },
+    { "id": "ksrtc", "name": "KSRTC (Karnataka) booking", "modes": ["bus"], "homepage": "https://ksrtc.in/", "searchTemplate": null, "useTemplate": false, "note": "UNVERIFIED that this is the current official booking site. Check at 09:30; drop if wrong." },
+    { "id": "irctc", "name": "IRCTC", "modes": ["train"], "homepage": "https://www.irctc.co.in/nget/train-search", "searchTemplate": null, "useTemplate": false },
+    { "id": "ixigo", "name": "ixigo", "modes": ["train", "bus", "air"], "homepage": "https://www.ixigo.com/", "searchTemplate": null, "useTemplate": false },
+    { "id": "makemytrip", "name": "MakeMyTrip", "modes": ["air", "bus", "train"], "homepage": "https://www.makemytrip.com/", "searchTemplate": null, "useTemplate": false }
+  ],
+  "quickCommerce": {
+    "_label": "CUT FIRST. Text names + homepage links only, shown on the partner roadmap view. No APIs, no logos.",
+    "names": [
+      { "name": "Blinkit", "homepage": "https://blinkit.com/" },
+      { "name": "Zepto", "homepage": "https://www.zeptonow.com/" },
+      { "name": "Swiggy Instamart", "homepage": "https://www.swiggy.com/instamart" },
+      { "name": "Flipkart Minutes", "homepage": "https://www.flipkart.com/" },
+      { "name": "Zomato", "homepage": "https://www.zomato.com/" }
+    ]
+  },
+  "safetyCopy": {
+    "en-IN": "Book only on official apps, websites or counters. Never pay an agent outside the bus stand.",
+    "kn-IN": "ಅಧಿಕೃತ ಆಪ್, ವೆಬ್‌ಸೈಟ್ ಅಥವಾ ಕೌಂಟರ್‌ನಲ್ಲಿ ಮಾತ್ರ ಬುಕ್ ಮಾಡಿ. ಬಸ್ ನಿಲ್ದಾಣದ ಹೊರಗೆ ಏಜೆಂಟ್‌ಗೆ ಹಣ ಕೊಡಬೇಡಿ."
+  }
+}

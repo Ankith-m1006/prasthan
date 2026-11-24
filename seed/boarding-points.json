@@ -1,0 +1,13 @@
+{
+  "_label": "SYNTHETIC DEMO DATA. Names are the common public names of Bengaluru transit points. Coordinates are approximate (about 1 km); check on a map before showing a pin.",
+  "boardingPoints": [
+    { "id": "MAJESTIC", "name": "Majestic (Kempegowda Bus Station)", "nameKn": "ಮೆಜೆಸ್ಟಿಕ್", "kind": "bus", "lat": 12.977, "lng": 77.572 },
+    { "id": "SATELLITE", "name": "Satellite Bus Stand, Mysuru Road", "nameKn": "ಸ್ಯಾಟಲೈಟ್ ಬಸ್ ನಿಲ್ದಾಣ", "kind": "bus", "lat": 12.953, "lng": 77.543 },
+    { "id": "SHANTINAGAR", "name": "Shantinagar Bus Station", "nameKn": "ಶಾಂತಿನಗರ", "kind": "bus", "lat": 12.957, "lng": 77.596 },
+    { "id": "KR_PURAM", "name": "KR Puram", "nameKn": "ಕೆ.ಆರ್. ಪುರಂ", "kind": "bus+train", "lat": 13.0, "lng": 77.678 },
+    { "id": "ELECTRONIC_CITY", "name": "Electronic City", "nameKn": "ಎಲೆಕ್ಟ್ರಾನಿಕ್ ಸಿಟಿ", "kind": "bus", "lat": 12.845, "lng": 77.66 },
+    { "id": "KSR", "name": "KSR Bengaluru City Railway Station", "nameKn": "ಕೆಎಸ್ಆರ್ ಬೆಂಗಳೂರು", "kind": "train", "lat": 12.978, "lng": 77.569 },
+    { "id": "SMVT", "name": "SMVT Bengaluru (Baiyappanahalli)", "nameKn": "ಎಸ್ಎಂವಿಟಿ ಬೆಂಗಳೂರು", "kind": "train", "lat": 12.991, "lng": 77.659 },
+    { "id": "KIA", "name": "Kempegowda International Airport", "nameKn": "ಕೆಂಪೇಗೌಡ ವಿಮಾನ ನಿಲ್ದಾಣ", "kind": "air", "lat": 13.199, "lng": 77.706 }
+  ]
+}

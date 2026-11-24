@@ -1,0 +1,320 @@
+{
+  "_label": "SYNTHETIC DEMO DATA. Invented for the Prasthan hackathon demo. Not real people, bookings, operators or shops. Partner names are invented; 'styleOf' says what kind of real business it stands for. Real brands are named in text only: no logos, no APIs, no scraping.",
+  "partners": [
+    {
+      "id": "op-staterte",
+      "type": "bus_operator",
+      "name": "Demo State RTC",
+      "styleOf": "a state transport corporation (e.g. KSRTC-style)",
+      "routes": [
+        "BLR-HBL",
+        "BLR-BGM",
+        "BLR-KLB",
+        "BLR-MLR"
+      ],
+      "fleetSpare": 14,
+      "contactLanguage": "kn-IN"
+    },
+    {
+      "id": "op-tnstate",
+      "type": "bus_operator",
+      "name": "Demo TN Express",
+      "styleOf": "a state or large private operator on Tamil Nadu routes",
+      "routes": [
+        "BLR-MDU",
+        "BLR-TEN"
+      ],
+      "fleetSpare": 8,
+      "contactLanguage": "ta-IN"
+    },
+    {
+      "id": "op-intercity",
+      "type": "bus_operator",
+      "name": "Demo Intercity Coaches",
+      "styleOf": "a private app-first intercity bus brand (e.g. Zingbus/Flixbus-style)",
+      "routes": [
+        "BLR-HBL",
+        "BLR-MDU",
+        "BLR-BZA",
+        "BLR-MLR"
+      ],
+      "fleetSpare": 6,
+      "contactLanguage": "en-IN"
+    },
+    {
+      "id": "shop-majestic",
+      "type": "sweet_shop",
+      "name": "Sihi Mane Sweets (demo)",
+      "boardingPoint": "MAJESTIC",
+      "walkMinutes": 4,
+      "contactLanguage": "kn-IN",
+      "items": [
+        {
+          "id": "mysore-pak",
+          "name": "Mysore pak",
+          "nameLocal": "ಮೈಸೂರು ಪಾಕ್",
+          "unit": "kg",
+          "priceInr": 640,
+          "readyInMinutes": 30,
+          "dailyCapacity": 40
+        },
+        {
+          "id": "dharwad-peda",
+          "name": "Dharwad peda",
+          "nameLocal": "ಧಾರವಾಡ ಪೇಡ",
+          "unit": "kg",
+          "priceInr": 560,
+          "readyInMinutes": 30,
+          "dailyCapacity": 60
+        },
+        {
+          "id": "ellu-bella",
+          "name": "Ellu bella (Sankranti mix)",
+          "nameLocal": "ಎಳ್ಳು ಬೆಲ್ಲ",
+          "unit": "kg",
+          "priceInr": 380,
+          "readyInMinutes": 30,
+          "dailyCapacity": 40
+        },
+        {
+          "id": "sakkare-acchu",
+          "name": "Sakkare acchu",
+          "nameLocal": "ಸಕ್ಕರೆ ಅಚ್ಚು",
+          "unit": "kg",
+          "priceInr": 300,
+          "readyInMinutes": 30,
+          "dailyCapacity": 40
+        },
+        {
+          "id": "gift-box-s",
+          "name": "Festive gift box (small)",
+          "nameLocal": "ಹಬ್ಬದ ಗಿಫ್ಟ್ ಬಾಕ್ಸ್",
+          "unit": "box",
+          "priceInr": 450,
+          "readyInMinutes": 15,
+          "dailyCapacity": 80
+        }
+      ],
+      "openUntil": "23:30"
+    },
+    {
+      "id": "shop-satellite",
+      "type": "sweet_shop",
+      "name": "Mysuru Road Mithai (demo)",
+      "boardingPoint": "SATELLITE",
+      "walkMinutes": 3,
+      "contactLanguage": "kn-IN",
+      "items": [
+        {
+          "id": "mysore-pak",
+          "name": "Mysore pak",
+          "nameLocal": "ಮೈಸೂರು ಪಾಕ್",
+          "unit": "kg",
+          "priceInr": 620,
+          "readyInMinutes": 30,
+          "dailyCapacity": 60
+        },
+        {
+          "id": "holige",
+          "name": "Holige / obbattu (10 pcs)",
+          "nameLocal": "ಹೋಳಿಗೆ",
+          "unit": "pack",
+          "priceInr": 250,
+          "readyInMinutes": 30,
+          "dailyCapacity": 60
+        },
+        {
+          "id": "ellu-bella",
+          "name": "Ellu bella (Sankranti mix)",
+          "nameLocal": "ಎಳ್ಳು ಬೆಲ್ಲ",
+          "unit": "kg",
+          "priceInr": 360,
+          "readyInMinutes": 30,
+          "dailyCapacity": 80
+        },
+        {
+          "id": "chikki",
+          "name": "Kadalekai chikki",
+          "nameLocal": "ಕಡಲೆಕಾಯಿ ಚಿಕ್ಕಿ",
+          "unit": "kg",
+          "priceInr": 280,
+          "readyInMinutes": 30,
+          "dailyCapacity": 40
+        }
+      ],
+      "openUntil": "23:30"
+    },
+    {
+      "id": "shop-shantinagar",
+      "type": "sweet_shop",
+      "name": "Shantinagar Sweet Corner (demo)",
+      "boardingPoint": "SHANTINAGAR",
+      "walkMinutes": 5,
+      "contactLanguage": "kn-IN",
+      "items": [
+        {
+          "id": "mysore-pak",
+          "name": "Mysore pak",
+          "nameLocal": "ಮೈಸೂರು ಪಾಕ್",
+          "unit": "kg",
+          "priceInr": 660,
+          "readyInMinutes": 30,
+          "dailyCapacity": 60
+        },
+        {
+          "id": "kaju-katli",
+          "name": "Kaju katli",
+          "nameLocal": "ಕಾಜು ಕತ್ಲಿ",
+          "unit": "kg",
+          "priceInr": 1100,
+          "readyInMinutes": 30,
+          "dailyCapacity": 40
+        },
+        {
+          "id": "ellu-bella",
+          "name": "Ellu bella (Sankranti mix)",
+          "nameLocal": "ಎಳ್ಳು ಬೆಲ್ಲ",
+          "unit": "kg",
+          "priceInr": 390,
+          "readyInMinutes": 30,
+          "dailyCapacity": 60
+        },
+        {
+          "id": "gift-box-m",
+          "name": "Festive gift box (medium)",
+          "nameLocal": "ಹಬ್ಬದ ಗಿಫ್ಟ್ ಬಾಕ್ಸ್",
+          "unit": "box",
+          "priceInr": 850,
+          "readyInMinutes": 15,
+          "dailyCapacity": 80
+        }
+      ],
+      "openUntil": "23:30"
+    },
+    {
+      "id": "shop-krpuram",
+      "type": "sweet_shop",
+      "name": "KR Puram Bhojanalaya Sweets (demo)",
+      "boardingPoint": "KR_PURAM",
+      "walkMinutes": 6,
+      "contactLanguage": "te-IN",
+      "items": [
+        {
+          "id": "ariselu",
+          "name": "Ariselu (10 pcs)",
+          "nameLocal": "అరిసెలు",
+          "unit": "pack",
+          "priceInr": 300,
+          "readyInMinutes": 30,
+          "dailyCapacity": 40
+        },
+        {
+          "id": "pootharekulu",
+          "name": "Pootharekulu (10 pcs)",
+          "nameLocal": "పూతరేకులు",
+          "unit": "pack",
+          "priceInr": 420,
+          "readyInMinutes": 30,
+          "dailyCapacity": 60
+        },
+        {
+          "id": "mysore-pak",
+          "name": "Mysore pak",
+          "nameLocal": "ಮೈಸೂರು ಪಾಕ್",
+          "unit": "kg",
+          "priceInr": 600,
+          "readyInMinutes": 30,
+          "dailyCapacity": 60
+        },
+        {
+          "id": "kaju-katli",
+          "name": "Kaju katli",
+          "nameLocal": "కాజు కట్లీ",
+          "unit": "kg",
+          "priceInr": 1050,
+          "readyInMinutes": 30,
+          "dailyCapacity": 80
+        }
+      ],
+      "openUntil": "23:30"
+    },
+    {
+      "id": "shop-ecity",
+      "type": "sweet_shop",
+      "name": "E-City Thindi Mane (demo)",
+      "boardingPoint": "ELECTRONIC_CITY",
+      "walkMinutes": 4,
+      "contactLanguage": "ta-IN",
+      "items": [
+        {
+          "id": "adhirasam",
+          "name": "Adhirasam (10 pcs)",
+          "nameLocal": "அதிரசம்",
+          "unit": "pack",
+          "priceInr": 280,
+          "readyInMinutes": 30,
+          "dailyCapacity": 80
+        },
+        {
+          "id": "mysore-pak",
+          "name": "Mysore pak",
+          "nameLocal": "மைசூர் பாக்",
+          "unit": "kg",
+          "priceInr": 620,
+          "readyInMinutes": 30,
+          "dailyCapacity": 40
+        },
+        {
+          "id": "murukku",
+          "name": "Murukku",
+          "nameLocal": "முறுக்கு",
+          "unit": "kg",
+          "priceInr": 420,
+          "readyInMinutes": 30,
+          "dailyCapacity": 80
+        },
+        {
+          "id": "gift-box-s",
+          "name": "Festive gift box (small)",
+          "nameLocal": "பரிசுப் பெட்டி",
+          "unit": "box",
+          "priceInr": 450,
+          "readyInMinutes": 15,
+          "dailyCapacity": 80
+        }
+      ],
+      "openUntil": "23:30"
+    },
+    {
+      "id": "qc-quickcart",
+      "type": "quick_commerce",
+      "name": "Demo QuickCart",
+      "styleOf": "a 10-minute grocery app (Blinkit/Zepto/Instamart/Flipkart Minutes-style). Named in text only.",
+      "serves": [
+        "doorstep_before_departure",
+        "pickup_near_boarding_point"
+      ],
+      "cutFirst": true
+    },
+    {
+      "id": "qc-dashdelivery",
+      "type": "quick_commerce",
+      "name": "Demo DashBasket",
+      "styleOf": "a food + grocery delivery app (Swiggy Instamart/Zomato-style). Named in text only.",
+      "serves": [
+        "doorstep_before_departure"
+      ],
+      "cutFirst": true
+    },
+    {
+      "id": "qc-hometown",
+      "type": "quick_commerce",
+      "name": "Demo HomeTown Cart",
+      "styleOf": "any quick-commerce app, viewed from the hometown side (demand moves from city to hometown)",
+      "serves": [
+        "hometown_delivery"
+      ],
+      "cutFirst": true
+    }
+  ]
+}

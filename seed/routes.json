@@ -1,0 +1,128 @@
+{
+  "_label": "SYNTHETIC DEMO DATA. Distances and travel times are rough public-knowledge estimates; check before quoting. Seat numbers are invented.",
+  "origin": { "city": "Bengaluru", "cityKn": "ಬೆಂಗಳೂರು", "code": "BLR" },
+  "routes": [
+    {
+      "id": "BLR-HBL",
+      "to": "Hubballi",
+      "toLocal": "ಹುಬ್ಬಳ್ಳಿ",
+      "aliases": ["Hubli", "Hubballi", "Hubli-Dharwad", "ಹುಬ್ಳಿ", "ಹುಬ್ಬಳ್ಳಿ"],
+      "state": "Karnataka",
+      "homeLanguage": "kn-IN",
+      "approxKm": 410,
+      "approxHoursByRoad": 8,
+      "modes": ["bus", "train"],
+      "boardingPoints": ["MAJESTIC", "SATELLITE", "SHANTINAGAR"],
+      "demoHero": true
+    },
+    {
+      "id": "BLR-BGM",
+      "to": "Belagavi",
+      "toLocal": "ಬೆಳಗಾವಿ",
+      "aliases": ["Belgaum", "Belagavi", "ಬೆಳಗಾವಿ"],
+      "state": "Karnataka",
+      "homeLanguage": "kn-IN",
+      "approxKm": 500,
+      "approxHoursByRoad": 9,
+      "modes": ["bus", "train"],
+      "boardingPoints": ["MAJESTIC", "SATELLITE"]
+    },
+    {
+      "id": "BLR-KLB",
+      "to": "Kalaburagi",
+      "toLocal": "ಕಲಬುರಗಿ",
+      "aliases": ["Gulbarga", "Kalaburagi", "ಕಲಬುರಗಿ"],
+      "state": "Karnataka",
+      "homeLanguage": "kn-IN",
+      "approxKm": 570,
+      "approxHoursByRoad": 10,
+      "modes": ["bus", "train"],
+      "boardingPoints": ["MAJESTIC", "SHANTINAGAR"]
+    },
+    {
+      "id": "BLR-MLR",
+      "to": "Mangaluru",
+      "toLocal": "ಮಂಗಳೂರು",
+      "aliases": ["Mangalore", "Mangaluru", "Kudla", "ಮಂಗಳೂರು"],
+      "state": "Karnataka",
+      "homeLanguage": "kn-IN",
+      "approxKm": 350,
+      "approxHoursByRoad": 8,
+      "modes": ["bus", "train"],
+      "boardingPoints": ["MAJESTIC", "SATELLITE"]
+    },
+    {
+      "id": "BLR-MDU",
+      "to": "Madurai",
+      "toLocal": "மதுரை",
+      "aliases": ["Madurai", "மதுரை"],
+      "state": "Tamil Nadu",
+      "homeLanguage": "ta-IN",
+      "approxKm": 435,
+      "approxHoursByRoad": 8,
+      "modes": ["bus", "train"],
+      "boardingPoints": ["SHANTINAGAR", "ELECTRONIC_CITY", "MAJESTIC"]
+    },
+    {
+      "id": "BLR-TEN",
+      "to": "Tirunelveli",
+      "toLocal": "திருநெல்வேலி",
+      "aliases": ["Tirunelveli", "Nellai", "திருநெல்வேலி"],
+      "state": "Tamil Nadu",
+      "homeLanguage": "ta-IN",
+      "approxKm": 590,
+      "approxHoursByRoad": 10,
+      "modes": ["bus", "train"],
+      "boardingPoints": ["SHANTINAGAR", "ELECTRONIC_CITY"]
+    },
+    {
+      "id": "BLR-BZA",
+      "to": "Vijayawada",
+      "toLocal": "విజయవాడ",
+      "aliases": ["Vijayawada", "Bezawada", "విజయవాడ"],
+      "state": "Andhra Pradesh",
+      "homeLanguage": "te-IN",
+      "approxKm": 640,
+      "approxHoursByRoad": 11,
+      "modes": ["bus", "train", "air"],
+      "boardingPoints": ["KR_PURAM", "MAJESTIC"]
+    },
+    {
+      "id": "BLR-BBI",
+      "to": "Bhubaneswar",
+      "toLocal": "ଭୁବନେଶ୍ୱର",
+      "aliases": ["Bhubaneswar", "ଭୁବନେଶ୍ୱର"],
+      "state": "Odisha",
+      "homeLanguage": "od-IN",
+      "approxKm": 1450,
+      "approxHoursByRoad": null,
+      "modes": ["train", "air"],
+      "boardingPoints": ["KR_PURAM", "SMVT", "KIA"]
+    },
+    {
+      "id": "BLR-PNBE",
+      "to": "Patna",
+      "toLocal": "पटना",
+      "aliases": ["Patna", "पटना"],
+      "state": "Bihar",
+      "homeLanguage": "hi-IN",
+      "approxKm": 2350,
+      "approxHoursByRoad": null,
+      "modes": ["train", "air"],
+      "boardingPoints": ["SMVT", "KSR", "KIA"]
+    },
+    {
+      "id": "BLR-CCU",
+      "to": "Kolkata",
+      "toLocal": "কলকাতা",
+      "aliases": ["Kolkata", "Calcutta", "কলকাতা"],
+      "state": "West Bengal",
+      "homeLanguage": "bn-IN",
+      "approxKm": 1880,
+      "approxHoursByRoad": null,
+      "modes": ["train", "air"],
+      "boardingPoints": ["SMVT", "KR_PURAM", "KIA"],
+      "note": "Extra route so the Bengali voice sample has a real destination."
+    }
+  ]
+}

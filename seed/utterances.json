@@ -1,0 +1,98 @@
+{
+  "_label": "SYNTHETIC test sentences for voice + intent tests. Written by us; native-script lines NEED A NATIVE-SPEAKER CHECK before stage use (Ankith checks Kannada; others are best effort). 'expect' is what the intent parser should return. Reference date for 'Friday' etc. = the demo 'today' 2027-01-05 (Tue) unless 'refDate' says otherwise. Record Ankith's own voice for the kn-IN lines as WAV backups (offline fallback).",
+  "refDate": "2027-01-05",
+  "utterances": [
+    {
+      "id": "u-kn-01",
+      "language": "kn-IN",
+      "text": "ಸಂಕ್ರಾಂತಿಗೆ ಹುಬ್ಬಳ್ಳಿಗೆ ಊರಿಗೆ ಹೋಗ್ತಾ ಇದ್ದೀನಿ, ಗುರುವಾರ ರಾತ್ರಿ, ಬಸ್ಸಲ್ಲಿ, ಇಬ್ರು",
+      "roman": "Sankrantige Hubballige oorige hogta iddini, guruvaara raatri, bassalli, ibru",
+      "english": "Going home to Hubballi for Sankranti, Thursday night, by bus, two of us",
+      "expect": { "to": "Hubballi", "routeId": "BLR-HBL", "dateFrom": "2027-01-14", "timeWindow": "night", "mode": "bus", "people": 2, "festivalId": "sankranti-2027" },
+      "demoHero": true
+    },
+    {
+      "id": "u-kn-02-gift",
+      "language": "kn-IN",
+      "text": "ಮತ್ತೆ ಮನೆಯವರಿಗೆ ಎರಡು ಕೆಜಿ ಮೈಸೂರು ಪಾಕ್ ಬೇಕು, ಮೆಜೆಸ್ಟಿಕ್ ಹತ್ರ",
+      "roman": "Matte maneyavarige eradu kg Mysore pak beku, Majestic hatra",
+      "english": "And 2 kg Mysore pak for the family, near Majestic",
+      "expect": { "gift": { "itemId": "mysore-pak", "qty": 2 }, "boardingPoint": "MAJESTIC" }
+    },
+    {
+      "id": "u-kn-03-codemix",
+      "language": "kn-IN",
+      "text": "Friday night Hubli ge bus beku, family jothe, naalku jana",
+      "roman": "Friday night Hubli ge bus beku, family jothe, naalku jana",
+      "english": "Need a bus to Hubli Friday night, with family, four people",
+      "expect": { "to": "Hubballi", "routeId": "BLR-HBL", "dateFrom": "2027-01-08", "timeWindow": "night", "mode": "bus", "people": 4 },
+      "note": "Code-mixed, Roman script. Use Saaras codemix mode. 'Friday' = next Friday after refDate."
+    },
+    {
+      "id": "u-kn-04",
+      "language": "kn-IN",
+      "text": "ಮಂಗಳೂರಿಗೆ ಹದಿಮೂರನೇ ತಾರೀಖು ರಾತ್ರಿ ಟ್ರೈನ್ ಇದ್ಯಾ? ಒಬ್ಬನೇ",
+      "roman": "Mangaluruge hadimoorane taareeku raatri train idya? Obbane",
+      "english": "Is there a train to Mangaluru on the 13th night? Just me",
+      "expect": { "to": "Mangaluru", "routeId": "BLR-MLR", "dateFrom": "2027-01-13", "timeWindow": "night", "mode": "train", "people": 1 }
+    },
+    {
+      "id": "u-ta-01",
+      "language": "ta-IN",
+      "text": "பொங்கலுக்கு மதுரைக்கு போகணும், புதன் ராத்திரி, பஸ்ல, ரெண்டு பேர்",
+      "roman": "Pongalukku Maduraikku poganum, budhan raathiri, busla, rendu per",
+      "english": "Need to go to Madurai for Pongal, Wednesday night, by bus, two people",
+      "expect": { "to": "Madurai", "routeId": "BLR-MDU", "dateFrom": "2027-01-13", "timeWindow": "night", "mode": "bus", "people": 2, "festivalId": "pongal-2027" }
+    },
+    {
+      "id": "u-te-01",
+      "language": "te-IN",
+      "text": "సంక్రాంతికి విజయవాడ వెళ్ళాలి, గురువారం రాత్రి, బస్సులో, నలుగురం",
+      "roman": "Sankrantiki Vijayawada vellaali, guruvaaram raatri, bassulo, naluguram",
+      "english": "Need to go to Vijayawada for Sankranti, Thursday night, by bus, four of us",
+      "expect": { "to": "Vijayawada", "routeId": "BLR-BZA", "dateFrom": "2027-01-14", "timeWindow": "night", "mode": "bus", "people": 4, "festivalId": "sankranti-2027" }
+    },
+    {
+      "id": "u-od-01",
+      "language": "od-IN",
+      "text": "ମକର ସଂକ୍ରାନ୍ତିରେ ଭୁବନେଶ୍ୱର ଯିବି, ବୁଧବାର, ଟ୍ରେନରେ, ଦୁଇଜଣ",
+      "roman": "Makara Sankrantire Bhubaneswar jibi, budhabara, trainre, duijana",
+      "english": "Going to Bhubaneswar for Makar Sankranti, Wednesday, by train, two people",
+      "expect": { "to": "Bhubaneswar", "routeId": "BLR-BBI", "dateFrom": "2027-01-13", "mode": "train", "people": 2, "festivalId": "sankranti-2027" },
+      "note": "Odia TTS: kit says Bulbul v4 Flash has no Odia yet, so the Flagsmith segment language=od-IN must route TTS to bulbul:v3 (UNVERIFIED that v3 speaks Odia; if not, reply as text only)."
+    },
+    {
+      "id": "u-hi-01",
+      "language": "hi-IN",
+      "text": "मकर संक्रांति पर पटना जाना है, बुधवार को, ट्रेन से, तीन लोग",
+      "roman": "Makar Sankranti par Patna jaana hai, budhvaar ko, train se, teen log",
+      "english": "Need to go to Patna for Makar Sankranti, on Wednesday, by train, three people",
+      "expect": { "to": "Patna", "routeId": "BLR-PNBE", "dateFrom": "2027-01-13", "mode": "train", "people": 3, "festivalId": "sankranti-2027" }
+    },
+    {
+      "id": "u-bn-01",
+      "language": "bn-IN",
+      "text": "পৌষ সংক্রান্তিতে কলকাতা যাব, বুধবার রাতে, ট্রেনে, একা",
+      "roman": "Poush Sankrantite Kolkata jabo, budhbar raate, trene, eka",
+      "english": "Going to Kolkata for Poush Sankranti, Wednesday night, by train, alone",
+      "expect": { "to": "Kolkata", "routeId": "BLR-CCU", "dateFrom": "2027-01-13", "timeWindow": "night", "mode": "train", "people": 1 }
+    },
+    {
+      "id": "u-en-01",
+      "language": "en-IN",
+      "text": "Going home to Hubli for Sankranti, Friday night",
+      "english": "Going home to Hubli for Sankranti, Friday night",
+      "expect": { "to": "Hubballi", "routeId": "BLR-HBL", "dateFrom": "2027-01-15", "timeWindow": "night", "festivalId": "sankranti-2027", "people": 1 },
+      "note": "The brief's example. 'Friday' + 'for Sankranti' = Friday of festival week (15 Jan 2027 is a Friday). Parser rule: a festival word picks the festival week, then the weekday inside it."
+    },
+    {
+      "id": "u-kn-05-ambiguous",
+      "language": "kn-IN",
+      "text": "ಊರಿಗೆ ಹೋಗ್ಬೇಕು",
+      "roman": "Oorige hogbeku",
+      "english": "I need to go home",
+      "expect": { "to": null, "needsFollowUp": ["to", "date"] },
+      "note": "Too vague. The app must ASK (in Kannada) 'Which town? Which day?' rather than guess."
+    }
+  ]
+}

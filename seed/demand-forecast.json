@@ -1,0 +1,385 @@
+{
+  "_label": "SYNTHETIC DEMO DATA. Invented for the Prasthan hackathon demo. Not real people, bookings, operators or shops. Forecast = bus-seat demand from sample intents x a made-up scale factor. The BLR-HBL 14 Jan cell's wantSeats is pinned to the pitch number (2,400 want vs about 900 seats). Say on stage: 'seeded demo data'.",
+  "method": "wantSeats = (people in sample bus intents for that route+date) x 120; seatsExist = sum of seed/services.json seats; busesToClose = ceil(gap / 40).",
+  "cells": [
+    {
+      "routeId": "BLR-HBL",
+      "date": "2027-01-12",
+      "timeWindow": "night",
+      "wantSeats": 1200,
+      "seatsExist": 880,
+      "gap": 320,
+      "busesToClose": 8
+    },
+    {
+      "routeId": "BLR-HBL",
+      "date": "2027-01-13",
+      "timeWindow": "night",
+      "wantSeats": 1800,
+      "seatsExist": 880,
+      "gap": 920,
+      "busesToClose": 23
+    },
+    {
+      "routeId": "BLR-HBL",
+      "date": "2027-01-14",
+      "timeWindow": "night",
+      "wantSeats": 2400,
+      "seatsExist": 880,
+      "gap": 1520,
+      "busesToClose": 38,
+      "demoHero": true
+    },
+    {
+      "routeId": "BLR-HBL",
+      "date": "2027-01-15",
+      "timeWindow": "night",
+      "wantSeats": 960,
+      "seatsExist": 880,
+      "gap": 80,
+      "busesToClose": 2
+    },
+    {
+      "routeId": "BLR-HBL",
+      "date": "2027-01-16",
+      "timeWindow": "night",
+      "wantSeats": 0,
+      "seatsExist": 880,
+      "gap": 0,
+      "busesToClose": 0
+    },
+    {
+      "routeId": "BLR-HBL",
+      "date": "2027-01-17",
+      "timeWindow": "night",
+      "wantSeats": 0,
+      "seatsExist": 880,
+      "gap": 0,
+      "busesToClose": 0
+    },
+    {
+      "routeId": "BLR-BGM",
+      "date": "2027-01-12",
+      "timeWindow": "night",
+      "wantSeats": 0,
+      "seatsExist": 680,
+      "gap": 0,
+      "busesToClose": 0
+    },
+    {
+      "routeId": "BLR-BGM",
+      "date": "2027-01-13",
+      "timeWindow": "night",
+      "wantSeats": 120,
+      "seatsExist": 680,
+      "gap": 0,
+      "busesToClose": 0
+    },
+    {
+      "routeId": "BLR-BGM",
+      "date": "2027-01-14",
+      "timeWindow": "night",
+      "wantSeats": 1080,
+      "seatsExist": 680,
+      "gap": 400,
+      "busesToClose": 10
+    },
+    {
+      "routeId": "BLR-BGM",
+      "date": "2027-01-15",
+      "timeWindow": "night",
+      "wantSeats": 360,
+      "seatsExist": 680,
+      "gap": 0,
+      "busesToClose": 0
+    },
+    {
+      "routeId": "BLR-BGM",
+      "date": "2027-01-16",
+      "timeWindow": "night",
+      "wantSeats": 0,
+      "seatsExist": 680,
+      "gap": 0,
+      "busesToClose": 0
+    },
+    {
+      "routeId": "BLR-BGM",
+      "date": "2027-01-17",
+      "timeWindow": "night",
+      "wantSeats": 0,
+      "seatsExist": 680,
+      "gap": 0,
+      "busesToClose": 0
+    },
+    {
+      "routeId": "BLR-KLB",
+      "date": "2027-01-12",
+      "timeWindow": "night",
+      "wantSeats": 120,
+      "seatsExist": 640,
+      "gap": 0,
+      "busesToClose": 0
+    },
+    {
+      "routeId": "BLR-KLB",
+      "date": "2027-01-13",
+      "timeWindow": "night",
+      "wantSeats": 480,
+      "seatsExist": 640,
+      "gap": 0,
+      "busesToClose": 0
+    },
+    {
+      "routeId": "BLR-KLB",
+      "date": "2027-01-14",
+      "timeWindow": "night",
+      "wantSeats": 1680,
+      "seatsExist": 640,
+      "gap": 1040,
+      "busesToClose": 26
+    },
+    {
+      "routeId": "BLR-KLB",
+      "date": "2027-01-15",
+      "timeWindow": "night",
+      "wantSeats": 0,
+      "seatsExist": 640,
+      "gap": 0,
+      "busesToClose": 0
+    },
+    {
+      "routeId": "BLR-KLB",
+      "date": "2027-01-16",
+      "timeWindow": "night",
+      "wantSeats": 0,
+      "seatsExist": 640,
+      "gap": 0,
+      "busesToClose": 0
+    },
+    {
+      "routeId": "BLR-KLB",
+      "date": "2027-01-17",
+      "timeWindow": "night",
+      "wantSeats": 0,
+      "seatsExist": 640,
+      "gap": 0,
+      "busesToClose": 0
+    },
+    {
+      "routeId": "BLR-MLR",
+      "date": "2027-01-12",
+      "timeWindow": "night",
+      "wantSeats": 120,
+      "seatsExist": 1000,
+      "gap": 0,
+      "busesToClose": 0
+    },
+    {
+      "routeId": "BLR-MLR",
+      "date": "2027-01-13",
+      "timeWindow": "night",
+      "wantSeats": 1080,
+      "seatsExist": 1000,
+      "gap": 80,
+      "busesToClose": 2
+    },
+    {
+      "routeId": "BLR-MLR",
+      "date": "2027-01-14",
+      "timeWindow": "night",
+      "wantSeats": 1320,
+      "seatsExist": 1000,
+      "gap": 320,
+      "busesToClose": 8
+    },
+    {
+      "routeId": "BLR-MLR",
+      "date": "2027-01-15",
+      "timeWindow": "night",
+      "wantSeats": 120,
+      "seatsExist": 1000,
+      "gap": 0,
+      "busesToClose": 0
+    },
+    {
+      "routeId": "BLR-MLR",
+      "date": "2027-01-16",
+      "timeWindow": "night",
+      "wantSeats": 0,
+      "seatsExist": 1000,
+      "gap": 0,
+      "busesToClose": 0
+    },
+    {
+      "routeId": "BLR-MLR",
+      "date": "2027-01-17",
+      "timeWindow": "night",
+      "wantSeats": 0,
+      "seatsExist": 1000,
+      "gap": 0,
+      "busesToClose": 0
+    },
+    {
+      "routeId": "BLR-MDU",
+      "date": "2027-01-12",
+      "timeWindow": "night",
+      "wantSeats": 600,
+      "seatsExist": 920,
+      "gap": 0,
+      "busesToClose": 0
+    },
+    {
+      "routeId": "BLR-MDU",
+      "date": "2027-01-13",
+      "timeWindow": "night",
+      "wantSeats": 1800,
+      "seatsExist": 920,
+      "gap": 880,
+      "busesToClose": 22
+    },
+    {
+      "routeId": "BLR-MDU",
+      "date": "2027-01-14",
+      "timeWindow": "night",
+      "wantSeats": 2520,
+      "seatsExist": 920,
+      "gap": 1600,
+      "busesToClose": 40
+    },
+    {
+      "routeId": "BLR-MDU",
+      "date": "2027-01-15",
+      "timeWindow": "night",
+      "wantSeats": 600,
+      "seatsExist": 920,
+      "gap": 0,
+      "busesToClose": 0
+    },
+    {
+      "routeId": "BLR-MDU",
+      "date": "2027-01-16",
+      "timeWindow": "night",
+      "wantSeats": 0,
+      "seatsExist": 920,
+      "gap": 0,
+      "busesToClose": 0
+    },
+    {
+      "routeId": "BLR-MDU",
+      "date": "2027-01-17",
+      "timeWindow": "night",
+      "wantSeats": 0,
+      "seatsExist": 920,
+      "gap": 0,
+      "busesToClose": 0
+    },
+    {
+      "routeId": "BLR-TEN",
+      "date": "2027-01-12",
+      "timeWindow": "night",
+      "wantSeats": 120,
+      "seatsExist": 480,
+      "gap": 0,
+      "busesToClose": 0
+    },
+    {
+      "routeId": "BLR-TEN",
+      "date": "2027-01-13",
+      "timeWindow": "night",
+      "wantSeats": 720,
+      "seatsExist": 480,
+      "gap": 240,
+      "busesToClose": 6
+    },
+    {
+      "routeId": "BLR-TEN",
+      "date": "2027-01-14",
+      "timeWindow": "night",
+      "wantSeats": 720,
+      "seatsExist": 480,
+      "gap": 240,
+      "busesToClose": 6
+    },
+    {
+      "routeId": "BLR-TEN",
+      "date": "2027-01-15",
+      "timeWindow": "night",
+      "wantSeats": 360,
+      "seatsExist": 480,
+      "gap": 0,
+      "busesToClose": 0
+    },
+    {
+      "routeId": "BLR-TEN",
+      "date": "2027-01-16",
+      "timeWindow": "night",
+      "wantSeats": 0,
+      "seatsExist": 480,
+      "gap": 0,
+      "busesToClose": 0
+    },
+    {
+      "routeId": "BLR-TEN",
+      "date": "2027-01-17",
+      "timeWindow": "night",
+      "wantSeats": 0,
+      "seatsExist": 480,
+      "gap": 0,
+      "busesToClose": 0
+    },
+    {
+      "routeId": "BLR-BZA",
+      "date": "2027-01-12",
+      "timeWindow": "night",
+      "wantSeats": 480,
+      "seatsExist": 600,
+      "gap": 0,
+      "busesToClose": 0
+    },
+    {
+      "routeId": "BLR-BZA",
+      "date": "2027-01-13",
+      "timeWindow": "night",
+      "wantSeats": 1680,
+      "seatsExist": 600,
+      "gap": 1080,
+      "busesToClose": 27
+    },
+    {
+      "routeId": "BLR-BZA",
+      "date": "2027-01-14",
+      "timeWindow": "night",
+      "wantSeats": 1800,
+      "seatsExist": 600,
+      "gap": 1200,
+      "busesToClose": 30
+    },
+    {
+      "routeId": "BLR-BZA",
+      "date": "2027-01-15",
+      "timeWindow": "night",
+      "wantSeats": 0,
+      "seatsExist": 600,
+      "gap": 0,
+      "busesToClose": 0
+    },
+    {
+      "routeId": "BLR-BZA",
+      "date": "2027-01-16",
+      "timeWindow": "night",
+      "wantSeats": 0,
+      "seatsExist": 600,
+      "gap": 0,
+      "busesToClose": 0
+    },
+    {
+      "routeId": "BLR-BZA",
+      "date": "2027-01-17",
+      "timeWindow": "night",
+      "wantSeats": 0,
+      "seatsExist": 600,
+      "gap": 0,
+      "busesToClose": 0
+    }
+  ]
+}

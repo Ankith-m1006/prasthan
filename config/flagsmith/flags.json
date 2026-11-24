@@ -1,0 +1,154 @@
+{
+  "_about": "Flags to create in Flagsmith (project 'prasthan', environments 'development' + 'production'). Config only, not code. Session C writes scripts/flagsmith-import.ts at hack time (see codex/C-01-flagsmith-import.md); if the import fails, create these by hand in the dashboard in this order. Every flag also has a coded default in the API (same values) so the app works when Flagsmith is unreachable.",
+  "_types": "boolean = on/off with no value. remote_config = on/off + a value (string | number | json). Flagsmith stores values as strings/ints/bools; JSON values are stored as a string and parsed with getValue(..., {json:true}) or JSON.parse.",
+  "traits": [
+    { "key": "role", "values": ["traveller", "partner"] },
+    { "key": "language", "values": ["kn-IN", "ta-IN", "te-IN", "hi-IN", "od-IN", "bn-IN", "en-IN"] },
+    { "key": "home_state", "values": ["Karnataka", "Tamil Nadu", "Andhra Pradesh", "Odisha", "Bihar", "West Bengal"] },
+    { "key": "home_town", "values": ["Hubballi", "Madurai", "..."] },
+    { "key": "partner_type", "values": ["bus_operator", "sweet_shop", "quick_commerce"] },
+    { "key": "partner_id", "values": ["op-staterte", "shop-majestic", "..."] }
+  ],
+  "segments": [
+    { "name": "karnataka_travellers", "rules": "role = traveller AND home_state = Karnataka" },
+    { "name": "tamil_travellers", "rules": "role = traveller AND home_state = Tamil Nadu" },
+    { "name": "odia_speakers", "rules": "language = od-IN" },
+    { "name": "bus_operators", "rules": "partner_type = bus_operator" },
+    { "name": "sweet_shops", "rules": "partner_type = sweet_shop" },
+    { "name": "quick_commerce", "rules": "partner_type = quick_commerce" },
+    { "name": "gifting_pilot_20pct", "rules": "role = traveller AND % split 20 (Flagsmith 'percentage split' operator on identity)" }
+  ],
+  "flags": [
+    {
+      "name": "festival_mode",
+      "type": "remote_config",
+      "valueType": "json",
+      "enabled": true,
+      "default": { "festivalId": "sankranti-2027", "title": "Sankranti mode", "theme": "sankranti", "greeting": { "kn-IN": "ಸಂಕ್ರಾಂತಿ ಹಬ್ಬದ ಶುಭಾಶಯಗಳು", "ta-IN": "இனிய பொங்கல் நல்வாழ்த்துகள்", "en-IN": "Happy Sankranti" } },
+      "segmentOverrides": [ { "segment": "tamil_travellers", "value": { "festivalId": "pongal-2027", "title": "Pongal mode", "theme": "pongal", "greeting": { "ta-IN": "இனிய பொங்கல் நல்வாழ்த்துகள்", "en-IN": "Happy Pongal" } } } ],
+      "why": "Stage switch #1: change the festival from the dashboard, app theme + greeting change live. Tamil travellers see Pongal mode from the same code."
+    },
+    {
+      "name": "route_config",
+      "type": "remote_config",
+      "valueType": "json",
+      "enabled": true,
+      "default": { "enabledRoutes": ["BLR-HBL", "BLR-BGM", "BLR-KLB", "BLR-MLR", "BLR-MDU", "BLR-TEN", "BLR-BZA", "BLR-BBI", "BLR-PNBE", "BLR-CCU"], "featured": ["BLR-HBL", "BLR-MDU"] },
+      "why": "Which routes are live and featured, without a deploy."
+    },
+    {
+      "name": "surge_warning",
+      "type": "remote_config",
+      "valueType": "json",
+      "enabled": true,
+      "default": { "warnAtMultiplier": 1.8, "rushNights": ["2027-01-13", "2027-01-14"], "showToutWarning": true },
+      "why": "Thresholds for fare-surge and tout warnings. We never show prices; the multiplier comes from the alerts feed (seeded or context.dev news)."
+    },
+    {
+      "name": "special_service_announcements",
+      "type": "remote_config",
+      "valueType": "json",
+      "enabled": true,
+      "default": [],
+      "why": "Ops can push an announcement banner (e.g. 'Special train Bengaluru -> Patna on 13 Jan') as remote config. The API merges it into /v1/alerts."
+    },
+    {
+      "name": "voice_enabled",
+      "type": "boolean",
+      "enabled": true,
+      "why": "Master kill switch for live voice. Off = text box + tap-to-pick sample sentences."
+    },
+    {
+      "name": "voice_fallback_offline",
+      "type": "boolean",
+      "enabled": false,
+      "why": "THE NudgeBee bridge. On = skip live Sarvam calls: replies use pre-recorded/cached audio + text, intent parsing uses the rule-based parser. NudgeBee runbook (or /v1/ops/fallback) turns it on when the voice pod is down."
+    },
+    {
+      "name": "tts_model",
+      "type": "remote_config",
+      "valueType": "string",
+      "enabled": true,
+      "default": "bulbul:v3",
+      "segmentOverrides": [ { "segment": "odia_speakers", "value": "bulbul:v3" } ],
+      "why": "Model routing without a deploy. Default may be switched to bulbul:v4-flash on the day after a test; Odia stays on v3 (v4 Flash has no Odia per the kit; UNVERIFIED that v3 has Odia)."
+    },
+    {
+      "name": "tts_speaker",
+      "type": "remote_config",
+      "valueType": "json",
+      "enabled": true,
+      "default": { "bulbul:v3": "priya", "bulbul:v4-flash": "shubh_enhi_ads" },
+      "why": "Speaker per model. Speaker ids from the kit (v3: shubh, priya, aditya, simran). Confirm on the Sarvam Voices page at 10:00 and update here."
+    },
+    {
+      "name": "stt_mode",
+      "type": "remote_config",
+      "valueType": "string",
+      "enabled": true,
+      "default": "codemix",
+      "why": "Saaras v4 mode: transcribe | codemix | translate. Code-mixed Kannada-English is the common case."
+    },
+    {
+      "name": "gifting_enabled",
+      "type": "boolean",
+      "enabled": false,
+      "segmentOverrides": [ { "segment": "gifting_pilot_20pct", "enabled": true } ],
+      "why": "Stage switch #3: staged rollout. 20% of travellers get the gift add-on, then flip to 100% live. CUT FIRST if time is short."
+    },
+    {
+      "name": "operator_add_service",
+      "type": "boolean",
+      "enabled": false,
+      "segmentOverrides": [ { "segment": "bus_operators", "enabled": true } ],
+      "why": "Only bus operators see the 'Add a bus' button."
+    },
+    {
+      "name": "shop_orders_view",
+      "type": "boolean",
+      "enabled": false,
+      "segmentOverrides": [ { "segment": "sweet_shops", "enabled": true } ],
+      "why": "Only sweet shops see the orders-per-pickup-point view."
+    },
+    {
+      "name": "quick_commerce_view",
+      "type": "boolean",
+      "enabled": false,
+      "segmentOverrides": [ { "segment": "quick_commerce", "enabled": true } ],
+      "why": "CUT FIRST. One dashboard view on seeded data for quick-commerce partners."
+    },
+    {
+      "name": "live_data_source",
+      "type": "remote_config",
+      "valueType": "string",
+      "enabled": true,
+      "default": "seeded",
+      "why": "'seeded' | 'context_dev'. Picks where the alerts feed comes from. Keep 'seeded' for the stage demo unless the live search was tested that day."
+    },
+    {
+      "name": "deep_link_providers",
+      "type": "remote_config",
+      "valueType": "json",
+      "enabled": true,
+      "default": { "bus": ["ksrtc", "redbus", "abhibus", "zingbus", "flixbus"], "train": ["irctc", "ixigo"], "air": ["ixigo", "makemytrip"] },
+      "why": "Order and set of booking links per mode. Drop a provider live if its link breaks."
+    },
+    {
+      "name": "alert_poll_seconds",
+      "type": "remote_config",
+      "valueType": "number",
+      "enabled": true,
+      "default": 5,
+      "why": "How often the app polls /v1/alerts and /v1/config. Ops can slow clients down during the rush."
+    },
+    {
+      "name": "reply_style",
+      "type": "multivariate",
+      "valueType": "string",
+      "enabled": true,
+      "default": "warm",
+      "variants": [ { "value": "warm", "weight": 50 }, { "value": "short", "weight": 50 } ],
+      "why": "Optional A/B: warm vs short voice reply. Log which variant each reply used (own event log); Flagsmith Experimentation is beta and maybe not on Free. Skip if short on time."
+    }
+  ]
+}

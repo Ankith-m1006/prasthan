@@ -1,0 +1,41 @@
+{
+  "_label": "SYNTHETIC DEMO DATA. Invented for the Prasthan hackathon demo. Not real people, bookings, operators or shops. Announcement feed. In live mode (Flagsmith live_data_source=context_dev) the API adds items found by news search; each live item must keep its source URL.",
+  "alerts": [
+    {
+      "id": "al-001",
+      "kind": "special_bus",
+      "routeId": "BLR-HBL",
+      "date": "2027-01-14",
+      "text": "Demo State RTC adds 6 extra night buses BLR -> Hubballi on 14 Jan",
+      "source": "seeded",
+      "createdAt": "2027-01-05T10:00:00+05:30"
+    },
+    {
+      "id": "al-002",
+      "kind": "special_train",
+      "routeId": "BLR-PNBE",
+      "date": "2027-01-13",
+      "text": "Festival special train announced Bengaluru -> Patna (demo)",
+      "source": "seeded",
+      "createdAt": "2027-01-04T18:30:00+05:30"
+    },
+    {
+      "id": "al-003",
+      "kind": "surge_warning",
+      "routeId": "BLR-MDU",
+      "date": "2027-01-14",
+      "text": "Private fares on BLR -> Madurai are about 2.5x normal for 14 Jan night (demo)",
+      "source": "seeded",
+      "createdAt": "2027-01-06T09:00:00+05:30"
+    },
+    {
+      "id": "al-004",
+      "kind": "tout_warning",
+      "routeId": null,
+      "date": null,
+      "text": "Book only on official apps or counters. Do not pay agents outside the bus stand.",
+      "source": "seeded",
+      "createdAt": "2027-01-01T08:00:00+05:30"
+    }
+  ]
+}
