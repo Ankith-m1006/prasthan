@@ -3,9 +3,9 @@
 Updated: 25 Nov 2026, with every push. Builder so far: one session on Ankith's home laptop, working directly on `main`.
 
 ## Where we are
-- Current phase: C-02 done by the home builder (status/C.md left untouched for Session C). LIVE: https://prasthan-ten.vercel.app. Done: P0, A-01..A-03, B-01..B-03, B-05, C-02.
-- Last finished step: C-02: 15 s rush vs MOCK_ALL api = ~21k requests, 0 errors; demo-reset + traveller check OK; scripts --help OK; ci.yml written.
-- Next exact step: Z-02 README (`codex/Z-02-readme-video.md`) incl. AI-use section and honest mocked list.
+- Current phase: Z-02 README written (clean-clone check running). LIVE: https://prasthan-ten.vercel.app. Done: P0, A-01..A-03, B-01..B-03, B-05 (+gifting card), C-02, Z-02 draft.
+- Last finished step: README.md (setup, sponsors, flag table, limits, AI use), docs/SUBMISSION.md ticks, secrets grep clean. Split roles tested locally: ROLE=voice + ROLE=api over HTTP; killing voice -> api answers with rules (llm=fallback), /v1/ops/state voiceHealthy=false.
+- Next exact step: Ankith: screenshots into docs/img/, record video, put VIDEO_URL in README, make repo public, submit form by 16:45. Session C: C-01/C-03/C-04 on branch session-c (C-02 scripts already on main). Optional if time: A-04 context.dev.
 
 ## Commands
 - app checks: `cd apps/mobile && npm install && npm run typecheck && npm test`
