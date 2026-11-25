@@ -29,7 +29,7 @@ export function feature(flag: Flag) {
 
 function condition(rule: string) {
   const split = /^% split (\d+) \(Flagsmith 'percentage split' operator on identity\)$/.exec(rule)
-  if (split) return { operator: 'PERCENTAGE_SPLIT', value: split[1] }
+  if (split) return { operator: 'PERCENTAGE_SPLIT', property: null, value: split[1] }
   const equal = /^(\w+) = (.+)$/.exec(rule)
   if (!equal) throw new Error('Unknown segment rule')
   return { operator: 'EQUAL', property: equal[1], value: equal[2] }

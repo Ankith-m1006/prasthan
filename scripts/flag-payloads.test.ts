@@ -15,7 +15,7 @@ describe('catalog mappings', () => {
     const s = config.segments.find(s => s.name === 'gifting_pilot_20pct')!
     expect(segment(s).rules[0]).toEqual({ type: 'ALL', rules: [], conditions: [
       { operator: 'EQUAL', property: 'role', value: 'traveller' },
-      { operator: 'PERCENTAGE_SPLIT', value: '20' }
+      { operator: 'PERCENTAGE_SPLIT', property: null, value: '20' }
     ] })
   })
   it('enables only the targeted segment for boolean overrides', () => {

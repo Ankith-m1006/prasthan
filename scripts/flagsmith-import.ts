@@ -62,7 +62,7 @@ async function run() {
     throw new AdminError('Check FLAGSMITH_ADMIN_API_KEY, FLAGSMITH_PROJECT_ID and FLAGSMITH_ENVIRONMENT_API_KEY in .env')
   const api = client(key)
   const envPath = 'environments/' + encodeURIComponent(environment) + '/'
-  const target = await api.request<{ id: number; project: number }>(envPath)
+  const target = await api.request<{ id: number; project: number; use_v2_feature_versioning: boolean }>(envPath)
   if (target.project !== Number(project) || !Number.isInteger(target.id))
     throw new AdminError('Environment and project do not match')
   async function ensureNamed(path: string, items: { name: string }[]) {
@@ -88,7 +88,14 @@ async function run() {
       const path = 'features/feature-segments/?environment=' + target.id + '&feature=' + fid
       const existing = await api.list<{ segment: number }>(path)
       if (existing.some(row => row.segment === sid)) return 'existed'
-      await api.request(envPath + 'features/' + fid + '/create-segment-override/', override(f, item, sid))
+      const state = override(f, item, sid)
+      if (target.use_v2_feature_versioning) {
+        await api.request('environments/' + target.id + '/features/' + fid + '/versions/', {
+          feature_states_to_create: [state], publish_immediately: true
+        })
+      } else {
+        await api.request(envPath + 'features/' + fid + '/create-segment-override/', state)
+      }
       return 'created'
     })
   }
