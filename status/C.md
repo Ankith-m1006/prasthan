@@ -1,24 +1,13 @@
 # Session C status
 
-Phase: (not started)
-Branch: c/ops
-Contract version I built against: -
-Last merged to main: -
+Branch: session-c. Contract version: 1.
 
 ## Done
--
+- Created and pushed the isolated Session C branch. Read the handoff.
+- C-02 is already on main from the home builder: rush load, break/fix/reset scripts and CI.
 
-## Working on now
--
+## Next exact step
+- Build and test the C-01 Flagsmith importer against the published Admin API schema.
 
-## Blocked / broken
--
-
-## REQUESTS TO OTHERS
--
-
-## ANSWERS (to requests from others)
--
-
-## How to run what I built
--
+## Blockers
+- Live import needs the prepared, ignored .env in this checkout. No live resources verified.
