@@ -2,25 +2,17 @@
 import { config as loadDotenv } from 'dotenv';
 import { join } from 'node:path';
 import { REPO_ROOT } from './seed.js';
-loadDotenv({ path: join(REPO_ROOT, '.env'), quiet: true });
-import { buildApp, memoryOps } from './app.js';
+import { buildApp } from './app.js';
 import { loadConfig, logEnvPresence } from './config.js';
-import { loadFlagDefs } from './flags/defaults.js';
-import { MockFlagsProvider } from './flags/mock.js';
-import { createMetrics } from './metrics.js';
-import { loadSeed } from './seed.js';
-import { createStore, demoClock } from './store.js';
+import { wireAll } from './wire.js';
 
+loadDotenv({ path: join(REPO_ROOT, '.env'), quiet: true });
 const config = loadConfig();
-const flags = new MockFlagsProvider(loadFlagDefs());
-const deps = {
-  config, seed: loadSeed(config.seedDir), store: createStore(), flags, ops: memoryOps(flags),
-  metrics: createMetrics(), clock: demoClock(config.demoToday),
-};
+const { deps, extras } = await wireAll(config);
 
-const app = await buildApp(deps, [], { level: process.env.LOG_LEVEL ?? 'info' });
+const app = await buildApp(deps, extras, { level: process.env.LOG_LEVEL ?? 'info' });
 logEnvPresence((line) => app.log.info(line));
-app.log.info({ role: config.role, modes: { sarvam: config.sarvamMode, flagsmith: config.flagsmithMode } }, 'starting prasthan-api');
+app.log.info({ role: config.role, modes: { sarvam: config.sarvamMode, flagsmith: config.flagsmithMode }, fault: config.faultMode }, 'starting prasthan-api');
 if (!config.opsToken) app.log.warn('OPS_TOKEN not set: /v1/ops/* only accepts calls from localhost');
 
 app.listen({ port: config.port, host: '0.0.0.0' }).catch((err: unknown) => {

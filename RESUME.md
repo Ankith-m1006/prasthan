@@ -3,9 +3,9 @@
 Updated: 25 Nov 2026, with every push. Builder so far: one session on Ankith's home laptop, working directly on `main`.
 
 ## Where we are
-- Current phase: A-01 done. Next: A-02 voice (code written, needs wiring + tests).
-- Last finished step: A-01 checks: 35 tests green; curl options / add buses / metrics OK in MOCK_ALL=1.
-- Next exact step: A-02 (`codex/A-02-voice-sarvam.md`): mount routes/voice.ts + internal-voice.ts in src/index.ts, add voice tests.
+- Current phase: A-02 done. Next: A-03 Flagsmith server.
+- Last finished step: A-02: 46 tests green; MOCK_ALL curl /v1/intent/parse -> BLR-HBL 2027-01-15 parser rules; /v1/voice/intent (mock STT) -> Kannada hero reply.
+- Next exact step: A-03 (`codex/A-03-flagsmith-server.md`): npm i @flagsmith/nodejs, src/flags/flagsmith.ts + admin.ts, pass makeFlags into wireAll() in src/index.ts.
 
 ## Commands
 - api checks: `cd services/api && npm install && npm run check`

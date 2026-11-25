@@ -11,7 +11,7 @@ const W: Record<Lang, Words> = {
   'hi-IN': { ok: 'ठीक है', here: 'ये रहे विकल्प।', askTo: 'कहाँ जाना है?', askDate: 'किस दिन?', days: ['रविवार', 'सोमवार', 'मंगलवार', 'बुधवार', 'गुरुवार', 'शुक्रवार', 'शनिवार'], night: 'रात', people: (n) => `${n} लोगों के लिए`, mode: { bus: 'बस', train: 'ट्रेन', air: 'फ्लाइट' } },
   'od-IN': { ok: 'ଠିକ ଅଛି', here: 'ଏହି ବିକଳ୍ପ।', askTo: 'କେଉଁ ସହରକୁ?', askDate: 'କେଉଁ ଦିନ?', days: ['ରବିବାର', 'ସୋମବାର', 'ମଙ୍ଗଳବାର', 'ବୁଧବାର', 'ଗୁରୁବାର', 'ଶୁକ୍ରବାର', 'ଶନିବାର'], night: 'ରାତି', people: (n) => `${n} ଜଣଙ୍କ ପାଇଁ`, mode: { bus: 'ବସ୍', train: 'ଟ୍ରେନ', air: 'ବିମାନ' } },
   'bn-IN': { ok: 'ঠিক আছে', here: 'এই বিকল্পগুলো।', askTo: 'কোন শহরে?', askDate: 'কোন দিন?', days: ['রবিবার', 'সোমবার', 'মঙ্গলবার', 'বুধবার', 'বৃহস্পতিবার', 'শুক্রবার', 'শনিবার'], night: 'রাতে', people: (n) => `${n} জনের জন্য`, mode: { bus: 'বাস', train: 'ট্রেন', air: 'বিমান' } },
-  'en-IN': { ok: 'Okay', here: 'Here are your options.', askTo: 'Which town are you going to?', askDate: 'Which day?', days: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'], night: 'night', people: (n) => `for ${n}`, mode: { bus: 'bus', train: 'train', air: 'flight' } },
+  'en-IN': { ok: 'Okay', here: 'Here are your options.', askTo: 'Which town are you going to?', askDate: 'Which day?', days: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'], night: 'night', people: (n) => (n === 1 ? 'for one person' : `for ${n} people`), mode: { bus: 'bus', train: 'train', air: 'flight' } },
 };
 
 export interface ReplyText { text: string; key: string }
