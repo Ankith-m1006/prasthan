@@ -86,7 +86,7 @@ flowchart LR
 - **Saaras v4 STT** (`saaras:v4`, mode from the `stt_mode` flag, default `codemix` for Kannada-English): voice note -> text. Verified live with Kannada audio ("ಶುಕ್ರವಾರ ರಾತ್ರಿ Hubballi-ಗೆ bus ಇದೆ" -> BLR-HBL).
 - **Bulbul TTS** (`tts_model` + `tts_speaker` flags): the reply and every new-bus alert are spoken in the traveller's language. Verified live (Kannada WAV).
 - **Translate** (`/voice/translate`): verified live (Kannada -> "I have to be in Hubli on Friday night for the Sankranti festival"). In-app alerts use per-language templates today.
-- **sarvam-105b** for turning text into a structured trip is wired (JSON schema, one retry), but on the full prompt it hit its completion limit, so **trip understanding currently runs on the rule parser** (the app shows "rules").
+- **sarvam-105b** (reasoning off, JSON mode, ajv-validated, one corrective retry, 15 s deadline) **turns code-mixed sentences into a structured trip** (town, dates, time of day, mode, people, who you travel with, sweets to pre-order). Verified live 25 Nov on Kanglish, Hindi and Tamil sentences (`parser: "sarvam-llm"`). The rule parser stays as the fallback and also fixes weekday dates (the model sometimes slips a day).
 - Load tests never call Sarvam (`x-load-test: 1` -> mock client), so a rush cannot burn credits.
 
 ### Flagsmith: runs the festival, per traveller and per business - LIVE
@@ -172,7 +172,7 @@ Cluster (NudgeBee path, needs Docker): `node infra/k8s/k3d-up.mjs`, then `node i
 ## Limits / what's synthetic
 - **Synthetic (seeded demo data, labelled in the app):** routes, demand numbers, operators, shops, orders and waiting travellers in `seed/`. Saved trips do not change the "want" numbers.
 - **In-memory store:** alerts and added buses live in memory per serverless instance; a cold start (up to ~20 s) resets them, and a trip saved on one instance may not count in "notified" on another.
-- **Trip understanding is a rule parser** today (sarvam-105b path wired but not used, see above). Speech in and out is real Sarvam.
+- **Trip understanding** uses sarvam-105b with a rule-parser fallback; on a Sarvam timeout or bad output it silently drops to rules (lower accuracy on unusual phrasing). Speech in and out is real Sarvam.
 - **NudgeBee recovery is not demonstrated yet** (see status above).
 - **Booking links:** redBus route pages verified for 9 of 10 routes (Kolkata falls back to the homepage); other providers open their homepage. No prices, no ticket sales, no payments, no scraping.
 - **Languages:** Kannada lines checked by Ankith; Tamil, Telugu, Hindi, Odia and Bengali text is best effort. Only Kannada fonts are bundled.
