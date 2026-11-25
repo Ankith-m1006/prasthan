@@ -10,6 +10,7 @@ import { useHoldToTalk } from '../../src/lib/useRecorder';
 import { MicButton } from '../../src/screens/speak/MicButton';
 import { Options } from '../../src/screens/speak/Options';
 import { TripCard } from '../../src/screens/speak/TripCard';
+import { GiftCard } from '../../src/screens/speak/GiftCard';
 import { useFlags } from '../../src/state/flags';
 import { getIdentity, setIdentity, travellerTraits } from '../../src/state/identity';
 import { colors, fonts, space, type as t } from '../../src/theme/tokens';
@@ -99,6 +100,7 @@ export default function Speak() {
           {saved ? <Body>{saved}</Body> : null}
         </Card>
       ) : null}
+      {flags.gifting_enabled && intent?.routeId ? <GiftCard intent={intent} /> : null}
     </Screen>
   );
 }

@@ -35,7 +35,10 @@
     "web": "expo start --web",
     "typecheck": "tsc --noEmit",
     "test": "jest --silent",
-    "export:web": "expo export --platform web"
+    "export:web": "expo export --platform web",
+    "serve-web": "npx --yes serve -s dist",
+    "build:web": "expo export --platform web",
+    "deploy:web": "node scripts/prepare-vercel.mjs && cd dist && vercel deploy --prod --yes"
   },
   "private": true,
   "jest": {

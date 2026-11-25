@@ -3,9 +3,9 @@
 Updated: 25 Nov 2026, with every push. Builder so far: one session on Ankith's home laptop, working directly on `main`.
 
 ## Where we are
-- Current phase: B-03 done (P0, A-01..A-03, B-01..B-03 all done). Next: B-05 polish + mock web build deployed to Vercel.
-- Last finished step: B-03: api 57 tests, app jest 10/10, full mock demo loop verified in headless Chrome (speak -> alert me -> operator adds 6 buses -> 16 notified -> Kannada alert).
-- Next exact step: B-05 polish (demo switches on About for the offline Flagsmith story), then `EXPO_PUBLIC_APP_MOCK=1 npx expo export --platform web` and deploy apps/mobile/dist to Vercel.
+- Current phase: B-05 done. LIVE: https://prasthan-ten.vercel.app (mock web build). Done: P0, A-01..A-03, B-01..B-03, B-05 (+ gifting card).
+- Last finished step: Vercel deploy verified (full demo loop, no console errors).
+- Next exact step: C-02 load + break/fix scripts + CI (only if origin/session-c has not started scripts/ or infra/load), then Z-02 README (`codex/Z-02-readme-video.md`) with AI-use section.
 
 ## Commands
 - app checks: `cd apps/mobile && npm install && npm run typecheck && npm test`
