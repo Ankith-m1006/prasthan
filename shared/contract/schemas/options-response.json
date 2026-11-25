@@ -1,0 +1,118 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://prasthan.local/schemas/options-response.json",
+  "title": "OptionsResponse",
+  "type": "object",
+  "required": [
+    "routeId",
+    "date",
+    "mode",
+    "links",
+    "warnings",
+    "demand",
+    "source"
+  ],
+  "properties": {
+    "routeId": {
+      "type": "string"
+    },
+    "date": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "mode": {
+      "$ref": "lang.json#/$defs/mode"
+    },
+    "links": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "providerId",
+          "name",
+          "mode",
+          "url",
+          "kind"
+        ],
+        "properties": {
+          "providerId": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "mode": {
+            "$ref": "lang.json#/$defs/mode"
+          },
+          "url": {
+            "type": "string",
+            "format": "uri"
+          },
+          "kind": {
+            "enum": [
+              "homepage",
+              "search"
+            ]
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "warnings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "kind",
+          "text"
+        ],
+        "properties": {
+          "kind": {
+            "enum": [
+              "rush_night",
+              "tout_warning",
+              "surge"
+            ]
+          },
+          "text": {
+            "type": "string"
+          },
+          "textLocal": {
+            "$ref": "lang.json#/$defs/localText"
+          }
+        }
+      }
+    },
+    "demand": {
+      "anyOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "object",
+          "required": [
+            "want",
+            "have",
+            "label"
+          ],
+          "properties": {
+            "want": {
+              "type": "number"
+            },
+            "have": {
+              "type": "number"
+            },
+            "label": {
+              "type": "string"
+            }
+          }
+        }
+      ]
+    },
+    "source": {
+      "$ref": "lang.json#/$defs/source"
+    }
+  }
+}

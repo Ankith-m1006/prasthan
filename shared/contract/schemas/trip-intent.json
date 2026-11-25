@@ -1,0 +1,159 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://prasthan.local/schemas/trip-intent.json",
+  "title": "TripIntent",
+  "type": "object",
+  "required": [
+    "id",
+    "travellerId",
+    "from",
+    "to",
+    "routeId",
+    "dateFrom",
+    "dateTo",
+    "timeWindow",
+    "mode",
+    "people",
+    "boardingPoint",
+    "festivalId",
+    "gift",
+    "needsFollowUp",
+    "language",
+    "transcript",
+    "confidence",
+    "parser"
+  ],
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "travellerId": {
+      "type": "string"
+    },
+    "from": {
+      "type": "string"
+    },
+    "to": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "routeId": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "dateFrom": {
+      "anyOf": [
+        {
+          "$ref": "lang.json#/$defs/date"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "dateTo": {
+      "anyOf": [
+        {
+          "$ref": "lang.json#/$defs/date"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "timeWindow": {
+      "enum": [
+        "morning",
+        "afternoon",
+        "evening",
+        "night",
+        "any"
+      ]
+    },
+    "mode": {
+      "anyOf": [
+        {
+          "$ref": "lang.json#/$defs/mode"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "people": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 20
+    },
+    "boardingPoint": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "festivalId": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "gift": {
+      "anyOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "object",
+          "required": [
+            "itemId",
+            "qty"
+          ],
+          "properties": {
+            "itemId": {
+              "type": "string"
+            },
+            "qty": {
+              "type": "number",
+              "exclusiveMinimum": 0
+            },
+            "partnerId": {
+              "type": "string"
+            }
+          }
+        }
+      ]
+    },
+    "needsFollowUp": {
+      "type": "array",
+      "items": {
+        "enum": [
+          "to",
+          "date",
+          "mode",
+          "people"
+        ]
+      }
+    },
+    "language": {
+      "$ref": "lang.json#/$defs/lang"
+    },
+    "transcript": {
+      "type": "string"
+    },
+    "confidence": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "parser": {
+      "enum": [
+        "llm",
+        "rules"
+      ]
+    }
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://prasthan.local/schemas/service.json",
+  "title": "Service",
+  "type": "object",
+  "required": [
+    "id",
+    "routeId",
+    "partnerId",
+    "mode",
+    "date",
+    "departTime",
+    "boardingPoint",
+    "seats",
+    "special"
+  ],
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "routeId": {
+      "type": "string"
+    },
+    "partnerId": {
+      "type": "string"
+    },
+    "mode": {
+      "$ref": "lang.json#/$defs/mode"
+    },
+    "date": {
+      "$ref": "lang.json#/$defs/date"
+    },
+    "departTime": {
+      "type": "string"
+    },
+    "boardingPoint": {
+      "type": "string"
+    },
+    "seats": {
+      "type": "integer"
+    },
+    "special": {
+      "type": "boolean"
+    }
+  }
+}

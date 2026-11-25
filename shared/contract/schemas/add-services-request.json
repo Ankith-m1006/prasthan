@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://prasthan.local/schemas/add-services-request.json",
+  "title": "AddServicesRequest",
+  "type": "object",
+  "required": [
+    "routeId",
+    "date",
+    "departTime",
+    "boardingPoint",
+    "seats",
+    "count",
+    "mode"
+  ],
+  "properties": {
+    "routeId": {
+      "type": "string"
+    },
+    "date": {
+      "$ref": "lang.json#/$defs/date"
+    },
+    "departTime": {
+      "type": "string",
+      "pattern": "^\\d{2}:\\d{2}$"
+    },
+    "boardingPoint": {
+      "type": "string"
+    },
+    "seats": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 80
+    },
+    "count": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 50
+    },
+    "mode": {
+      "const": "bus"
+    }
+  }
+}

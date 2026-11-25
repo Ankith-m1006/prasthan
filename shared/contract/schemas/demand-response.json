@@ -1,0 +1,91 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://prasthan.local/schemas/demand-response.json",
+  "title": "DemandResponse",
+  "type": "object",
+  "required": [
+    "partner",
+    "cells",
+    "label"
+  ],
+  "properties": {
+    "partner": {
+      "type": "object",
+      "required": [
+        "id",
+        "type",
+        "name"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "type": {
+          "enum": [
+            "bus_operator",
+            "sweet_shop",
+            "quick_commerce"
+          ]
+        },
+        "name": {
+          "type": "string"
+        }
+      }
+    },
+    "cells": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "key",
+          "label",
+          "date",
+          "window",
+          "want",
+          "have",
+          "gap",
+          "suggestion"
+        ],
+        "properties": {
+          "key": {
+            "type": "string"
+          },
+          "label": {
+            "type": "string"
+          },
+          "date": {
+            "type": "string"
+          },
+          "window": {
+            "type": "string"
+          },
+          "want": {
+            "type": "number"
+          },
+          "have": {
+            "type": "number"
+          },
+          "gap": {
+            "type": "number",
+            "minimum": 0
+          },
+          "suggestion": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "routeId": {
+            "type": "string"
+          },
+          "zone": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "label": {
+      "type": "string"
+    }
+  }
+}

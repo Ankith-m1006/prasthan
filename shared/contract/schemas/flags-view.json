@@ -1,0 +1,174 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://prasthan.local/schemas/flags-view.json",
+  "title": "FlagsView",
+  "type": "object",
+  "required": [
+    "festival_mode",
+    "route_config",
+    "surge_warning",
+    "special_service_announcements",
+    "voice_enabled",
+    "voice_fallback_offline",
+    "tts_model",
+    "tts_speaker",
+    "stt_mode",
+    "gifting_enabled",
+    "operator_add_service",
+    "shop_orders_view",
+    "quick_commerce_view",
+    "live_data_source",
+    "deep_link_providers",
+    "alert_poll_seconds",
+    "reply_style"
+  ],
+  "properties": {
+    "festival_mode": {
+      "type": "object",
+      "required": [
+        "festivalId",
+        "title",
+        "theme",
+        "greeting"
+      ],
+      "properties": {
+        "festivalId": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "theme": {
+          "type": "string"
+        },
+        "greeting": {
+          "$ref": "lang.json#/$defs/localText"
+        }
+      }
+    },
+    "route_config": {
+      "type": "object",
+      "required": [
+        "enabledRoutes",
+        "featured"
+      ],
+      "properties": {
+        "enabledRoutes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "featured": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "surge_warning": {
+      "type": "object",
+      "required": [
+        "warnAtMultiplier",
+        "rushNights",
+        "showToutWarning"
+      ],
+      "properties": {
+        "warnAtMultiplier": {
+          "type": "number"
+        },
+        "rushNights": {
+          "type": "array",
+          "items": {
+            "$ref": "lang.json#/$defs/date"
+          }
+        },
+        "showToutWarning": {
+          "type": "boolean"
+        }
+      }
+    },
+    "special_service_announcements": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "text"
+        ],
+        "properties": {
+          "text": {
+            "type": "string"
+          },
+          "routeId": {
+            "type": "string"
+          },
+          "date": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "voice_enabled": {
+      "type": "boolean"
+    },
+    "voice_fallback_offline": {
+      "type": "boolean"
+    },
+    "tts_model": {
+      "type": "string"
+    },
+    "tts_speaker": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "stt_mode": {
+      "type": "string"
+    },
+    "gifting_enabled": {
+      "type": "boolean"
+    },
+    "operator_add_service": {
+      "type": "boolean"
+    },
+    "shop_orders_view": {
+      "type": "boolean"
+    },
+    "quick_commerce_view": {
+      "type": "boolean"
+    },
+    "live_data_source": {
+      "enum": [
+        "seeded",
+        "context_dev"
+      ]
+    },
+    "deep_link_providers": {
+      "type": "object",
+      "required": [
+        "bus",
+        "train",
+        "air"
+      ],
+      "properties": {},
+      "additionalProperties": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      }
+    },
+    "alert_poll_seconds": {
+      "type": "number",
+      "minimum": 1
+    },
+    "reply_style": {
+      "enum": [
+        "warm",
+        "short"
+      ]
+    }
+  }
+}

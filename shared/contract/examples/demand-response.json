@@ -1,0 +1,21 @@
+{
+  "partner": {
+    "id": "op-staterte",
+    "type": "bus_operator",
+    "name": "Demo State RTC"
+  },
+  "cells": [
+    {
+      "key": "BLR-HBL|2027-01-14|night",
+      "label": "BLR -> Hubballi, Thu 14 Jan, night",
+      "date": "2027-01-14",
+      "window": "night",
+      "want": 2400,
+      "have": 880,
+      "gap": 1520,
+      "suggestion": "Add 38 buses",
+      "routeId": "BLR-HBL"
+    }
+  ],
+  "label": "Seeded demo data"
+}

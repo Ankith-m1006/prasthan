@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://prasthan.local/schemas/alert.json",
+  "title": "Alert",
+  "type": "object",
+  "required": [
+    "id",
+    "kind",
+    "routeId",
+    "date",
+    "text",
+    "source",
+    "createdAt"
+  ],
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "kind": {
+      "enum": [
+        "special_bus",
+        "special_train",
+        "surge_warning",
+        "tout_warning",
+        "new_service",
+        "info"
+      ]
+    },
+    "routeId": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "date": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "text": {
+      "type": "string"
+    },
+    "textLocal": {
+      "$ref": "lang.json#/$defs/localText"
+    },
+    "source": {
+      "$ref": "lang.json#/$defs/source"
+    },
+    "sourceUrl": {
+      "type": "string"
+    },
+    "createdAt": {
+      "type": "string"
+    }
+  }
+}

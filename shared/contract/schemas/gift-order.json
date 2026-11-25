@@ -1,0 +1,59 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://prasthan.local/schemas/gift-order.json",
+  "title": "GiftOrder",
+  "type": "object",
+  "required": [
+    "id",
+    "partnerId",
+    "travellerId",
+    "itemId",
+    "qty",
+    "pickupPoint",
+    "pickupDate",
+    "readyBy",
+    "status",
+    "payment"
+  ],
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "partnerId": {
+      "type": "string"
+    },
+    "travellerId": {
+      "type": "string"
+    },
+    "intentId": {
+      "type": "string"
+    },
+    "itemId": {
+      "type": "string"
+    },
+    "qty": {
+      "type": "number",
+      "exclusiveMinimum": 0
+    },
+    "pickupPoint": {
+      "type": "string"
+    },
+    "pickupDate": {
+      "$ref": "lang.json#/$defs/date"
+    },
+    "readyBy": {
+      "type": "string"
+    },
+    "status": {
+      "enum": [
+        "placed",
+        "ready",
+        "picked_up",
+        "cancelled"
+      ]
+    },
+    "payment": {
+      "const": "pay_at_pickup_demo"
+    }
+  }
+}

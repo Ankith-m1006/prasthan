@@ -1,0 +1,20 @@
+{
+  "id": "int-7f3a",
+  "travellerId": "trav-demo",
+  "from": "Bengaluru",
+  "to": "Hubballi",
+  "routeId": "BLR-HBL",
+  "dateFrom": "2027-01-14",
+  "dateTo": "2027-01-14",
+  "timeWindow": "night",
+  "mode": "bus",
+  "people": 2,
+  "boardingPoint": null,
+  "festivalId": "sankranti-2027",
+  "gift": null,
+  "needsFollowUp": [],
+  "language": "kn-IN",
+  "transcript": "ಸಂಕ್ರಾಂತಿಗೆ ಹುಬ್ಬಳ್ಳಿಗೆ ಊರಿಗೆ ಹೋಗ್ತಾ ಇದ್ದೀನಿ, ಗುರುವಾರ ರಾತ್ರಿ, ಬಸ್ಸಲ್ಲಿ, ಇಬ್ರು",
+  "confidence": 0.86,
+  "parser": "llm"
+}

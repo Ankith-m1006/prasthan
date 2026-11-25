@@ -1,0 +1,71 @@
+{
+  "festival_mode": {
+    "festivalId": "sankranti-2027",
+    "title": "Sankranti mode",
+    "theme": "sankranti",
+    "greeting": {
+      "kn-IN": "ಸಂಕ್ರಾಂತಿ ಹಬ್ಬದ ಶುಭಾಶಯಗಳು",
+      "ta-IN": "இனிய பொங்கல் நல்வாழ்த்துகள்",
+      "en-IN": "Happy Sankranti"
+    }
+  },
+  "route_config": {
+    "enabledRoutes": [
+      "BLR-HBL",
+      "BLR-BGM",
+      "BLR-KLB",
+      "BLR-MLR",
+      "BLR-MDU",
+      "BLR-TEN",
+      "BLR-BZA",
+      "BLR-BBI",
+      "BLR-PNBE",
+      "BLR-CCU"
+    ],
+    "featured": [
+      "BLR-HBL",
+      "BLR-MDU"
+    ]
+  },
+  "surge_warning": {
+    "warnAtMultiplier": 1.8,
+    "rushNights": [
+      "2027-01-13",
+      "2027-01-14"
+    ],
+    "showToutWarning": true
+  },
+  "special_service_announcements": [],
+  "voice_enabled": true,
+  "voice_fallback_offline": false,
+  "tts_model": "bulbul:v3",
+  "tts_speaker": {
+    "bulbul:v3": "priya",
+    "bulbul:v4-flash": "shubh_enhi_ads"
+  },
+  "stt_mode": "codemix",
+  "gifting_enabled": false,
+  "operator_add_service": false,
+  "shop_orders_view": false,
+  "quick_commerce_view": false,
+  "live_data_source": "seeded",
+  "deep_link_providers": {
+    "bus": [
+      "ksrtc",
+      "redbus",
+      "abhibus",
+      "zingbus",
+      "flixbus"
+    ],
+    "train": [
+      "irctc",
+      "ixigo"
+    ],
+    "air": [
+      "ixigo",
+      "makemytrip"
+    ]
+  },
+  "alert_poll_seconds": 5,
+  "reply_style": "warm"
+}

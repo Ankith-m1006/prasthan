@@ -1,0 +1,9 @@
+{
+  "name": "prasthan",
+  "private": true,
+  "scripts": {
+    "dev": "npx --yes concurrently -n api,web \"npm --prefix services/api run dev\" \"npm --prefix apps/mobile run web\"",
+    "test": "npm --prefix services/api test",
+    "check": "npm --prefix services/api run check"
+  }
+}

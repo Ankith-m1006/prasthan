@@ -1,0 +1,81 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://prasthan.local/schemas/voice-intent-response.json",
+  "title": "VoiceIntentResponse",
+  "type": "object",
+  "required": [
+    "transcript",
+    "language",
+    "intent",
+    "reply",
+    "source"
+  ],
+  "properties": {
+    "transcript": {
+      "type": "string"
+    },
+    "language": {
+      "$ref": "lang.json#/$defs/lang"
+    },
+    "intent": {
+      "$ref": "trip-intent.json"
+    },
+    "reply": {
+      "type": "object",
+      "required": [
+        "text",
+        "language",
+        "audioBase64",
+        "mime"
+      ],
+      "properties": {
+        "text": {
+          "type": "string"
+        },
+        "language": {
+          "$ref": "lang.json#/$defs/lang"
+        },
+        "audioBase64": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "mime": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "audioUrl": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "key": {
+          "type": "string"
+        }
+      }
+    },
+    "source": {
+      "type": "object",
+      "required": [
+        "stt",
+        "llm",
+        "tts"
+      ],
+      "properties": {
+        "stt": {
+          "$ref": "lang.json#/$defs/source"
+        },
+        "llm": {
+          "$ref": "lang.json#/$defs/source"
+        },
+        "tts": {
+          "$ref": "lang.json#/$defs/source"
+        }
+      }
+    }
+  }
+}

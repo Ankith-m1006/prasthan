@@ -1,0 +1,40 @@
+{
+  "routeId": "BLR-HBL",
+  "date": "2027-01-14",
+  "mode": "bus",
+  "links": [
+    {
+      "providerId": "ksrtc",
+      "name": "KSRTC (Karnataka) booking",
+      "mode": "bus",
+      "url": "https://ksrtc.in/",
+      "kind": "homepage"
+    },
+    {
+      "providerId": "redbus",
+      "name": "redBus",
+      "mode": "bus",
+      "url": "https://www.redbus.in/",
+      "kind": "homepage"
+    }
+  ],
+  "warnings": [
+    {
+      "kind": "rush_night",
+      "text": "14 Jan is a rush night. Book early; fares on private buses often go up a lot.",
+      "textLocal": {
+        "kn-IN": "ಜನವರಿ 14 ಭಾರೀ ರಶ್ ರಾತ್ರಿ. ಬೇಗ ಬುಕ್ ಮಾಡಿ."
+      }
+    },
+    {
+      "kind": "tout_warning",
+      "text": "Book only on official apps, websites or counters. Never pay an agent outside the bus stand."
+    }
+  ],
+  "demand": {
+    "want": 2400,
+    "have": 880,
+    "label": "Seeded demo data"
+  },
+  "source": "seeded"
+}

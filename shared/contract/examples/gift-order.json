@@ -1,0 +1,12 @@
+{
+  "id": "ord-9001",
+  "partnerId": "shop-majestic",
+  "travellerId": "trav-demo",
+  "itemId": "mysore-pak",
+  "qty": 2,
+  "pickupPoint": "MAJESTIC",
+  "pickupDate": "2027-01-14",
+  "readyBy": "20:00",
+  "status": "placed",
+  "payment": "pay_at_pickup_demo"
+}

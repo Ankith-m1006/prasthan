@@ -1,0 +1,9 @@
+{
+  "routeId": "BLR-HBL",
+  "date": "2027-01-14",
+  "departTime": "22:30",
+  "boardingPoint": "MAJESTIC",
+  "seats": 40,
+  "count": 6,
+  "mode": "bus"
+}
