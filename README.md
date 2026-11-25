@@ -29,7 +29,15 @@ Built at Festive Hacks, 25 Nov 2026, BIEC Bengaluru. Sponsors used: **Sarvam AI,
 
 **Sweet shop near Majestic**: pre-orders per pickup day: "Prepare 9 kg Mysore pak by 20:00" (gifting add-on, staged rollout). **Quick commerce**: a roadmap view on seeded data (where and when travellers leave, what they want before departure).
 
-Screenshots: `docs/img/speak.png`, `docs/img/partner.png`, `docs/img/alerts.png` (to be added).
+Screenshots (live web build, seeded demo data):
+
+| Speak + trip card | Warnings, official links, Alert me | Kannada new-bus alert |
+|---|---|---|
+| <img src="docs/img/ui-430-01-speak.png" width="250"> | <img src="docs/img/ui-430-03-alerted.png" width="250"> | <img src="docs/img/ui-430-07-alerts.png" width="250"> |
+
+Operator demand board after "Add 6 buses" ("16 waiting travellers notified"):
+
+<img src="docs/img/ui-1280-06-added.png" width="760">
 
 ---
 
