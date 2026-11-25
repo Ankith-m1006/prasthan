@@ -19,8 +19,8 @@ const CASES: Array<{ lang: string; text: string; llm: Record<string, unknown>; e
     llm: { to: 'Hubballi', routeId: 'BLR-HBL', dateFrom: '2027-01-08', timeWindow: 'night', people: 2, travellingWith: 'elders', gift: { item: 'Mysore pak', qty: 2, unit: 'kg' } },
     expect: { routeId: 'BLR-HBL', dateFrom: '2027-01-08', timeWindow: 'night', people: 2, travellingWith: 'elders', gift: { itemId: 'mysore-pak', qty: 2, unit: 'kg' } } },
   { lang: 'Kannada', text: 'ಸಂಕ್ರಾಂತಿಗೆ ಅಮ್ಮ ಅಪ್ಪನ ಜೊತೆ ಬೆಳಗಾವಿಗೆ ಬಸ್ಸಲ್ಲಿ ಹೋಗ್ಬೇಕು, ಶುಕ್ರವಾರ ಅಥವಾ ಶನಿವಾರ',
-    llm: { to: 'Belagavi', routeId: 'BLR-BGM', dateFrom: '2027-01-08', dateTo: '2027-01-09', mode: 'bus', people: 3, travellingWith: 'elders', festivalId: 'sankranti-2027' },
-    expect: { routeId: 'BLR-BGM', dateFrom: '2027-01-08', dateTo: '2027-01-09', mode: 'bus', people: 3 } },
+    llm: { to: 'Belagavi', routeId: 'BLR-BGM', dateFrom: '2027-01-15', dateTo: '2027-01-16', mode: 'bus', people: 3, travellingWith: 'elders', festivalId: 'sankranti-2027' },
+    expect: { routeId: 'BLR-BGM', dateFrom: '2027-01-15', dateTo: '2027-01-16', mode: 'bus', people: 3 } },
   { lang: 'Hindi', text: 'Bhaiya Chhath ke liye Patna jaana hai, train se, family ke saath 4 log, Thursday shaam',
     llm: { to: 'Patna', routeId: 'BLR-PNBE', dateFrom: '2027-01-07', timeWindow: 'evening', mode: 'train', people: 4, travellingWith: 'family' },
     expect: { routeId: 'BLR-PNBE', mode: 'train', people: 4, travellingWith: 'family', timeWindow: 'evening' } },
@@ -45,6 +45,12 @@ describe('Sarvam LLM intent (mocked client)', () => {
       assertValid(ajv, 'trip-intent.json', out.intent);
     });
   }
+
+  it('weekday slip by the LLM: the rules date wins (live sarvam-105b said Sunday for "Friday")', async () => {
+    const chat = vi.fn(async () => reply({ routeId: 'BLR-HBL', dateFrom: '2027-01-10', dateTo: '2027-01-10' }));
+    const out = await parseWithLlm(chat, input('Friday raatri Hubli ge'), world);
+    expect(out.intent).toMatchObject({ dateFrom: '2027-01-08', dateTo: '2027-01-08', parser: 'sarvam-llm' });
+  });
 
   it('unknown routeId / festival / boarding point are dropped, not trusted', async () => {
     const chat = vi.fn(async () => reply({ routeId: 'BLR-XXX', to: 'Atlantis', festivalId: 'nope', boardingPoint: 'MOON' }));

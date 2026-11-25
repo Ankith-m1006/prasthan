@@ -39,6 +39,7 @@ export function systemPrompt(world: ParseWorld, refDate: string): string {
   const fests = world.festivals.map((f) => `${f.id} (${f.name}, ${f.date}${f.travelWindow ? `, travel ${f.travelWindow.from}..${f.travelWindow.to}` : ''})`).join('; ');
   return [
     'Extract a festival trip home from one sentence (Kannada, Hindi, Tamil, Telugu, English or code-mixed, any script). Trips start in Bengaluru.',
+    `Calendar (today first): ${calendar(refDate)}.`,
     `Today is ${refDate}. A weekday means the next such day; with a festival, the weekday inside its travel window. A range ("Friday or Saturday") -> dateFrom..dateTo.`,
     `routeId must be one of: ${routes}; null if none. "to" = that route's town.`,
     `festivalId one of: ${fests}; else null.`,
@@ -72,13 +73,32 @@ function toIntent(f: LlmFields, input: ParseInput, world: ParseWorld): TripInten
   const gift = f.gift && itemId ? { itemId, qty: f.gift.qty, ...(f.gift.unit ? { unit: f.gift.unit } : {}) } : null;
   const intent: TripIntent = {
     ...base, from: f.from && f.from.trim() ? f.from : base.from, to: route?.to ?? null, routeId: route?.id ?? null,
-    dateFrom: f.dateFrom, dateTo: f.dateTo ?? f.dateFrom, timeWindow: f.timeWindow, mode: f.mode, people: f.people,
+    ...pickDates(f, parseRules({ ...input, context: null }, world).dateFrom), timeWindow: f.timeWindow, mode: f.mode, people: f.people,
     boardingPoint: f.boardingPoint && BOARDING_IDS.includes(f.boardingPoint) ? f.boardingPoint : null,
     festivalId: world.festivals.some((x) => x.id === f.festivalId) ? f.festivalId : null,
     gift, travellingWith: f.travellingWith ?? null, transcript: input.text, confidence: 0.86, parser: 'sarvam-llm',
   };
   intent.needsFollowUp = [...(intent.to ? [] : ['to' as const]), ...(intent.dateFrom ? [] : ['date' as const])];
   return intent;
+}
+
+const DAY = 86_400_000;
+/** LLMs slip on weekday arithmetic: the rules' date (deterministic weekday/festival-window logic) wins when it found one.
+ *  An LLM range of up to 3 days that starts on that date is kept ("Friday or Saturday"). */
+export function pickDates(f: Pick<LlmFields, 'dateFrom' | 'dateTo'>, rulesDate: string | null): { dateFrom: string | null; dateTo: string | null } {
+  const to = f.dateTo ?? f.dateFrom;
+  if (!rulesDate) return { dateFrom: f.dateFrom, dateTo: to };
+  const span = f.dateFrom && to ? (Date.parse(to) - Date.parse(f.dateFrom)) / DAY : 0;
+  return f.dateFrom === rulesDate && span > 0 && span <= 3 ? { dateFrom: rulesDate, dateTo: to } : { dateFrom: rulesDate, dateTo: rulesDate };
+}
+
+/** Next 14 days with weekday names, so the model does not compute weekdays itself. */
+export function calendar(refDate: string): string {
+  const names = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  return Array.from({ length: 14 }, (_, i) => {
+    const d = new Date(Date.parse(`${refDate}T00:00:00Z`) + i * DAY);
+    return `${names[d.getUTCDay()]} ${d.toISOString().slice(0, 10)}`;
+  }).join(', ');
 }
 
 function withDeadline<T>(p: Promise<T>, ms: number): Promise<T> {
