@@ -3,9 +3,9 @@
 Updated: 25 Nov 2026, with every push. Builder so far: one session on Ankith's home laptop, working directly on `main`.
 
 ## Where we are
-- Current phase: A-02 done. Next: A-03 Flagsmith server.
-- Last finished step: A-02: 46 tests green; MOCK_ALL curl /v1/intent/parse -> BLR-HBL 2027-01-15 parser rules; /v1/voice/intent (mock STT) -> Kannada hero reply.
-- Next exact step: A-03 (`codex/A-03-flagsmith-server.md`): npm i @flagsmith/nodejs, src/flags/flagsmith.ts + admin.ts, pass makeFlags into wireAll() in src/index.ts.
+- Current phase: A-03 done (all A phases P0, A-01, A-02, A-03). Next: B-01 Expo scaffold.
+- Last finished step: A-03: 57 api tests green (npm run check).
+- Next exact step: B-01 (`codex/B-01-expo-scaffold.md`) in apps/mobile (Expo SDK 58 template + expo-router/audio/svg already installed).
 
 ## Commands
 - api checks: `cd services/api && npm install && npm run check`

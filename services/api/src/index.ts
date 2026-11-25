@@ -8,7 +8,7 @@ import { wireAll } from './wire.js';
 
 loadDotenv({ path: join(REPO_ROOT, '.env'), quiet: true });
 const config = loadConfig();
-const { deps, extras } = await wireAll(config);
+const { deps, extras } = await wireAll(config, (m) => console.warn(m));
 
 const app = await buildApp(deps, extras, { level: process.env.LOG_LEVEL ?? 'info' });
 logEnvPresence((line) => app.log.info(line));
