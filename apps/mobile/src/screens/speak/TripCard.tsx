@@ -4,7 +4,7 @@ import type { Mode, TimeWindow, TripIntent } from '@contract';
 import routesJson from '../../../../../seed/routes.json';
 import { dateLabel, peopleLabel, WINDOW_LABEL } from '../../lib/format';
 import { colors, fonts, type as t } from '../../theme/tokens';
-import { Card, Chip, Small } from '../../ui/kit';
+import { Chip, Glass, Small } from '../../ui/kit';
 import { Icon } from '../../ui/icons';
 import { RouteLine } from '../../ui/motifs';
 
@@ -21,7 +21,7 @@ export function TripCard({ intent, onChange }: { intent: TripIntent; onChange: (
     onChange(next);
   };
   return (
-    <Card style={{ gap: 10 }}>
+    <Glass style={{ gap: 10 }}>
       <View style={s.row}>
         <View>
           <Text style={s.city}>ಬೆಂಗಳೂರು</Text>
@@ -55,7 +55,7 @@ export function TripCard({ intent, onChange }: { intent: TripIntent; onChange: (
         <Text style={s.people} accessibilityLiveRegion="polite">{peopleLabel(intent.people)}</Text>
         <Chip label="+" onPress={() => set({ people: Math.min(10, intent.people + 1) })} />
       </View>
-    </Card>
+    </Glass>
   );
 }
 

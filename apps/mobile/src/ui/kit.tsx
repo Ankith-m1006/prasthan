@@ -1,24 +1,28 @@
-// UI primitives: Screen, Card, Button (48 px min), Chip, Banner, Title, Body.
+// UI primitives: Screen, Section (flowing, no box), Glass (frosted group), Button (pill, 52 px), Chip (pill, 44 px), Banner, text.
 import type { ReactNode } from 'react';
-import { Pressable, ScrollView, StyleSheet, Text, View, type StyleProp, type TextStyle, type ViewStyle } from 'react-native';
-import { colors, fonts, minTap, radius, space, type as t } from '../theme/tokens';
+import { Pressable, ScrollView, StyleSheet, Text, View, useWindowDimensions, type StyleProp, type TextStyle, type ViewStyle } from 'react-native';
+import { colors, fonts, radius, space, type as t } from '../theme/tokens';
 import { useFlags } from '../state/flags';
-import { KolamGrid, TempleLine } from './motifs';
+import { Backdrop, MotifRule } from './backdrop';
+import { alpha, frost, glow, tint } from './glass';
+import { KolamGrid } from './motifs';
 
 export function Screen({ children, title, subtitle }: { children: ReactNode; title?: string; subtitle?: string }) {
-  const { flags, offlineData } = useFlags();
+  const { flags, offlineData, accent } = useFlags();
+  const wide = useWindowDimensions().width >= 760;
   return (
     <View style={s.root}>
-      {flags.voice_fallback_offline ? <Banner text="Offline voice mode: answers are text + saved audio" /> : null}
+      <Backdrop accent={accent.accent} accentSoft={accent.accentSoft} />
+      {flags.voice_fallback_offline ? <View style={s.bannerWrap}><Banner text="Offline voice mode: answers are text + saved audio" /></View> : null}
       <ScrollView contentContainerStyle={s.scroll} keyboardShouldPersistTaps="handled">
-        <View style={s.page}>
+        <View style={[s.page, wide && s.pageWide]}>
           {title ? (
-            <View style={s.header}>
-              <View style={s.kolam}><KolamGrid size={150} /></View>
-              <Text style={s.title} accessibilityRole="header">{title}</Text>
-              {subtitle ? <Text style={s.subtitle}>{subtitle}</Text> : null}
-              {offlineData ? <Chip label="Offline demo data" tone="soft" /> : null}
-              <View style={{ marginTop: space.md }}><TempleLine /></View>
+            <View style={[s.header, wide && s.headerWide]}>
+              <View style={s.kolam}><KolamGrid size={wide ? 260 : 190} opacity={0.06} /></View>
+              <Text style={[s.title, wide && s.titleWide]} accessibilityRole="header">{title}</Text>
+              {subtitle ? <Text style={[s.subtitle, wide && { textAlign: 'center' }]}>{subtitle}</Text> : null}
+              {offlineData ? <View style={{ marginTop: space.sm, alignSelf: wide ? 'center' : 'flex-start' }}><Chip label="Offline demo data" tone="soft" /></View> : null}
+              <MotifRule />
             </View>
           ) : null}
           {children}
@@ -28,21 +32,28 @@ export function Screen({ children, title, subtitle }: { children: ReactNode; tit
   );
 }
 
-export function Card({ children, edge, style }: { children: ReactNode; edge?: string; style?: StyleProp<ViewStyle> }) {
-  return <View style={[s.card, edge ? { borderLeftWidth: 6, borderLeftColor: edge } : null, style]}>{children}</View>;
+/** Flowing block: generous space, no background, no border. */
+export function Section({ children, style }: { children: ReactNode; style?: StyleProp<ViewStyle> }) {
+  return <View style={[s.section, style]}>{children}</View>;
+}
+
+/** Frosted panel, only where grouping is truly needed. `tint` washes it with a soft colour glow instead. */
+export function Glass({ children, tintColor, style }: { children: ReactNode; tintColor?: string; style?: StyleProp<ViewStyle> }) {
+  return <View style={[s.glass, tintColor ? tint(tintColor, 0.12) : frost(), style]}>{children}</View>;
 }
 
 type Tone = 'primary' | 'leaf' | 'plain' | 'danger';
-const toneBg: Record<Tone, string> = { primary: colors.marigold, leaf: colors.mangoLeaf, plain: colors.card, danger: colors.kumkum };
+const toneBg: Record<Tone, string> = { primary: colors.marigold, leaf: colors.mangoLeaf, plain: 'transparent', danger: colors.kumkum };
 const toneFg: Record<Tone, string> = { primary: colors.ink, leaf: '#FFFFFF', plain: colors.ink, danger: '#FFFFFF' };
 
 export function Button({ label, onPress, tone = 'primary', disabled, hint, icon }: { label: string; onPress: () => void; tone?: Tone; disabled?: boolean; hint?: string; icon?: ReactNode }) {
   return (
     <Pressable
       accessibilityRole="button" accessibilityLabel={label} accessibilityHint={hint} disabled={disabled} onPress={onPress}
-      style={({ pressed }) => [s.btn, { backgroundColor: toneBg[tone], opacity: disabled ? 0.5 : 1 }, tone === 'plain' && s.btnPlain, pressed && s.pressed]}
+      style={({ pressed }) => [s.btn, tone === 'plain' ? frost(0.7, 14) : [{ backgroundColor: toneBg[tone] }, glow(toneBg[tone], 0.5)],
+        { opacity: disabled ? 0.5 : 1 }, pressed && s.pressed]}
     >
-      {icon}
+      {icon ? <View style={s.btnIcon}>{icon}</View> : null}
       <View style={{ flexShrink: 1 }}>
         <Text style={[s.btnText, { color: toneFg[tone] }]}>{label}</Text>
         {hint ? <Text style={[s.btnHint, { color: toneFg[tone] }]}>{hint}</Text> : null}
@@ -52,19 +63,22 @@ export function Button({ label, onPress, tone = 'primary', disabled, hint, icon 
 }
 
 export function Chip({ label, selected, onPress, tone = 'normal' }: { label: string; selected?: boolean; onPress?: () => void; tone?: 'normal' | 'soft' | 'warn' | 'ok' }) {
-  const bg = selected ? colors.ink : tone === 'warn' ? '#F8E1DF' : tone === 'ok' ? '#E2EFE6' : tone === 'soft' ? colors.turmeric : colors.card;
+  const bg = selected ? colors.ink : tone === 'warn' ? alpha(colors.kumkum, 0.1) : tone === 'ok' ? alpha(colors.mangoLeaf, 0.12) : tone === 'soft' ? alpha(colors.turmeric, 0.55) : undefined;
   const fg = selected ? colors.paper : tone === 'warn' ? colors.kumkum : tone === 'ok' ? colors.mangoLeaf : colors.ink;
-  const body = <Text style={[s.chipText, { color: fg }]}>{label}</Text>;
-  if (!onPress) return <View style={[s.chip, { backgroundColor: bg, alignSelf: 'flex-start' }]}>{body}</View>;
+  const body = <Text style={[s.chipText, { color: fg }, selected && { fontFamily: fonts.bodyBold }]}>{label}</Text>;
+  const fill: StyleProp<ViewStyle> = bg ? { backgroundColor: bg } : frost(0.66, 12);
+  if (!onPress) return <View style={[s.chip, fill, { alignSelf: 'flex-start' }]}>{body}</View>;
   return (
-    <Pressable accessibilityRole="button" accessibilityState={{ selected }} onPress={onPress} style={[s.chip, s.chipTap, { backgroundColor: bg }]}>
+    <Pressable accessibilityRole="button" accessibilityState={{ selected }} onPress={onPress}
+      style={({ pressed }) => [s.chip, s.chipTap, fill, selected && glow(colors.ink, 0.3, 18), pressed && s.pressed]}>
       {body}
     </Pressable>
   );
 }
 
-export function Banner({ text }: { text: string }) {
-  return <View style={s.banner} accessibilityRole="alert"><Text style={s.bannerText}>{text}</Text></View>;
+export function Banner({ text, tone = 'danger' }: { text: string; tone?: 'danger' | 'ok' }) {
+  const bg = tone === 'ok' ? colors.mangoLeaf : colors.kumkum;
+  return <View style={[s.banner, { backgroundColor: bg }, glow(bg, 0.4)]} accessibilityRole="alert"><Text style={s.bannerText}>{text}</Text></View>;
 }
 
 export function Body({ children, style }: { children: ReactNode; style?: StyleProp<TextStyle> }) {
@@ -80,25 +94,30 @@ export function H2({ children }: { children: ReactNode }) {
 }
 
 export const s = StyleSheet.create({
-  root: { flex: 1, backgroundColor: colors.paper },
-  scroll: { paddingBottom: 48 },
-  page: { width: '100%', maxWidth: 1100, alignSelf: 'center', paddingHorizontal: space.lg },
-  header: { paddingTop: space.xl, paddingBottom: space.md, gap: 4 },
-  kolam: { position: 'absolute', right: -10, top: -6 },
-  title: { fontFamily: fonts.display, fontSize: t.title, color: colors.ink },
-  subtitle: { fontFamily: fonts.body, fontSize: t.body, color: colors.inkSoft },
-  card: { backgroundColor: colors.card, borderRadius: radius.md, padding: space.lg, marginVertical: space.sm, borderWidth: 1, borderColor: colors.line },
-  btn: { minHeight: minTap, borderRadius: radius.md, paddingHorizontal: space.lg, paddingVertical: space.md, flexDirection: 'row', alignItems: 'center', gap: space.md, marginVertical: 4 },
-  btnPlain: { borderWidth: 1, borderColor: colors.templeStone },
-  pressed: { opacity: 0.8, transform: [{ scale: 0.99 }] },
+  root: { flex: 1, backgroundColor: colors.paper, overflow: 'hidden' },
+  scroll: { paddingBottom: 120 },
+  page: { width: '100%', maxWidth: 1100, alignSelf: 'center', paddingHorizontal: 20 },
+  pageWide: { paddingHorizontal: 40 },
+  header: { paddingTop: 36, paddingBottom: space.sm, gap: 6 },
+  headerWide: { paddingTop: 64, alignItems: 'center' },
+  kolam: { position: 'absolute', right: -24, top: 0 },
+  title: { fontFamily: fonts.display, fontSize: 34, lineHeight: 46, color: colors.ink, letterSpacing: -0.3 },
+  titleWide: { fontSize: 48, lineHeight: 62, textAlign: 'center' },
+  subtitle: { fontFamily: fonts.body, fontSize: t.body, lineHeight: 26, color: colors.inkSoft, maxWidth: 620 },
+  section: { paddingVertical: space.lg },
+  glass: { borderRadius: 32, padding: 22, marginVertical: space.md },
+  btn: { minHeight: 52, borderRadius: radius.pill, paddingHorizontal: 26, paddingVertical: 12, flexDirection: 'row', alignItems: 'center', gap: space.md, marginVertical: 6 },
+  btnIcon: { width: 36, height: 36, borderRadius: 18, alignItems: 'center', justifyContent: 'center', backgroundColor: alpha(colors.marigold, 0.14) },
+  pressed: { opacity: 0.85, transform: [{ scale: 0.98 }] },
   btnText: { fontFamily: fonts.bodyBold, fontSize: t.body },
   btnHint: { fontFamily: fonts.body, fontSize: t.small, opacity: 0.8 },
-  chip: { borderRadius: radius.pill, paddingHorizontal: space.md, paddingVertical: 6, borderWidth: 1, borderColor: colors.line },
-  chipTap: { minHeight: 40, justifyContent: 'center' },
-  chipText: { fontFamily: fonts.body, fontSize: t.small + 1 },
-  banner: { backgroundColor: colors.kumkum, paddingVertical: 8, paddingHorizontal: space.lg },
+  chip: { borderRadius: radius.pill, paddingHorizontal: 16, paddingVertical: 6, maxWidth: '100%' },
+  chipTap: { minHeight: 44, minWidth: 44, justifyContent: 'center', alignItems: 'center' },
+  chipText: { fontFamily: fonts.body, fontSize: t.small + 1, flexShrink: 1 },
+  bannerWrap: { paddingHorizontal: 16, paddingTop: 10, alignItems: 'center' },
+  banner: { backgroundColor: colors.kumkum, paddingVertical: 10, paddingHorizontal: 22, borderRadius: radius.pill, alignSelf: 'center', maxWidth: 1100 },
   bannerText: { color: '#FFFFFF', fontFamily: fonts.bodyBold, fontSize: t.small + 1, textAlign: 'center' },
-  body: { fontFamily: fonts.body, fontSize: t.body, color: colors.ink, lineHeight: 26 },
-  small: { fontFamily: fonts.body, fontSize: t.small, color: colors.inkSoft },
-  h2: { fontFamily: fonts.bodyBold, fontSize: t.label + 2, color: colors.ink, marginTop: space.lg, marginBottom: space.xs },
+  body: { fontFamily: fonts.body, fontSize: t.body, color: colors.ink, lineHeight: 28 },
+  small: { fontFamily: fonts.body, fontSize: t.small, color: colors.inkSoft, lineHeight: 20 },
+  h2: { fontFamily: fonts.display, fontSize: 26, lineHeight: 36, color: colors.ink, marginTop: space.xl, marginBottom: space.xs },
 });

@@ -2,7 +2,9 @@
 import { Tabs } from 'expo-router';
 import { Icon, type IconName } from '../../src/ui/icons';
 import { colors, fonts } from '../../src/theme/tokens';
+import { frost } from '../../src/ui/glass';
 import { useEffect } from 'react';
+import { useWindowDimensions } from 'react-native';
 import { startAlerts, useAlertsBadge } from '../../src/state/alerts';
 import { useFlags } from '../../src/state/flags';
 
@@ -11,6 +13,7 @@ const icon = (name: IconName) => ({ color }: { color: unknown }) => <Icon name={
 export default function TabsLayout() {
   const unseen = useAlertsBadge();
   const { flags } = useFlags();
+  const wide = useWindowDimensions().width >= 760;
   useEffect(() => startAlerts(flags.alert_poll_seconds), [flags.alert_poll_seconds]);
   return (
     <Tabs
@@ -18,8 +21,11 @@ export default function TabsLayout() {
         headerShown: false,
         tabBarActiveTintColor: colors.ink,
         tabBarInactiveTintColor: colors.inkSoft,
-        tabBarStyle: { backgroundColor: colors.card, borderTopColor: colors.line, height: 62, paddingBottom: 8 },
-        tabBarLabelStyle: { fontFamily: fonts.body, fontSize: 13 },
+        tabBarStyle: [{ ...frost(0.72, 20), position: 'absolute', borderTopWidth: 0, height: 76, paddingBottom: 12, paddingTop: 8, elevation: 0 },
+          wide ? { left: '50%', width: 600, marginLeft: -300, bottom: 18, height: 72, paddingBottom: 8, borderRadius: 36 } : null],
+        tabBarLabelStyle: { fontFamily: fonts.bodyBold, fontSize: 13 },
+        tabBarActiveBackgroundColor: 'rgba(242, 158, 31, 0.14)',
+        tabBarItemStyle: { borderRadius: 28, marginHorizontal: 8, overflow: 'hidden' },
         sceneStyle: { backgroundColor: colors.paper },
       }}
     >
