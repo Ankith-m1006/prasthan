@@ -1,0 +1,9 @@
+{
+  "travellerId": "guest-abc123",
+  "partnerId": "shop-majestic",
+  "pickupDate": "2027-01-14",
+  "readyBy": "21:30",
+  "departTime": "22:30",
+  "pickupPoint": "MAJESTIC",
+  "items": [{ "itemId": "mysore-pak", "qty": 2 }, { "itemId": "dharwad-peda", "qty": 1 }]
+}

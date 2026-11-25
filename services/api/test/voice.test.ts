@@ -88,7 +88,7 @@ describe('voice fallback', () => {
     const { app, client } = await appWith((m) => spyClient(m));
     const res = await app.inject({ method: 'POST', url: '/v1/voice/intent', ...multipart() });
     expect(res.json().source).toEqual({ stt: 'live', llm: 'live', tts: 'live' });
-    expect(res.json().intent.parser).toBe('llm');
+    expect(res.json().intent.parser).toBe('sarvam-llm');
     expect(res.json().reply.audioBase64).toBe('UklGRg==');
     expect((client as unknown as { calls: number }).calls).toBe(3);
   });
@@ -114,7 +114,7 @@ describe('llm parsing', () => {
     const good = JSON.stringify({ to: 'Hubballi', routeId: 'BLR-HBL', dateFrom: '2027-01-15', dateTo: '2027-01-15', timeWindow: 'night', mode: null, people: 1, boardingPoint: null, festivalId: 'sankranti-2027', gift: null });
     const chat = vi.fn().mockResolvedValueOnce('{"people": "two"}').mockResolvedValueOnce(`Sure: ${good}`);
     const out = await parseWithLlm(chat, input, world);
-    expect(out.intent).toMatchObject({ parser: 'llm', routeId: 'BLR-HBL', dateFrom: '2027-01-15' });
+    expect(out.intent).toMatchObject({ parser: 'sarvam-llm', routeId: 'BLR-HBL', dateFrom: '2027-01-15' });
   });
 });
 

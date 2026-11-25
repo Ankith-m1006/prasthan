@@ -4,6 +4,7 @@ import type { Lang, OptionsResponse } from '@contract';
 import { colors, fonts } from '../../theme/tokens';
 import { Body, Button, Glass, H2, Small } from '../../ui/kit';
 import { Icon } from '../../ui/icons';
+import { SiteLogo, siteLogoKey } from '../../ui/logos';
 import { hasRoutePage, routeLink } from '../../lib/deepLinks';
 
 export function openLink(url: string): void {
@@ -26,7 +27,7 @@ export function Options({ options, lang, hints = [] }: { options: OptionsRespons
           ))}
           {options.demand ? (
             <Small style={{ color: colors.kumkum }}>
-              {options.demand.want.toLocaleString('en-IN')} want, {options.demand.have.toLocaleString('en-IN')} seats - {options.demand.label.toLowerCase()}
+              {options.demand.want.toLocaleString('en-IN')} want, {options.demand.have.toLocaleString('en-IN')} seats
             </Small>
           ) : null}
         </Glass>
@@ -37,7 +38,7 @@ export function Options({ options, lang, hints = [] }: { options: OptionsRespons
       {options.links.map((l) => (
         <Button key={l.providerId} tone="plain" label={l.name} hint={hasRoutePage(l.providerId, options.routeId) ? 'opens the route page' : 'opens official site'}
           onPress={() => openLink(routeLink(l.providerId, l.url, options.routeId))}
-          icon={<Icon size={20} name={l.mode === 'train' ? 'train' : l.mode === 'air' ? 'plane' : 'bus'} />} />
+          icon={siteLogoKey(l.providerId) ? <SiteLogo id={l.providerId} size={26} /> : <Icon size={20} name={l.mode === 'train' ? 'train' : l.mode === 'air' ? 'plane' : 'bus'} />} />
       ))}
       </View>
       {hints.length > 0 ? (

@@ -4,11 +4,12 @@ import { useEffect, useState } from 'react';
 import type { Alert } from '@contract';
 import { api } from '../api';
 import { speakText } from '../lib/speak';
+import { pollSeconds, raiseNotification } from '../lib/notify';
 import { getIdentity } from './identity';
 
-export interface AlertsState { alerts: Alert[]; fresh: Set<string>; unseen: number }
+export interface AlertsState { alerts: Alert[]; fresh: Set<string>; unseen: number; banner: Alert | null }
 
-let state: AlertsState = { alerts: [], fresh: new Set(), unseen: 0 };
+let state: AlertsState = { alerts: [], fresh: new Set(), unseen: 0, banner: null };
 let known: Set<string> | null = null;
 let timer: ReturnType<typeof setInterval> | null = null;
 let pollMs = 5000;
@@ -41,12 +42,13 @@ export async function pollAlerts(): Promise<void> {
     const res = await api.alerts();
     const { sorted, fresh } = mergeAlerts(known, withLocal(res.alerts, local));
     known = new Set(sorted.map((a) => a.id));
-    state = { alerts: sorted, fresh: new Set([...state.fresh, ...fresh]), unseen: state.unseen + fresh.length };
+    const newest = fresh.length ? sorted.find((a) => a.id === fresh[0]) ?? null : null;
+    state = { alerts: sorted, fresh: new Set([...state.fresh, ...fresh]), unseen: state.unseen + fresh.length, banner: newest ?? state.banner };
     emit();
     const lang = getIdentity().language;
     for (const id of fresh) {
       const a = sorted.find((x) => x.id === id);
-      if (a) void speakText(a.textLocal?.[lang] ?? a.text, lang);
+      if (a) { raiseNotification(a, lang); void speakText(a.textLocal?.[lang] ?? a.text, lang); }
     }
   } catch {
     // offline: keep what we have
@@ -54,14 +56,19 @@ export async function pollAlerts(): Promise<void> {
 }
 
 export function startAlerts(seconds: number): void {
-  pollMs = Math.max(2, seconds) * 1000;
+  pollMs = pollSeconds(seconds) * 1000;
   if (timer) clearInterval(timer);
   timer = setInterval(() => void pollAlerts(), pollMs);
   void pollAlerts();
 }
 
+export function dismissBanner(): void {
+  state = { ...state, banner: null };
+  emit();
+}
+
 export function markSeen(): void {
-  state = { ...state, unseen: 0 };
+  state = { ...state, unseen: 0, banner: null };
   emit();
 }
 

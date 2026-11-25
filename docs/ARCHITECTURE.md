@@ -204,7 +204,7 @@ No prices. No ranking by price. Order = `deep_link_providers` flag.
 ->
 ```json
 { "services": [ { "id": "svc-9001", "routeId": "BLR-HBL", "partnerId": "op-staterte", "mode": "bus", "date": "2027-01-14", "departTime": "22:30", "boardingPoint": "MAJESTIC", "seats": 40, "special": true } ],
-  "alert": { "id": "al-9001", "kind": "new_service", "routeId": "BLR-HBL", "date": "2027-01-14", "text": "Demo State RTC added 6 buses BLR -> Hubballi, 14 Jan 22:30 from Majestic", "textLocal": { "kn-IN": "..." }, "source": "live", "createdAt": "..." },
+  "alert": { "id": "al-9001", "kind": "new_service", "routeId": "BLR-HBL", "date": "2027-01-14", "text": "Namma State Travels added 6 buses BLR -> Hubballi, 14 Jan 22:30 from Majestic", "textLocal": { "kn-IN": "..." }, "source": "live", "createdAt": "..." },
   "notified": 16,
   "demandAfter": { "want": 2400, "have": 1120, "gap": 1280 } }
 ```

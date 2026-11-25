@@ -14,7 +14,7 @@ export default function About() {
   const profile = useProfile();
   const town = ROUTES.find((r) => r.id === profile?.homeRouteId)?.to;
   return (
-    <Screen title="ಪ್ರಸ್ಥಾನ Prasthan" subtitle="Say your festival trip home, in your own language.">
+    <Screen demoTag title="ಪ್ರಸ್ಥಾನ Prasthan" subtitle="Say your festival trip home, in your own language.">
       <Section>
         <Body>Prasthan understands your trip, sends you to the official booking sites, warns you about rush nights and touts, and tells you when a new bus opens. It shows bus operators the buses that are missing.</Body>
       </Section>

@@ -4,12 +4,16 @@ import { RecordingPresets, requestRecordingPermissionsAsync, setAudioModeAsync, 
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Platform } from 'react-native';
 import type { RecordedAudio } from '../api/types';
-import { MAX_RECORD_MS, decideHold } from './holdToTalk';
+import { MAX_RECORD_MS, decideHold, isPermissionError, pickWebMime } from './holdToTalk';
+
+// Web: ask MediaRecorder for a format this browser really records (Safari iOS = mp4/aac, Chrome = webm/opus).
+const webMime = Platform.OS === 'web' && typeof MediaRecorder !== 'undefined' ? pickWebMime((m) => MediaRecorder.isTypeSupported(m)) : undefined;
+const PRESET = { ...RecordingPresets.HIGH_QUALITY, web: { ...RecordingPresets.HIGH_QUALITY.web, mimeType: webMime } };
 
 export type RecState = 'idle' | 'listening' | 'denied' | 'error';
 
 export function useHoldToTalk(onClip: (clip: RecordedAudio) => void) {
-  const recorder = useAudioRecorder(RecordingPresets.HIGH_QUALITY);
+  const recorder = useAudioRecorder(PRESET);
   const [state, setState] = useState<RecState>('idle');
   const [elapsed, setElapsed] = useState(0);
   const pressedAt = useRef(0);
@@ -40,7 +44,8 @@ export function useHoldToTalk(onClip: (clip: RecordedAudio) => void) {
     }
     if (decision === 'ignore' || !recorder.uri) return;
     const web = Platform.OS === 'web';
-    onClip({ uri: recorder.uri, mime: web ? 'audio/webm' : 'audio/mp4', name: web ? 'clip.webm' : 'clip.m4a' });
+    // web: the real type is read from the blob at upload time (api/http.ts); this is only a first guess
+    onClip({ uri: recorder.uri, mime: web ? webMime?.split(';')[0] ?? 'audio/webm' : 'audio/mp4', name: web ? (webMime?.includes('mp4') ? 'clip.m4a' : 'clip.webm') : 'clip.m4a' });
   }, [recorder, onClip]);
 
   const start = useCallback(async () => {
@@ -59,9 +64,9 @@ export function useHoldToTalk(onClip: (clip: RecordedAudio) => void) {
       cap.current = setTimeout(() => void stop(), MAX_RECORD_MS);
       starting.current = false;
       if (releasedEarly.current) void stop();
-    } catch {
+    } catch (err) {
       starting.current = false;
-      setState('error');
+      setState(isPermissionError(err) ? 'denied' : 'error');
     }
   }, [recorder, stop]);
 

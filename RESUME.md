@@ -8,6 +8,32 @@ Updated: 25 Nov 2026, with every push. Builder so far: one session on Ankith's h
 - Last finished step (before redesign): clean clone in a temp folder: api install + check (57 tests) OK, app install + typecheck + jest (10) OK. Web app built against the real api (MOCK_ALL=1) verified in headless Chrome: speak -> alert me -> add 6 buses -> 16 notified -> Kannada alert, no console errors. Split ROLE=api/voice tested; killing voice -> traveller still answered (rules).
 - Next exact step: Eight screenshots are in docs/img/ and linked from README. Ankith: record video, put VIDEO_URL in README, submit form by 16:45. Session C: C-01/C-03/C-04 on branch session-c (C-02 scripts already on main). Optional if time: A-04 context.dev.
 
+## API CHANGES FOR APP (api agent, 25 Nov afternoon; contract v2, see shared/contract/CHANGELOG.md)
+1. Intent: /v1/intent/parse and /v1/voice/intent now try Sarvam's chat model first (sarvam-105b, reasoning off, JSON mode, ajv-validated, 15 s deadline) and fall back to rules. `intent.parser` is now `"sarvam-llm"` or `"rules"` (old `"llm"` stays in the type only for compatibility). App: change the chip check in app/(tabs)/index.tsx from `=== 'llm'` to `!== 'rules'` (or `=== 'sarvam-llm'`). New optional fields: `intent.travellingWith` ('alone'|'family'|'elders'|'kids'|'friends'|'partner'|null) and `intent.gift.unit` ('kg'|'box'|...).
+2. Partner names: "Demo State RTC" -> "Namma State Travels", "Demo TN Express" -> "Kaveri Express", "Demo Intercity Coaches" -> "Deccan Intercity", sweet shops lose "(demo)", quick commerce = "QuickCart" / "DashBasket" / "HomeTown Cart". IDS UNCHANGED (op-staterte etc.). Alerts built from them now say e.g. "Namma State Travels added 6 buses...". App hardcodes of the old names (partners.tsx, DemoSwitches.tsx, GiftCard.tsx, motifs.tsx) are the app agent's to update.
+
+3. Sweets pre-order (no payment, pay at pickup; types in shared/contract/src/types.ts):
+   - `GET /v1/shops?boardingPoint=MAJESTIC` -> `{shops: [{partner (with items + priceInr), boardingPoint, atBoardingPoint, distanceKm, walkMinutes}], boardingPoint, label}` nearest first.
+   - `POST /v1/gifts/orders` `{travellerId, partnerId, pickupDate, readyBy "HH:MM", departTime? "HH:MM", pickupPoint?, items: [{itemId, qty}]}` (old single itemId+qty still works) -> `{order}` with `id, status "placed", totalInr, items[]`. 400 if readyBy is less than 15 min before departTime, unknown item/shop/point, qty <= 0 or > 50.
+   - `GET /v1/gifts/orders/:id` -> `{order}` (status); `GET /v1/gifts/orders?travellerId=` -> `{orders}`.
+   - Shop side: `POST /v1/gifts/orders/:id/status {status: placed|ready|picked_up|cancelled}`; `GET /v1/partners/:id/pickups?date=` -> `{cells: [{pickupPoint, pickupDate, orders, firstReadyBy, items: [{itemId, name, unit, qty}], totalInr}]}`. Existing `/v1/partners/:id/demand` now counts every line of multi-item orders.
+
+4. Notifications polling: `GET /v1/alerts?identity=<guest id>&since=<serverTime from the previous response>&onlyMine=1` -> `{alerts, source, serverTime}`. First call without `since` (full list) and keep `serverTime`; then poll every 10-20 s with it; anything returned is new -> raise a browser Notification. `since` uses the api's demo clock (2027-01-05T<IST time>), so never pass the device clock. `onlyMine=1` = only routes this traveller saved a trip for (+ route-less announcements).
+5. Shared storage: `/health` now has `store: "memory" | "upstash"`. With Upstash connected, trips / alerts / buses / orders / profile traits are shared across all serverless instances (no more "notified" miscounts or lost alerts between instances).
+
+## UPSTASH REDIS FOR THE LIVE API (ANKITH, 2 minutes, free; until then the api uses memory per instance)
+1. vercel.com -> project **prasthan-api** -> **Storage** tab (or Integrations -> Marketplace) -> **Upstash** -> **Upstash for Redis** -> Create (free plan, region close to iad1 / Washington is fine) -> name `prasthan-store`.
+2. **Connect** it to project prasthan-api (Production + Preview). It injects the env vars itself (`UPSTASH_REDIS_REST_URL` + `UPSTASH_REDIS_REST_TOKEN`, or `KV_REST_API_URL` + `KV_REST_API_TOKEN`; the api accepts both pairs). Nothing to copy by hand.
+3. Deployments -> latest -> ... -> **Redeploy** (env vars apply only after a redeploy).
+4. Check https://prasthan-api.vercel.app/health -> `"store":"upstash"`. If Redis ever fails, each request carries on from memory (logged as a warning, no crash).
+- To clear demo state on stage: `POST /v1/ops/reset` with the ops token (also clears the Redis document).
+- Limit: one JSON document, last-writer-merge; two writes in the same ~100 ms on different instances could reuse an id. Fine for a demo.
+
+## FINAL DOCS PASS (25 Nov ~14:30, docs agent; text only, no code)
+- README.md rewritten for judges: live links (web + /health, checked live: sarvam live, flagsmith live), 60-second try-it, 4 screenshots incl. ui-430-00-profile.png + About flags, current architecture (Vercel web + Vercel API; k3d marked planned), sponsor section with honest status (Sarvam STT/TTS/translate live, intent = rules; Flagsmith 17 flags / 7 segments live; NudgeBee NOT verified, Docker unavailable per session-c status/C.md), setup mock + live (env var names only), limits, privacy, AI use (Codex + Claude Code). `<VIDEO_URL>` placeholder kept.
+- New docs/SUBMIT-TEXT.md: title + tagline, form description, 30 s pitch, 2 min talk track, 10 judge Q&A, final checklist.
+- Next exact step: Ankith puts the video link in README.md + docs/SUBMIT-TEXT.md (`<VIDEO_URL>`), submits by 16:45. If NudgeBee recovery gets verified in status/C.md, update the README NudgeBee status line and talk track 1:45.
+
 ## PROFILE + GUEST LOGIN + ROUTE DEEP LINKS (25 Nov ~14:20, profile agent)
 - Code committed (apps/mobile): first launch -> app/welcome.tsx ("Continue as guest", no OTP) -> app/profile.tsx (one screen: name, language, home state + town from seed routes, work city Bengaluru, boarding point from seed/boarding-points.json filtered by mode, usual mode, travelling with, OPTIONAL age group + gender, privacy line). Tabs layout redirects to /welcome while no profile is saved.
 - Store: src/state/profile.ts (parse/validate + subscribe; localStorage on web, memory on native via src/lib/storage.ts). Profile entry: "Name - profile" chip on Speak + "View or edit profile" in About (edit, reset).

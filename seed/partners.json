@@ -4,7 +4,7 @@
     {
       "id": "op-staterte",
       "type": "bus_operator",
-      "name": "Demo State RTC",
+      "name": "Namma State Travels",
       "styleOf": "a state transport corporation (e.g. KSRTC-style)",
       "routes": [
         "BLR-HBL",
@@ -18,7 +18,7 @@
     {
       "id": "op-tnstate",
       "type": "bus_operator",
-      "name": "Demo TN Express",
+      "name": "Kaveri Express",
       "styleOf": "a state or large private operator on Tamil Nadu routes",
       "routes": [
         "BLR-MDU",
@@ -30,7 +30,7 @@
     {
       "id": "op-intercity",
       "type": "bus_operator",
-      "name": "Demo Intercity Coaches",
+      "name": "Deccan Intercity",
       "styleOf": "a private app-first intercity bus brand (e.g. Zingbus/Flixbus-style)",
       "routes": [
         "BLR-HBL",
@@ -44,7 +44,7 @@
     {
       "id": "shop-majestic",
       "type": "sweet_shop",
-      "name": "Sihi Mane Sweets (demo)",
+      "name": "Sihi Mane Sweets",
       "boardingPoint": "MAJESTIC",
       "walkMinutes": 4,
       "contactLanguage": "kn-IN",
@@ -100,7 +100,7 @@
     {
       "id": "shop-satellite",
       "type": "sweet_shop",
-      "name": "Mysuru Road Mithai (demo)",
+      "name": "Mysuru Road Mithai",
       "boardingPoint": "SATELLITE",
       "walkMinutes": 3,
       "contactLanguage": "kn-IN",
@@ -147,7 +147,7 @@
     {
       "id": "shop-shantinagar",
       "type": "sweet_shop",
-      "name": "Shantinagar Sweet Corner (demo)",
+      "name": "Shantinagar Sweet Corner",
       "boardingPoint": "SHANTINAGAR",
       "walkMinutes": 5,
       "contactLanguage": "kn-IN",
@@ -194,7 +194,7 @@
     {
       "id": "shop-krpuram",
       "type": "sweet_shop",
-      "name": "KR Puram Bhojanalaya Sweets (demo)",
+      "name": "KR Puram Bhojanalaya Sweets",
       "boardingPoint": "KR_PURAM",
       "walkMinutes": 6,
       "contactLanguage": "te-IN",
@@ -241,7 +241,7 @@
     {
       "id": "shop-ecity",
       "type": "sweet_shop",
-      "name": "E-City Thindi Mane (demo)",
+      "name": "E-City Thindi Mane",
       "boardingPoint": "ELECTRONIC_CITY",
       "walkMinutes": 4,
       "contactLanguage": "ta-IN",
@@ -288,7 +288,7 @@
     {
       "id": "qc-quickcart",
       "type": "quick_commerce",
-      "name": "Demo QuickCart",
+      "name": "QuickCart",
       "styleOf": "a 10-minute grocery app (Blinkit/Zepto/Instamart/Flipkart Minutes-style). Named in text only.",
       "serves": [
         "doorstep_before_departure",
@@ -299,7 +299,7 @@
     {
       "id": "qc-dashdelivery",
       "type": "quick_commerce",
-      "name": "Demo DashBasket",
+      "name": "DashBasket",
       "styleOf": "a food + grocery delivery app (Swiggy Instamart/Zomato-style). Named in text only.",
       "serves": [
         "doorstep_before_departure"
@@ -309,7 +309,7 @@
     {
       "id": "qc-hometown",
       "type": "quick_commerce",
-      "name": "Demo HomeTown Cart",
+      "name": "HomeTown Cart",
       "styleOf": "any quick-commerce app, viewed from the hometown side (demand moves from city to hometown)",
       "serves": [
         "hometown_delivery"

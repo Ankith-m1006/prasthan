@@ -3,6 +3,7 @@
 import { Platform } from 'react-native';
 import type { Api, RecordedAudio } from './types';
 import { currentIdentity, getIdentity } from '../state/identity';
+import { clipFileFor } from '../lib/holdToTalk';
 
 const TIMEOUT_MS = 25_000;
 
@@ -31,7 +32,9 @@ export function createHttpClient(baseUrl: string): Api {
     const form = new FormData();
     if (Platform.OS === 'web') {
       const blob = await (await fetch(audio.uri)).blob();
-      form.append('audio', blob, audio.name);
+      const file = clipFileFor(blob.type || audio.mime); // Safari iOS records mp4/aac -> clip.m4a; Chrome webm/opus -> clip.webm
+      // re-wrap with a clean mime: Chrome says 'audio/webm;codecs=opus', the api allow-list wants 'audio/webm'
+      form.append('audio', new Blob([blob], { type: file.mime }), file.name);
     } else {
       form.append('audio', { uri: audio.uri, name: audio.name, type: audio.mime } as unknown as Blob);
     }

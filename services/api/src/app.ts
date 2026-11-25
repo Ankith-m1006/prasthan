@@ -13,7 +13,9 @@ import configRoutes from './routes/config.js';
 import optionsRoutes from './routes/options.js';
 import tripRoutes from './routes/trips.js';
 import partnerRoutes from './routes/partners.js';
+import giftRoutes from './routes/gifts.js';
 import opsRoutes from './routes/ops.js';
+import { hydrate, merge, toData } from './persist.js';
 
 export type Extra = (app: FastifyInstance, deps: Deps) => Promise<void>;
 
@@ -39,11 +41,32 @@ export function corsOrigin(env = process.env): true | Array<string | RegExp> {
   return list.length ? [...list, /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/] : true;
 }
 
+const NO_STORE = new Set(['/health', '/metrics']);
+
+/** Upstash mode: load the shared document before each request; merge + save after successful writes (before replying). */
+function addPersistHooks(app: FastifyInstance, deps: Deps): void {
+  const p = deps.persist;
+  if (!p || p.kind === 'memory') return;
+  app.addHook('preHandler', async (req) => {
+    if (NO_STORE.has(req.routeOptions.url ?? '') || req.method === 'OPTIONS') return;
+    try { const d = await p.load(); if (d) hydrate(deps.store, d); } catch (err) { req.log.warn({ msg: (err as Error).message }, 'store load failed, using memory'); }
+  });
+  app.addHook('onSend', async (req, reply, payload) => {
+    if (req.method === 'GET' || req.method === 'OPTIONS' || reply.statusCode >= 400) return payload;
+    try {
+      const reset = req.routeOptions.url === '/v1/ops/reset';
+      await p.save(reset ? toData(deps.store) : merge(await p.load(), toData(deps.store)));
+    } catch (err) { req.log.warn({ msg: (err as Error).message }, 'store save failed, kept in memory'); }
+    return payload;
+  });
+}
+
 export async function buildApp(deps: Deps, extras: Extra[] = [], logger: boolean | object = false): Promise<FastifyInstance> {
   const app = Fastify({ logger, bodyLimit: 1_000_000 });
   await app.register(cors, { origin: corsOrigin() });
   await app.register(multipart, { limits: { fileSize: 2 * 1024 * 1024, files: 1, fields: 5 } });
 
+  addPersistHooks(app, deps);
   app.addHook('onResponse', async (req, reply) => {
     const route = routeLabel(req.routeOptions.url);
     deps.metrics.requests.inc({ route, status: String(reply.statusCode) });
@@ -59,7 +82,7 @@ export async function buildApp(deps: Deps, extras: Extra[] = [], logger: boolean
   });
   app.setNotFoundHandler((_req, reply) => reply.status(404).send({ error: { code: 'not_found', message: 'No such route' } }));
 
-  for (const plugin of [opsRoutes, configRoutes, optionsRoutes, tripRoutes, partnerRoutes, ...extras]) {
+  for (const plugin of [opsRoutes, configRoutes, optionsRoutes, tripRoutes, partnerRoutes, giftRoutes, ...extras]) {
     await plugin(app, deps);
   }
   return app;

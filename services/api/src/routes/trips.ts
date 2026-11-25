@@ -27,7 +27,8 @@ export function alertsFor(deps: Deps, identity: string, flags: FlagsView, since?
     .sort((a, b) => Number(myRoutes.has(b.routeId)) - Number(myRoutes.has(a.routeId)) || newestFirst(a, b));
   const all = [...live, ...rest];
   const t = since ? Date.parse(since) : NaN;
-  return Number.isNaN(t) ? all : all.filter((a) => Date.parse(a.createdAt) > t);
+  // With `since`, only live alerts count as new (seeded alerts are demo history, some with future timestamps).
+  return Number.isNaN(t) ? all : live.filter((a) => Date.parse(a.createdAt) > t);
 }
 
 function validIntent(x: unknown): x is TripIntent {
@@ -46,10 +47,18 @@ export default async function tripRoutes(app: FastifyInstance, deps: Deps): Prom
     return { trip };
   });
 
-  app.get('/v1/alerts', async (req): Promise<AlertsResponse> => {
-    const q = req.query as { identity?: string; since?: string };
+  // Polling for notifications: pass `since` = the `serverTime` from the previous response (demo clock, not the device clock).
+  // `onlyMine=1` keeps only alerts on routes this traveller saved a trip for (plus route-less announcements).
+  app.get('/v1/alerts', async (req, reply): Promise<AlertsResponse> => {
+    const q = req.query as { identity?: string; since?: string; onlyMine?: string };
     const identity = q.identity ?? identityOf(req.headers['x-prasthan-identity']);
     const flags = await deps.flags.getFlags(identity, traitsFor(deps, identity));
-    return { alerts: alertsFor(deps, identity, flags, q.since), source: 'seeded' };
+    let alerts = alertsFor(deps, identity, flags, q.since);
+    if (q.onlyMine === '1' || q.onlyMine === 'true') {
+      const mine = new Set(deps.store.trips.filter((t) => t.intent.travellerId === identity).map((t) => t.intent.routeId));
+      alerts = alerts.filter((a) => a.routeId === null || mine.has(a.routeId));
+    }
+    reply.header('cache-control', 'no-store');
+    return { alerts, source: 'seeded', serverTime: deps.clock(), ...(q.since ? { since: q.since } : {}) };
   });
 }

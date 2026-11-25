@@ -26,7 +26,7 @@ export function checkOpsToken(deps: Deps, req: FastifyRequest): void {
 }
 
 export default async function opsRoutes(app: FastifyInstance, deps: Deps): Promise<void> {
-  app.get('/health', async (): Promise<HealthResponse> => ({ ok: true, role: deps.config.role, version: '0.1.0', modes: modes(deps.config) }));
+  app.get('/health', async (): Promise<HealthResponse> => ({ ok: true, role: deps.config.role, version: '0.1.0', modes: modes(deps.config), store: deps.persist?.kind ?? 'memory' }));
 
   app.get('/metrics', async (_req, reply) => {
     const env = await deps.flags.getEnvFlags();

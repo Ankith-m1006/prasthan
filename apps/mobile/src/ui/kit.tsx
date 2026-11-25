@@ -2,33 +2,54 @@
 import type { ReactNode } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View, useWindowDimensions, type StyleProp, type TextStyle, type ViewStyle } from 'react-native';
 import { colors, fonts, radius, space, type as t } from '../theme/tokens';
+import { router } from 'expo-router';
 import { useFlags } from '../state/flags';
+import { dismissBanner, useAlerts } from '../state/alerts';
+import { getIdentity } from '../state/identity';
+import { fontForText } from '../theme/tokens';
 import { Backdrop, MotifRule } from './backdrop';
 import { alpha, frost, glow, tint } from './glass';
 import { KolamGrid } from './motifs';
 
-export function Screen({ children, title, subtitle }: { children: ReactNode; title?: string; subtitle?: string }) {
+export function Screen({ children, title, subtitle, demoTag }: { children: ReactNode; title?: string; subtitle?: string; demoTag?: boolean }) {
   const { flags, offlineData, accent, source } = useFlags();
+  const { banner } = useAlerts();
   const wide = useWindowDimensions().width >= 760;
   return (
     <View style={s.root}>
       <Backdrop accent={accent.accent} accentSoft={accent.accentSoft} />
       {flags.voice_fallback_offline ? <View style={s.bannerWrap}><Banner text="Offline voice mode: answers are text + saved audio" /></View> : null}
+      {banner ? <AlertBanner text={banner.textLocal?.[getIdentity().language] ?? banner.text} /> : null}
       <ScrollView contentContainerStyle={s.scroll} keyboardShouldPersistTaps="handled">
         <View style={[s.page, wide && s.pageWide]}>
           {title ? (
             <View style={[s.header, wide && s.headerWide]}>
               <View style={s.kolam}><KolamGrid size={wide ? 260 : 190} opacity={0.06} /></View>
-              <Text style={[s.title, wide && s.titleWide]} accessibilityRole="header">{title}</Text>
+              <View style={[s.titleRow, wide && { justifyContent: 'center' }]}>
+                <Text style={[s.title, wide && s.titleWide]} accessibilityRole="header">{title}</Text>
+                {demoTag ? <Text style={s.demoTag} testID="demo-tag">Demo data</Text> : null}
+              </View>
               {subtitle ? <Text style={[s.subtitle, wide && { textAlign: 'center' }]}>{subtitle}</Text> : null}
-              {offlineData ? <View style={{ marginTop: space.sm, alignSelf: wide ? 'center' : 'flex-start' }}><Chip label="Offline demo data" tone="soft" /></View> : null}
-              <Text style={[s.flagNote, wide && { textAlign: 'center' }]} testID="flag-source">{source === 'offline' ? 'flags: offline defaults' : 'flags: live from Flagsmith'}</Text>
+              <Text style={[s.flagNote, wide && { textAlign: 'center' }]} testID="flag-source">{source === 'offline' ? 'flags: offline defaults' : 'flags: live from Flagsmith'}{offlineData ? ' - api asleep, using saved data' : ''}</Text>
               <MotifRule />
             </View>
           ) : null}
           {children}
         </View>
       </ScrollView>
+    </View>
+  );
+}
+
+/** In-app alert banner (every platform): the newest alert, tap to open Alerts. */
+function AlertBanner({ text }: { text: string }) {
+  return (
+    <View style={s.bannerWrap}>
+      <Pressable accessibilityRole="alert" accessibilityHint="opens Alerts" onPress={() => { dismissBanner(); router.push('/alerts'); }}
+        style={[s.banner, { backgroundColor: colors.mangoLeaf, flexDirection: 'row', gap: 10, alignItems: 'center' }, glow(colors.mangoLeaf, 0.4)]}>
+        <Text style={[s.bannerText, { fontFamily: fontForText(text, true), flexShrink: 1 }]} numberOfLines={2}>New: {text}</Text>
+        <Text style={s.bannerText} onPress={dismissBanner} accessibilityLabel="Dismiss">  x</Text>
+      </Pressable>
     </View>
   );
 }
@@ -63,10 +84,10 @@ export function Button({ label, onPress, tone = 'primary', disabled, hint, icon 
   );
 }
 
-export function Chip({ label, selected, onPress, tone = 'normal' }: { label: string; selected?: boolean; onPress?: () => void; tone?: 'normal' | 'soft' | 'warn' | 'ok' }) {
+export function Chip({ label, selected, onPress, tone = 'normal', font }: { label: string; selected?: boolean; onPress?: () => void; tone?: 'normal' | 'soft' | 'warn' | 'ok'; font?: string }) {
   const bg = selected ? colors.ink : tone === 'warn' ? alpha(colors.kumkum, 0.1) : tone === 'ok' ? alpha(colors.mangoLeaf, 0.12) : tone === 'soft' ? alpha(colors.turmeric, 0.55) : undefined;
   const fg = selected ? colors.paper : tone === 'warn' ? colors.kumkum : tone === 'ok' ? colors.mangoLeaf : colors.ink;
-  const body = <Text style={[s.chipText, { color: fg }, selected && { fontFamily: fonts.bodyBold }]}>{label}</Text>;
+  const body = <Text style={[s.chipText, { color: fg }, selected && { fontFamily: fonts.bodyBold }, font ? { fontFamily: font } : null]}>{label}</Text>;
   const fill: StyleProp<ViewStyle> = bg ? { backgroundColor: bg } : frost(0.66, 12);
   if (!onPress) return <View style={[s.chip, fill, { alignSelf: 'flex-start' }]}>{body}</View>;
   return (
@@ -102,6 +123,8 @@ export const s = StyleSheet.create({
   header: { paddingTop: 36, paddingBottom: space.sm, gap: 6 },
   headerWide: { paddingTop: 64, alignItems: 'center' },
   kolam: { position: 'absolute', right: -24, top: 0 },
+  titleRow: { flexDirection: 'row', alignItems: 'center', gap: 10, flexWrap: 'wrap' },
+  demoTag: { fontFamily: fonts.bodyBold, fontSize: 11, letterSpacing: 1, textTransform: 'uppercase', color: colors.inkSoft, paddingHorizontal: 10, paddingVertical: 3, borderRadius: radius.pill, borderWidth: 1, borderColor: 'rgba(91,86,112,0.25)', overflow: 'hidden' },
   title: { fontFamily: fonts.display, fontSize: 34, lineHeight: 46, color: colors.ink, letterSpacing: -0.3 },
   titleWide: { fontSize: 48, lineHeight: 62, textAlign: 'center' },
   subtitle: { fontFamily: fonts.body, fontSize: t.body, lineHeight: 26, color: colors.inkSoft, maxWidth: 620 },

@@ -38,3 +38,6 @@ Last merged to main: B-05
 - Web build: `EXPO_PUBLIC_APP_MOCK=1 npx expo export --platform web` -> apps/mobile/dist (git-ignored); `npm run serve-web` serves it
 - Deploy: `node scripts/prepare-vercel.mjs` then deploy apps/mobile/dist with the Vercel CLI (`npm run deploy:web`; first time it asks to link/create a project). Current production: https://prasthan-ten.vercel.app
 - Live build against a reachable api: set EXPO_PUBLIC_API_URL=https://<api> (and EXPO_PUBLIC_APP_MOCK=0) before export.
+
+## REQUESTS TO OTHERS (25 Nov 14:45, app agent)
+- A: services/api/src/routes/voice.ts compares the multipart mime exactly with AUDIO_MIMES; browsers send audio/webm;codecs=opus. The app now re-wraps uploads with a clean mime (audio/webm or audio/mp4), but please also strip the ;codecs part server-side.
