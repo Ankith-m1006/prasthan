@@ -8,15 +8,14 @@ Branch: session-c. Contract version: 1.
 - C-02 was already delivered on main by the home builder.
 
 ## Next exact step
-- Install and start Docker Desktop on the venue laptop. From a new PowerShell window confirm docker info succeeds, then run node infra/k8s/k3d-up.mjs.
+- Capture the NudgeBee finding for pod prasthan-voice-7f5fbdb78-7vd5s in the signed-in dashboard, then confirm the restored voice deployment. Save the actual finding at docs/img/nudgebee-finding.png.
 
 ## Blockers
-- WSL now reports default version 2. Docker Desktop, the Docker CLI and the engine are unavailable. k3d v5.9.0, matching kubectl v1.35.5 and Helm v4.3.2 are installed on the user PATH with release checksums verified. All six Kubernetes resources passed static validation against Kubernetes v1.35.5. No cluster or NudgeBee recovery timing yet.
-
+- This session has cluster access through Ubuntu WSL but no connected dashboard browser or NudgeBee user API token. The dashboard finding and screenshot remain unverified.
 ## Commands
 - From the checkout: npm --prefix scripts ci, npm --prefix scripts test, npm --prefix scripts run flags:import:dry, npm --prefix scripts run flags:import.
 
-C-03 image definition, Dockerfile-specific context allowlist, six Kubernetes resources and deployment helpers are committed. YAML parsing and Node syntax checks passed. Running k3d-up stopped at Docker preflight. Image size, pod readiness, ingress, voice routing and metrics remain unverified.
+The venue cluster is single-node K3s v1.37.2 in Ubuntu WSL. The Prasthan image was built with Buildah and imported into the connected K3s containerd. Both API replicas and one voice replica were Ready before fault injection. Ingress /health returned HTTP 200 with role api and ok true.
 
 ## A-02 live Sarvam check, 25 Nov
 
@@ -29,6 +28,14 @@ C-03 image definition, Dockerfile-specific context allowlist, six Kubernetes res
 ## Request to Session A
 
 - Investigate the 600-token chat completion limit with sarvam-105b on the full trip prompt. In a diagnostic replay both attempts returned HTTP 200, finish_reason length, 600 completion tokens and no message content. The voice route correctly used rules. A short chat probe returned content with the expected field name. Validate a completion budget or supported reasoning setting against the eight-second timeout before changing the client.
-## C-04 preparation
+## C-04 rehearsal, 25 Nov 2026 (IST)
 
-Runbook prepared in docs/NUDGEBEE-RUNBOOK.md. Read-only Flagsmith check returned HTTP 200 for the Development fallback flag; it is off. No live flag changes were made. After Docker startup, connect the venue cluster and verify the NudgeBee agent before fault injection. The checkout still needs FLAGSMITH_SERVER_KEY for live flag consumption and OPS_TOKEN for the authenticated ops route. Alert, approval, traveller continuity and recovery timings are pending rehearsal.
+- 15:17:33 injected FAULT_MODE=crash_on_voice into the voice deployment. Only voice received the fault.
+- 15:18:17 first observed CrashLoopBackOff for prasthan-voice-7f5fbdb78-7vd5s. Both API pods remained Running. All three NudgeBee agent pods were Running.
+- At 15:18:48 a traveller request during the incident returned HTTP 200, BLR-HBL, 2027-01-15 via rules. Prometheus reported both API scrape targets up and the failing voice target down.
+- An automatic reset is armed. Dashboard finding, screenshot and recovery verification pending.
+
+## Festival calendar
+
+- 31 dated records from December 2026 through April 2027 across all 12 requested states plus nationwide observances. Each record links its date source. Eid al-Fitr and Bisu Parba are marked provisional; travel windows are planning estimates.
+- Configured and imported festival_calendar and festival_calendar_enabled in the live Flagsmith environment. Verified both via Edge, including enabled=true and the pinned public calendar JSON matching the checked-in dataset. All five importer tests passed.
