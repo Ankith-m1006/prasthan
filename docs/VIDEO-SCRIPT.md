@@ -86,7 +86,7 @@ Runtime 02:31.00. The scene WAVs include their edit holds. In scene 4, mix the r
 
 **Time** 02:08.69 to 02:23.43 (14.74 seconds)
 
-**On screen** Show the NudgeBee agent pods Running, then the recorded Kubernetes CrashLoopBackOff event. Cut to the successful traveller request and the recovered Ready pod. Use a NudgeBee dashboard finding only if verified.
+**On screen** Show the [NudgeBee investigation](img/nudgebee-finding.png). Frame the Event Summary with the voice pod and CrashLoopBackOff, then the investigation linking the crash to FAULT_MODE. Cut to the successful traveller request and the recovered Ready pod.
 
 **Voiceover** We deliberately crashed the voice pod on the cluster monitored by NudgeBee. Kubernetes caught the crash loop, and the app still answered a traveller using its rules. After we reset the fault, the voice service was healthy again.
 
