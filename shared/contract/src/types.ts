@@ -44,7 +44,7 @@ export interface Partner {
   id: string; type: PartnerType; name: string; styleOf?: string;
   routes?: string[];
   boardingPoint?: string; items?: ShopItem[];
-  serves?: string[]; cutFirst?: boolean;
+  serves?: string[]; cutFirst?: boolean; walkMinutes?: number;
 }
 
 export interface Service { id: string; routeId: string; partnerId: string; mode: Mode; date: string; departTime: string; boardingPoint: string; seats: number; special: boolean }
@@ -71,7 +71,10 @@ export interface GiftOrder {
   id: string; partnerId: string; travellerId: string; intentId?: string; itemId: string; qty: number;
   pickupPoint: string; pickupDate: string; readyBy: string;
   status: 'placed' | 'ready' | 'picked_up' | 'cancelled'; payment: 'pay_at_pickup_demo';
+  /** v2, optional: all lines of a multi-item order (itemId/qty above = the first line), total and when it was placed. */
+  items?: OrderLine[]; totalInr?: number; departTime?: string; createdAt?: string; updatedAt?: string;
 }
+export interface OrderLine { itemId: string; qty: number; unit?: string; priceInr?: number }
 
 export interface DeepLink { providerId: string; name: string; mode: Mode; url: string; kind: 'homepage' | 'search' }
 
@@ -130,7 +133,19 @@ export interface DemandResponse { partner: Partner; cells: DemandCell[]; label: 
 export interface AddServicesRequest { routeId: string; date: string; departTime: string; boardingPoint: string; seats: number; count: number; mode: Mode }
 export interface AddServicesResponse { services: Service[]; alert: Alert; notified: number; demandAfter: { want: number; have: number; gap: number } }
 
-export interface GiftOrderRequest { travellerId: string; partnerId: string; itemId: string; qty: number; pickupDate: string; readyBy: string; intentId?: string; pickupPoint?: string }
+/** Send either itemId+qty (v1) or items[] (v2). departTime (HH:MM) = bus/train departure; readyBy must be at least 15 min before it. */
+export interface GiftOrderRequest {
+  travellerId: string; partnerId: string; itemId?: string; qty?: number; items?: Array<{ itemId: string; qty: number }>;
+  pickupDate: string; readyBy: string; departTime?: string; intentId?: string; pickupPoint?: string;
+}
+/** v2: GET /v1/shops?boardingPoint=MAJESTIC -> sweet shops, nearest first (same point = 0 km). */
+export interface ShopNear { partner: Partner; boardingPoint: string; atBoardingPoint: boolean; distanceKm: number; walkMinutes: number | null }
+export interface ShopsResponse { shops: ShopNear[]; boardingPoint: string | null; label: string }
+/** v2: POST /v1/gifts/orders/:id/status body. */
+export interface OrderStatusRequest { status: GiftOrder['status'] }
+/** v2: GET /v1/partners/:id/pickups?date= -> what to have ready, per pickup point and day. */
+export interface PickupCell { pickupPoint: string; pickupDate: string; orders: number; firstReadyBy: string; items: Array<{ itemId: string; name: string; unit: string; qty: number }>; totalInr: number }
+export interface PickupsResponse { partner: Partner; cells: PickupCell[]; label: string }
 export interface GiftOrderResponse { order: GiftOrder }
 export interface OrdersResponse { orders: GiftOrder[] }
 

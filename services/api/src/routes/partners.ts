@@ -1,7 +1,7 @@
-// Partners: list, demand board, add buses (bus operators), gift orders (sweet shops).
+// Partners: list, demand board, add buses (bus operators), a shop's orders. Gift ordering lives in gifts.ts.
 import type { FastifyInstance } from 'fastify';
 import type {
-  AddServicesRequest, AddServicesResponse, Alert, DemandResponse, GiftOrder, GiftOrderRequest, GiftOrderResponse,
+  AddServicesRequest, AddServicesResponse, Alert, DemandResponse,
   OrdersResponse, Partner, PartnersResponse, Service,
 } from '../../../../shared/contract/src/index.js';
 import { HttpError, traitsFor, type Deps } from '../deps.js';
@@ -67,22 +67,6 @@ export default async function partnerRoutes(app: FastifyInstance, deps: Deps): P
     snapshot(deps.store, deps.config.storeSnapshot);
     const after = routeDemand(deps.seed, deps.store, r.routeId, r.date) ?? { want: 0, have: r.count * r.seats, gap: 0 };
     return { services, alert, notified: waitingCount(deps, r.routeId, r.date), demandAfter: after };
-  });
-
-  app.post('/v1/gifts/orders', async (req): Promise<GiftOrderResponse> => {
-    const b = (req.body ?? {}) as Partial<GiftOrderRequest>;
-    const partner = partnerOr404(deps, b.partnerId ?? '');
-    const item = partner.items?.find((i) => i.id === b.itemId);
-    if (partner.type !== 'sweet_shop' || !item) throw new HttpError(400, 'bad_request', 'Unknown shop item');
-    if (!b.travellerId || !b.pickupDate || !(Number(b.qty) > 0)) throw new HttpError(400, 'bad_request', 'travellerId, qty and pickupDate are required');
-    const order: GiftOrder = {
-      id: nextId(deps.store, 'ord'), partnerId: partner.id, travellerId: b.travellerId, itemId: item.id, qty: Number(b.qty),
-      pickupPoint: b.pickupPoint ?? partner.boardingPoint ?? 'MAJESTIC', pickupDate: b.pickupDate, readyBy: b.readyBy ?? '20:00',
-      status: 'placed', payment: 'pay_at_pickup_demo', ...(b.intentId ? { intentId: b.intentId } : {}),
-    };
-    deps.store.orders.push(order);
-    snapshot(deps.store, deps.config.storeSnapshot);
-    return { order };
   });
 
   app.get('/v1/partners/:id/orders', async (req): Promise<OrdersResponse> => {

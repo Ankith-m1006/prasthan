@@ -54,6 +54,43 @@
     },
     "payment": {
       "const": "pay_at_pickup_demo"
+    },
+    "items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "itemId",
+          "qty"
+        ],
+        "properties": {
+          "itemId": {
+            "type": "string"
+          },
+          "qty": {
+            "type": "number",
+            "exclusiveMinimum": 0
+          },
+          "unit": {
+            "type": "string"
+          },
+          "priceInr": {
+            "type": "number"
+          }
+        }
+      }
+    },
+    "totalInr": {
+      "type": "number"
+    },
+    "departTime": {
+      "type": "string"
+    },
+    "createdAt": {
+      "type": "string"
+    },
+    "updatedAt": {
+      "type": "string"
     }
   }
 }

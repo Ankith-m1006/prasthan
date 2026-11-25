@@ -51,6 +51,11 @@ function shopCell(partner: Partner, item: ShopItem | undefined, itemId: string, 
   };
 }
 
+/** All lines of an order (v1 orders have only itemId + qty). */
+export function orderLines(o: GiftOrder): Array<{ itemId: string; qty: number }> {
+  return o.items?.length ? o.items : [{ itemId: o.itemId, qty: o.qty }];
+}
+
 export function shopOrders(seed: Seed, store: Store, partnerId: string): GiftOrder[] {
   return [...seed.orders, ...store.orders].filter((o) => o.partnerId === partnerId && o.status !== 'cancelled');
 }
@@ -59,8 +64,10 @@ export function shopCells(seed: Seed, store: Store, partner: Partner, date?: str
   const groups = new Map<string, GiftOrder[]>();
   for (const o of shopOrders(seed, store, partner.id)) {
     if (date && o.pickupDate !== date) continue;
-    const k = `${o.pickupDate}|${o.itemId}`;
-    groups.set(k, [...(groups.get(k) ?? []), o]);
+    for (const l of orderLines(o)) {
+      const k = `${o.pickupDate}|${l.itemId}`;
+      groups.set(k, [...(groups.get(k) ?? []), { ...o, itemId: l.itemId, qty: l.qty }]);
+    }
   }
   return [...groups.entries()]
     .sort(([a], [b]) => a.localeCompare(b))
