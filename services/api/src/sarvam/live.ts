@@ -15,7 +15,7 @@
 import type { Lang } from '../../../../shared/contract/src/index.js';
 import { fetchRetry, TimeoutError } from '../http.js';
 import { SARVAM_BASE, SarvamError, type ChatMessage, type SarvamClient } from './client.js';
-import { TTS_SETTINGS, voicesFor } from './voices.js';
+import { TTS_SETTINGS, lastTts, voicesFor } from './voices.js';
 import { toSpoken } from '../voice/spoken.js';
 
 const TIMEOUT_MS = 8000;
@@ -81,13 +81,17 @@ export class LiveSarvamClient implements SarvamClient {
   async tts(text: string, lang: Lang, model: string, speaker: string): Promise<string | null> {
     const spoken = toSpoken(text, lang).slice(0, 2500) || text.slice(0, 2500);
     let lastErr: unknown = null;
+    lastTts.ms = [];
     for (const v of voicesFor(lang, model, speaker)) {
+      const t0 = Date.now();
       try {
         const body = { text: spoken, language_code: lang, model: v.model, speaker: v.speaker, ...TTS_SETTINGS };
         const out = await this.call('/text-to-speech', JSON.stringify(body), true);
         const audios = out.audios as string[] | undefined;
-        if (audios?.[0]) return audios[0];
+        lastTts.ms.push(Date.now() - t0);
+        if (audios?.[0]) { lastTts.voice = `${v.model}/${v.speaker}`; return audios[0]; }
       } catch (err) {
+        lastTts.ms.push(Date.now() - t0);
         lastErr = err;
         if (!(err instanceof SarvamError && (err.status === 400 || err.status === 422))) throw err;
       }

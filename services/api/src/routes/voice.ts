@@ -5,6 +5,7 @@ import { join, basename } from 'node:path';
 import type { IntentParseRequest, Lang, TripIntent, TtsRequest, TtsResponse } from '../../../../shared/contract/src/index.js';
 import { HttpError, identityOf, traitsFor } from '../deps.js';
 import { LANGS } from '../i18n/templates.js';
+import { lastTts } from '../sarvam/voices.js';
 import { AUDIO_DIR, audioTurn, textTurn, useFallback, type TurnInput, type VoiceDeps } from '../voice/pipeline.js';
 
 const AUDIO_MIMES = ['audio/webm', 'audio/ogg', 'audio/mp4', 'audio/m4a', 'audio/x-m4a', 'audio/aac', 'audio/wav', 'audio/x-wav', 'audio/wave', 'audio/mpeg', 'audio/mp3'];
@@ -71,7 +72,7 @@ export default async function voiceRoutes(app: FastifyInstance, deps: VoiceDeps)
     return textTurn(deps, flags, b.text.slice(0, 500), turn(deps, req, lang(b.language, 'en-IN'), b.refDate, b.context), 'fallback');
   });
 
-  app.post('/v1/tts', async (req): Promise<TtsResponse> => {
+  app.post('/v1/tts', async (req, reply): Promise<TtsResponse> => {
     const b = (req.body ?? {}) as Partial<TtsRequest>;
     if (typeof b.text !== 'string' || !b.text.trim()) throw new HttpError(400, 'bad_request', 'text is required');
     const flags = await flagsFor(req);
@@ -79,6 +80,7 @@ export default async function voiceRoutes(app: FastifyInstance, deps: VoiceDeps)
     try {
       const speaker = flags.tts_speaker[flags.tts_model] ?? 'priya';
       const out = await deps.voice.tts(b.text.slice(0, 2500), lang(b.language), flags.tts_model, speaker, req.headers['x-load-test'] === '1');
+      reply.header('x-tts-voice', `${lastTts.voice} ${lastTts.ms.join('+')}ms`);
       return { audioBase64: out.audioBase64, mime: out.audioBase64 ? 'audio/wav' : null, source: out.source };
     } catch {
       deps.metrics.voiceErrors.inc({ kind: 'tts' });

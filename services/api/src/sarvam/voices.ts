@@ -27,3 +27,6 @@ export function voicesFor(lang: Lang, flagModel: string, flagSpeaker: string): V
   const fallback: Voice = { model: flagModel === V4 ? V3 : flagModel, speaker: flagModel === V4 ? 'priya' : flagSpeaker };
   return v4 ? [{ model: V4, speaker: v4 }, fallback] : [fallback];
 }
+
+/** Last voice actually used + Sarvam time per attempt (for the x-tts-voice debug header; no text, no keys). */
+export const lastTts: { voice: string; ms: number[] } = { voice: '', ms: [] };
