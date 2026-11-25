@@ -8,6 +8,28 @@ Updated: 25 Nov 2026, with every push. Builder so far: one session on Ankith's h
 - Last finished step (before redesign): clean clone in a temp folder: api install + check (57 tests) OK, app install + typecheck + jest (10) OK. Web app built against the real api (MOCK_ALL=1) verified in headless Chrome: speak -> alert me -> add 6 buses -> 16 notified -> Kannada alert, no console errors. Split ROLE=api/voice tested; killing voice -> traveller still answered (rules).
 - Next exact step: Eight screenshots are in docs/img/ and linked from README. Ankith: record video, put VIDEO_URL in README, submit form by 16:45. Session C: C-01/C-03/C-04 on branch session-c (C-02 scripts already on main). Optional if time: A-04 context.dev.
 
+## LIVE API ON VERCEL: project "prasthan-api" (25 Nov ~14:50 IST, api agent) - IN PROGRESS
+- Owner: api agent (services/api + this section). Do NOT touch apps/mobile or the "prasthan" web project from here.
+- Code (committed): services/api/api/index.ts (Fastify app built once per warm instance, `app.server.emit('request')`),
+  services/api/vercel.json (all paths -> /api/index, maxDuration 60, includeFiles seed/, config/flagsmith/, apps/mobile/assets/audio/),
+  repo-root .vercelignore (only matters when deploying from the repo root), CORS_ORIGINS support in src/app.ts
+  (entry defaults it to https://prasthan-ten.vercel.app; localhost always allowed).
+- Vercel project prasthan-api CREATED (team ankith-ms-projects-8b28c506). Repo root is linked to it (.vercel/ is gitignored).
+- Project setting needed: Root Directory = services/api, "Include files outside root directory" = on, Framework = Other.
+  If not set yet (network kept timing out): dashboard -> prasthan-api -> Settings -> Build and Deployment -> Root Directory = services/api, Save.
+  Or CLI (Git Bash): `MSYS_NO_PATHCONV=1 vercel api /v9/projects/prasthan-api -X PATCH -d '{"rootDirectory":"services/api","framework":null,"sourceFilesOutsideRootDirectory":true}'`
+- Deploy (from the REPO ROOT, not services/api): `vercel link --yes --project prasthan-api` (once) then `vercel deploy --prod --yes`
+- Verify: `curl https://prasthan-api.vercel.app/health` ; `curl -X POST https://prasthan-api.vercel.app/v1/intent/parse -H 'content-type: application/json' -d '{"text":"Mysore ge Friday raatri bus beku","language":"kn-IN"}'`
+- No secrets set by the agent. ANKITH, to make Sarvam REAL:
+  1. vercel.com -> project prasthan-api -> Settings -> Environment Variables
+  2. Add SARVAM_API_KEY = <your Sarvam key>, environments: Production (+ Preview). Optional: FLAGSMITH_SERVER_KEY = <Flagsmith server-side env key>.
+  3. Deployments tab -> latest -> ... -> Redeploy (env vars only apply after a redeploy).
+  4. Check: open https://prasthan-api.vercel.app/health -> modes should say sarvam live (flagsmith live if key added).
+- Web app switch (other agent / Codex does this, NOT the api agent), in the "prasthan" web build env:
+  `EXPO_PUBLIC_API_URL=https://prasthan-api.vercel.app` and `EXPO_PUBLIC_APP_MOCK=0`, then rebuild + redeploy the web project.
+- Limits: Vercel request body 4.5 MB (api multipart cap is 2 MB audio, fine); function 60 s. Store is in-memory per instance
+  (alerts/buses added in the demo can reset on a cold start; the demo flow on one warm instance is fine).
+
 ## LIVE FLAGSMITH IN WEB APP (25 Nov, verified in production)
 - Merged origin/session-c into main (8325618; scripts tests 5/5 pass).
 - Web app now reads REAL Flagsmith flags with the JS client SDK (`flagsmith@10.0.0`) when EXPO_PUBLIC_FLAGSMITH_ENV_KEY is set at export time (client-side key, public by design; NOT the `ser.` key). Files: apps/mobile/src/api/liveFlags.ts, flagView.ts, state/flags.tsx (polls 10 s + on focus), screens/LiveFlags.tsx (About: read-only live values), ui/kit.tsx (header note "flags: live from Flagsmith" / "flags: offline defaults"). Identity + traits (role, home_state, language, partner_type) go to Flagsmith so segments apply (Tamil -> Pongal mode).
