@@ -15,3 +15,5 @@ Branch: session-c. Contract version: 1.
 
 ## Commands
 - From the checkout: npm --prefix scripts ci, npm --prefix scripts test, npm --prefix scripts run flags:import:dry, npm --prefix scripts run flags:import.
+
+C-03 checkpoint: image definition, build-context allowlist and Kubernetes manifests prepared. Next: deployment helpers and validation.

@@ -1,0 +1,8 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata: { name: prasthan, namespace: prasthan }
+spec:
+  rules:
+    - http:
+        paths:
+          - { path: /, pathType: Prefix, backend: { service: { name: prasthan-api, port: { number: 80 } } } }
