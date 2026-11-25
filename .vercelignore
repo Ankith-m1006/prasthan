@@ -1,0 +1,14 @@
+# Only used when deploying the api project (prasthan-api) from the repo root.
+node_modules
+**/node_modules
+.git
+apps/mobile/*
+!apps/mobile/assets
+apps/mobile/assets/*
+!apps/mobile/assets/audio
+docs
+codex
+ideas
+infra
+scripts
+status
