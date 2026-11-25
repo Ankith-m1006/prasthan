@@ -8,6 +8,7 @@ import { Platform } from 'react-native';
 import type { RecordedAudio } from '../api/types';
 import { MAX_RECORD_MS, clipFileFor, decideHold, isPermissionError, pickWebMime } from './holdToTalk';
 import { unlockAudio } from './speak';
+import { haptic } from './haptics';
 
 const isWeb = Platform.OS === 'web';
 const webMime = isWeb && typeof MediaRecorder !== 'undefined' ? pickWebMime((m) => MediaRecorder.isTypeSupported(m)) : undefined;
@@ -93,6 +94,7 @@ export function useHoldToTalk(onClip: (clip: RecordedAudio) => void) {
   /** One tap handler: idle -> start, listening -> stop. */
   const toggle = useCallback(() => {
     if (state === 'starting') return;
+    haptic('medium');
     if (state === 'listening') { void stop(); return; }
     if (isWeb) startWeb(); else void startNative();
     unlockAudio(); // same gesture: lets the reply audio play later on iOS / Android

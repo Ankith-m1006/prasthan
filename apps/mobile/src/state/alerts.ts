@@ -1,5 +1,6 @@
 // Alerts poller (one for the whole app): GET /v1/alerts every alert_poll_seconds. New alerts glow once and are
 // spoken aloud in the traveller's language (see src/lib/speak.ts). The tab badge counts unseen ones.
+import { haptic } from '../lib/haptics';
 import { useEffect, useState } from 'react';
 import type { Alert } from '@contract';
 import { api } from '../api';
@@ -48,7 +49,7 @@ export async function pollAlerts(): Promise<void> {
     const lang = getIdentity().language;
     for (const id of fresh) {
       const a = sorted.find((x) => x.id === id);
-      if (a) { raiseNotification(a, lang); void speakText(a.textLocal?.[lang] ?? a.text, lang); }
+      if (a) { haptic('notify'); raiseNotification(a, lang); void speakText(a.textLocal?.[lang] ?? a.text, lang); }
     }
   } catch {
     // offline: keep what we have

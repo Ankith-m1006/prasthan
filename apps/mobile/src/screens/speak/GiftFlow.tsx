@@ -1,5 +1,6 @@
 // "Take sweets home": shops near the boarding point -> items with prices + steppers -> pickup time before the bus
 // -> confirm -> order id, pickup point, pay at pickup. Saved in "My orders" on this phone.
+import { haptic } from '../../lib/haptics';
 import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
@@ -55,7 +56,9 @@ export function GiftFlow({ intent }: { intent: TripIntent }) {
       const b: SavedBasket = { id: saved[0].orderId, shopId: shop.id, shopName: partnerName(shop.name), pickupPoint, pickupName: pointName(pickupPoint), pickupDate: date, readyBy, lines: saved, total: r.order.totalInr ?? total, status: 'placed', createdAt: new Date().toISOString() };
       ordersStore.add(b);
       setDone(b);
+      haptic('success');
     } catch {
+      haptic('warning');
       setError('Could not place the order just now. Please tap Confirm again in a moment.');
     }
     setBusy(false);

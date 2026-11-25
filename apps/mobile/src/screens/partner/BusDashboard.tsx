@@ -1,4 +1,5 @@
 // Bus operator dashboard: demand vs seats per date for each route (gap in red), "Add buses" -> waiting travellers notified.
+import { haptic } from '../../lib/haptics';
 import { useCallback, useEffect, useState } from 'react';
 import { View } from 'react-native';
 import type { AddServicesRequest, DemandCell, Partner } from '@contract';
@@ -31,11 +32,13 @@ export function BusDashboard({ partner }: { partner: Partner }) {
     try {
       const res = await api.addServices(partner.id, r);
       rememberAlert(res.alert);
+      haptic('success');
       setToast(`${r.count} buses added. ${res.notified} waiting travellers notified.`);
       setAdding(null);
       await load();
       void pollAlerts();
     } catch {
+      haptic('warning');
       setToast('Could not add buses just now. Please tap Add buses again in a moment.');
     }
   };

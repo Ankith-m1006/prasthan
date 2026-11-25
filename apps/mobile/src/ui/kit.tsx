@@ -1,4 +1,6 @@
 // UI primitives: Screen, Section (flowing, no box), Glass (frosted group), Button (pill, 52 px), Chip (pill, 44 px), Banner, text.
+import { haptic } from '../lib/haptics';
+import { HeaderActions } from './HeaderActions';
 import type { ReactNode } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View, useWindowDimensions, type StyleProp, type TextStyle, type ViewStyle } from 'react-native';
 import { colors, fonts, radius, space, type as t } from '../theme/tokens';
@@ -11,7 +13,7 @@ import { Backdrop, MotifRule } from './backdrop';
 import { alpha, frost, glow, tint } from './glass';
 import { KolamGrid } from './motifs';
 
-export function Screen({ children, title, subtitle, demoTag }: { children: ReactNode; title?: string; subtitle?: string; demoTag?: boolean }) {
+export function Screen({ children, title, subtitle, demoTag, headerRight }: { children: ReactNode; title?: string; subtitle?: string; demoTag?: boolean; headerRight?: ReactNode }) {
   const { flags, offlineData, accent, source } = useFlags();
   const { banner } = useAlerts();
   const wide = useWindowDimensions().width >= 760;
@@ -25,6 +27,7 @@ export function Screen({ children, title, subtitle, demoTag }: { children: React
           {title ? (
             <View style={[s.header, wide && s.headerWide]}>
               <View style={s.kolam}><KolamGrid size={wide ? 260 : 190} opacity={0.06} /></View>
+              <HeaderActions extra={headerRight} />
               <View style={[s.titleRow, wide && { justifyContent: 'center' }]}>
                 <Text style={[s.title, wide && s.titleWide]} accessibilityRole="header">{title}</Text>
                 {demoTag ? <Text style={s.demoTag} testID="demo-tag">Demo data</Text> : null}
@@ -71,7 +74,7 @@ const toneFg: Record<Tone, string> = { primary: colors.ink, leaf: '#FFFFFF', pla
 export function Button({ label, onPress, tone = 'primary', disabled, hint, icon }: { label: string; onPress: () => void; tone?: Tone; disabled?: boolean; hint?: string; icon?: ReactNode }) {
   return (
     <Pressable
-      accessibilityRole="button" accessibilityLabel={label} accessibilityHint={hint} disabled={disabled} onPress={onPress}
+      accessibilityRole="button" accessibilityLabel={label} accessibilityHint={hint} disabled={disabled} onPress={() => { haptic('tick'); onPress(); }}
       style={({ pressed }) => [s.btn, tone === 'plain' ? frost(0.7, 14) : [{ backgroundColor: toneBg[tone] }, glow(toneBg[tone], 0.5)],
         { opacity: disabled ? 0.5 : 1 }, pressed && s.pressed]}
     >
@@ -91,7 +94,7 @@ export function Chip({ label, selected, onPress, tone = 'normal', font }: { labe
   const fill: StyleProp<ViewStyle> = bg ? { backgroundColor: bg } : frost(0.66, 12);
   if (!onPress) return <View style={[s.chip, fill, { alignSelf: 'flex-start' }]}>{body}</View>;
   return (
-    <Pressable accessibilityRole="button" accessibilityState={{ selected }} onPress={onPress}
+    <Pressable accessibilityRole="button" accessibilityState={{ selected }} onPress={() => { haptic('tick'); onPress(); }}
       style={({ pressed }) => [s.chip, s.chipTap, fill, selected && glow(colors.ink, 0.3, 18), pressed && s.pressed]}>
       {body}
     </Pressable>

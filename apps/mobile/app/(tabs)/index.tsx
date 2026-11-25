@@ -1,4 +1,4 @@
-// Speak (traveller home): greeting, language chips, hold-to-talk mic, "or type", trip card, booking links, Alert me.
+// Speak (traveller home): greeting, language pill (header sheet), tap-to-talk mic, "or type", trip card, booking links, Alert me.
 import { router } from 'expo-router';
 import { useCallback, useEffect, useState } from 'react';
 import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
@@ -17,7 +17,10 @@ import { useOrders } from '../../src/state/orders';
 import { askNotifyPermission } from '../../src/lib/notify';
 import { useFlags } from '../../src/state/flags';
 import { getIdentity, setIdentity, travellerTraits } from '../../src/state/identity';
-import { useProfile } from '../../src/state/profile';
+import { profileStore, useProfile } from '../../src/state/profile';
+import { haptic } from '../../src/lib/haptics';
+import { LanguagePill } from '../../src/screens/speak/LanguageSheet';
+import { ShareTrip } from '../../src/screens/speak/ShareTrip';
 import { fillFromProfile, travelHints, tripFromProfile } from '../../src/lib/profileUse';
 import { colors, fontFor, fontForText, fonts, space, type as t } from '../../src/theme/tokens';
 import { Body, Button, Chip, Glass, Screen, Section, Small } from '../../src/ui/kit';
@@ -26,7 +29,6 @@ import { SoftRule } from '../../src/ui/backdrop';
 import { Diya } from '../../src/ui/motifs';
 import { Icon } from '../../src/ui/icons';
 
-const LANGS: Array<[Lang, string]> = [['kn-IN', 'ಕನ್ನಡ'], ['ta-IN', 'தமிழ்'], ['te-IN', 'తెలుగు'], ['hi-IN', 'हिन्दी'], ['od-IN', 'ଓଡ଼ିଆ'], ['bn-IN', 'বাংলা'], ['en-IN', 'English']];
 const SOURCE_LABEL: Record<string, string> = { live: 'live voice', mock: 'sample voice', fallback: 'offline voice', seeded: 'seeded', context_dev: 'news' };
 
 export default function Speak() {
@@ -55,7 +57,7 @@ export default function Speak() {
   const run = useCallback(async (job: () => Promise<VoiceIntentResponse>) => {
     setBusy(true);
     setError(null);
-    try { handle(await job()); } catch { setError('Could not understand that just now. Try typing, or pick a sample.'); }
+    try { handle(await job()); } catch { haptic('warning'); setError('Could not understand that just now. Try typing, or pick a sample.'); }
     setBusy(false);
   }, [handle]);
 
@@ -68,7 +70,11 @@ export default function Speak() {
     void api.options(intent.routeId, intent.dateFrom, intent.mode, intent.people).then(setOptions).catch(() => setOptions(null));
   }, [intent?.routeId, intent?.dateFrom, intent?.mode, intent?.people]);
 
-  const pickLang = (l: Lang) => { setLang(l); setIdentity({ language: l, mode: 'traveller' }); };
+  const pickLang = (l: Lang) => {
+    setLang(l);
+    setIdentity({ language: l, mode: 'traveller' }); // the identify effect sends the new language trait to Flagsmith
+    if (profile && profile.language !== l) profileStore.save({ ...profile, language: l });
+  };
   const alertMe = async () => {
     if (!intent) return;
     unlockAudio();
@@ -76,24 +82,24 @@ export default function Speak() {
     try {
       await api.saveTrip({ ...intent, travellerId: getIdentity().traveller });
     } catch {
+      haptic('warning');
       setError('Could not save the alert just now. Please tap Alert me again in a moment.');
       return;
     }
     const msg = lang === 'kn-IN' ? 'ಸರಿ, ಹೊಸ ಬಸ್ ಬಂದಾಗ ತಿಳಿಸುತ್ತೇನೆ.' : 'Done. I will tell you when a new bus opens.';
     setSaved(msg);
+    haptic('success');
     void playReply({ text: msg, language: lang, audioBase64: null, mime: null }); // Sarvam /v1/tts, robot voice only as last resort
   };
   const samples = UTTERANCES.filter((u) => u.language === lang || u.language === 'en-IN');
   const voiceOff = !flags.voice_enabled;
 
   return (
-    <Screen demoTag title={flags.festival_mode.greeting[lang] ?? flags.festival_mode.greeting['en-IN'] ?? 'Prasthan'} subtitle={`${flags.festival_mode.title} - say your trip home in your own language`}>
+    <Screen demoTag title={flags.festival_mode.greeting[lang] ?? flags.festival_mode.greeting['en-IN'] ?? 'Prasthan'} subtitle={`${flags.festival_mode.title} - say your trip home in your own language`} headerRight={<LanguagePill lang={lang} onPick={pickLang} />}>
       <View style={s.me}>
-        <Chip label={`${profile?.name || 'Guest'} - profile`} onPress={() => router.push('/profile')} />
         {orders.length ? <Chip label={`My orders (${orders.length})`} onPress={() => router.push('/orders')} /> : null}
         {profile ? <Chip label="My usual trip home" tone="soft" onPress={() => { setTurn(null); setSaved(null); setIntent(tripFromProfile(profile, getIdentity().traveller)); }} /> : null}
       </View>
-      <View style={s.langs}>{LANGS.map(([l, name]) => <Chip key={l} label={name} selected={l === lang} font={fontFor(l, l === lang)} onPress={() => pickLang(l)} />)}</View>
       <MicButton state={rec.state} elapsed={rec.elapsed} busy={busy} accent={accent.accent} disabled={voiceOff} onPress={rec.toggle} />
       <Text style={s.powered}>Powered by Sarvam AI</Text>
       {voiceOff ? <Small style={{ textAlign: 'center' }}>Voice is switched off right now. Please type.</Small> : null}
@@ -112,6 +118,7 @@ export default function Speak() {
       {error ? <Body style={{ color: colors.kumkum }}>{error}</Body> : null}
       {turn ? <ReplyCard turn={turn} /> : null}
       {intent ? <TripCard intent={intent} onChange={setIntent} /> : null}
+      {intent?.routeId ? <ShareTrip intent={intent} reply={turn?.reply.text ?? null} lang={lang} /> : null}
       {options && intent ? <Options options={options} lang={lang} hints={travelHints(profile, options.mode)} /> : null}
       {intent?.routeId && intent.dateFrom ? (
         <Section>

@@ -5,6 +5,7 @@ import { createAudioPlayer } from 'expo-audio';
 import { Platform } from 'react-native';
 import type { Lang, VoiceReply } from '@contract';
 import { api } from '../api';
+import { isMuted } from '../state/mute';
 
 const API_URL = (process.env.EXPO_PUBLIC_API_URL ?? '').replace(/\/$/, '');
 const isWeb = Platform.OS === 'web' && typeof window !== 'undefined';
@@ -64,12 +65,14 @@ export type Voiced = 'sarvam' | 'clip' | 'browser' | 'none';
 
 /** Returns how the reply was voiced, for the honesty chip. A blocked play of real audio never falls back to the robot voice. */
 export async function playReply(reply: VoiceReply): Promise<Voiced> {
+  if (isMuted()) return 'none';
   if (reply.audioBase64) return (await playUri(`data:${reply.mime ?? 'audio/wav'};base64,${reply.audioBase64}`)) ? 'sarvam' : 'none';
   if (reply.audioUrl && API_URL && (await playUri(`${API_URL}${reply.audioUrl}`))) return 'clip';
   return speakText(reply.text, reply.language);
 }
 
 export async function speakText(text: string, lang: Lang): Promise<'sarvam' | 'browser' | 'none'> {
+  if (isMuted()) return 'none';
   const live = await sarvam(text, lang);
   if (live !== null) return live ? 'sarvam' : 'none';
   return browserSpeak(text, lang) ? 'browser' : 'none';
