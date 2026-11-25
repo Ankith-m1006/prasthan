@@ -13,6 +13,7 @@ export interface Profile {
   name: string;
   language: Lang;
   homeState: string;
+  region?: string | null; // optional sub-region of the home state (e.g. North Karnataka); festival filter + Flagsmith trait
   homeRouteId: string; // seed route id, e.g. BLR-HBL (home town = its destination)
   workCity: 'Bengaluru';
   boardingPoint: string; // seed boarding point id, e.g. MAJESTIC
@@ -42,7 +43,7 @@ export function parseProfile(raw: string | null): Profile | null {
   if (!id || !homeState || !homeRouteId || !bp) return null;
   if (!oneOf(LANGS, o.language) || !oneOf(MODES, o.mode) || !oneOf(WITH, o.travellingWith)) return null;
   return {
-    id, name: text(o.name) ?? '', language: o.language, homeState, homeRouteId, workCity: 'Bengaluru', boardingPoint: bp,
+    id, name: text(o.name) ?? '', language: o.language, homeState, ...(text(o.region) ? { region: text(o.region) } : {}), homeRouteId, workCity: 'Bengaluru', boardingPoint: bp,
     mode: o.mode, travellingWith: o.travellingWith,
     ageGroup: oneOf(AGES, o.ageGroup) ? o.ageGroup : null,
     gender: oneOf(GENDERS, o.gender) ? o.gender : null,

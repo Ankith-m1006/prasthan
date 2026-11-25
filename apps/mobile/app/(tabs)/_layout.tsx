@@ -1,6 +1,7 @@
-// Four tabs: Speak (traveller), Alerts, Partners, About. No saved profile yet -> the welcome screen first.
+// Five tabs: Speak (traveller), Calendar (festivals), Alerts, Partners, About. No saved profile yet -> the welcome screen first.
 import { Redirect, Tabs } from 'expo-router';
 import { Icon, type IconName } from '../../src/ui/icons';
+import { CalendarIcon } from '../../src/screens/calendar/CalendarIcon';
 import { colors, fonts } from '../../src/theme/tokens';
 import { frost } from '../../src/ui/glass';
 import { useEffect } from 'react';
@@ -33,6 +34,7 @@ export default function TabsLayout() {
       }}
     >
       <Tabs.Screen name="index" options={{ title: 'Speak', tabBarIcon: icon('mic') }} />
+      <Tabs.Screen name="calendar" options={{ title: 'Calendar', tabBarIcon: ({ color }: { color: unknown }) => <CalendarIcon color={typeof color === 'string' ? color : colors.ink} /> }} />
       <Tabs.Screen name="alerts" options={{ title: 'Alerts', tabBarIcon: icon('bell'), tabBarBadge: unseen > 0 ? unseen : undefined, tabBarBadgeStyle: { backgroundColor: colors.kumkum } }} />
       <Tabs.Screen name="partners" options={{ title: 'Partners', tabBarIcon: icon('shop') }} />
       <Tabs.Screen name="about" options={{ title: 'About', tabBarIcon: icon('info') }} />

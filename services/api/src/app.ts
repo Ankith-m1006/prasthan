@@ -15,6 +15,7 @@ import tripRoutes from './routes/trips.js';
 import partnerRoutes from './routes/partners.js';
 import giftRoutes from './routes/gifts.js';
 import opsRoutes from './routes/ops.js';
+import festivalRoutes from './routes/festivals.js';
 import { hydrate, merge, toData } from './persist.js';
 
 export type Extra = (app: FastifyInstance, deps: Deps) => Promise<void>;
@@ -82,7 +83,7 @@ export async function buildApp(deps: Deps, extras: Extra[] = [], logger: boolean
   });
   app.setNotFoundHandler((_req, reply) => reply.status(404).send({ error: { code: 'not_found', message: 'No such route' } }));
 
-  for (const plugin of [opsRoutes, configRoutes, optionsRoutes, tripRoutes, partnerRoutes, giftRoutes, ...extras]) {
+  for (const plugin of [opsRoutes, configRoutes, optionsRoutes, tripRoutes, partnerRoutes, giftRoutes, festivalRoutes, ...extras]) {
     await plugin(app, deps);
   }
   return app;

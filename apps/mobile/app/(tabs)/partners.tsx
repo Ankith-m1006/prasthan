@@ -2,10 +2,12 @@
 import { useFocusEffect } from 'expo-router';
 import { useCallback, useEffect, useState } from 'react';
 import { StyleSheet, useWindowDimensions, View } from 'react-native';
-import type { AddServicesRequest, DemandResponse, GiftOrder, Partner, PartnerType } from '@contract';
+import type { AddServicesRequest, Alert, DemandResponse, GiftOrder, Partner, PartnerType } from '@contract';
 import linksJson from '../../../../seed/deep-links.json';
 import { api } from '../../src/api';
 import { AddBuses } from '../../src/screens/partners/AddBuses';
+import { FestivalWeeks, TranslatedAlert } from '../../src/screens/partners/FestivalWeeks';
+import { useProfile } from '../../src/state/profile';
 import { DemandRow } from '../../src/screens/partners/DemandBoard';
 import { openLink } from '../../src/screens/speak/Options';
 import { pollAlerts, rememberAlert } from '../../src/state/alerts';
@@ -39,6 +41,9 @@ export default function Partners() {
   const [orders, setOrders] = useState<GiftOrder[]>([]);
   const [adding, setAdding] = useState<string | null>(null);
   const [toast, setToast] = useState<string | null>(null);
+  const [weeksVer, setWeeksVer] = useState(0); // festival weeks refresh after buses are added
+  const [lastAlert, setLastAlert] = useState<Alert | null>(null);
+  const lang = useProfile()?.language ?? 'kn-IN';
 
   useEffect(() => { void api.partners().then((r) => setPartners(r.partners)).catch(() => setToast(SOFT_FAIL)); }, []);
   useFocusEffect(useCallback(() => {
@@ -56,7 +61,7 @@ export default function Partners() {
   }, []);
 
   const pick = async (p: Partner) => {
-    setCurrent(p); setToast(null); setAdding(null);
+    setCurrent(p); setToast(null); setAdding(null); setLastAlert(null);
     setIdentity({ partner: { id: p.id, type: p.type }, mode: 'partner' });
     await api.identify(p.id, partnerTraits(p.id, p.type)).catch(() => undefined);
     await refresh().catch(() => undefined);
@@ -70,6 +75,7 @@ export default function Partners() {
     try {
       const res = await api.addServices(current.id, r);
       rememberAlert(res.alert);
+      setLastAlert(res.alert); setWeeksVer((v) => v + 1);
       setToast(`${r.count} buses added. ${res.notified} waiting travellers notified.`);
       setAdding(null);
       await load(current, date);
@@ -89,6 +95,7 @@ export default function Partners() {
         </View>
       ))}
       {toast ? <View style={{ marginTop: 16 }}><Banner text={toast} tone={toast.startsWith('Could not') ? 'danger' : 'ok'} /></View> : null}
+      {lastAlert && current?.type === 'bus_operator' ? <TranslatedAlert alertId={lastAlert.id} fallback={lastAlert.textLocal?.[lang] ?? lastAlert.text} lang={lang} /> : null}
       {current ? (
         <>
           <View style={s.groupHead}><Monogram name={current.name} id={current.id} size={44} /><H2>{partnerName(current.name)}</H2></View>
@@ -100,6 +107,7 @@ export default function Partners() {
           ) : null}
         </>
       ) : <Body style={{ marginTop: 12 }}>Pick a business above to see its demand.</Body>}
+      {current?.type === 'bus_operator' ? <FestivalWeeks partner={current} version={weeksVer} /> : null}
       {current && !showBoard ? <Section><Body>Coming soon for this business type.</Body></Section> : null}
       {showBoard && board ? (
         <View style={wide ? s.grid : undefined}>

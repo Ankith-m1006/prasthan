@@ -4,6 +4,7 @@ import { StyleSheet, TextInput, View } from 'react-native';
 import { colors, fonts, type as t } from '../../theme/tokens';
 import { Button, Chip, Glass, Small } from '../../ui/kit';
 import { newGuestId, type Profile } from '../../state/profile';
+import { subRegionsFor } from '../../lib/festivals';
 import { AGE_CHOICES, boardingFor, GENDER_CHOICES, LANG_CHOICES, MODE_CHOICES, ROUTES, STATES, WITH_CHOICES } from './options';
 
 export const PRIVACY_LINE = 'Saved only on this phone. Operators only see totals, never your details.';
@@ -18,14 +19,14 @@ function Row({ label, children }: { label: string; children: ReactNode }) {
 }
 
 function blank(): Profile {
-  return { id: newGuestId(), name: '', language: 'kn-IN', homeState: 'Karnataka', homeRouteId: 'BLR-HBL', workCity: 'Bengaluru',
+  return { id: newGuestId(), name: '', language: 'kn-IN', homeState: 'Karnataka', region: null, homeRouteId: 'BLR-HBL', workCity: 'Bengaluru',
     boardingPoint: 'MAJESTIC', mode: 'bus', travellingWith: 'alone', ageGroup: null, gender: null };
 }
 
 export function ProfileForm({ initial, onSave }: { initial: Profile | null; onSave: (p: Profile) => void }) {
   const [p, setP] = useState<Profile>(initial ?? blank());
   const set = (patch: Partial<Profile>) => setP((old) => ({ ...old, ...patch }));
-  const pickState = (homeState: string) => set({ homeState, homeRouteId: ROUTES.find((r) => r.state === homeState)?.id ?? p.homeRouteId });
+  const pickState = (homeState: string) => set({ homeState, region: null, homeRouteId: ROUTES.find((r) => r.state === homeState)?.id ?? p.homeRouteId });
   const pickMode = (mode: Profile['mode']) => {
     const fits = boardingFor(mode);
     set({ mode, boardingPoint: fits.some((b) => b.id === p.boardingPoint) ? p.boardingPoint : fits[0]?.id ?? p.boardingPoint });
@@ -38,6 +39,7 @@ export function ProfileForm({ initial, onSave }: { initial: Profile | null; onSa
           style={s.input} accessibilityLabel="Your name" maxLength={40} />
         <Row label="Language for replies">{LANG_CHOICES.map(([l, n]) => <Chip key={l} label={n} selected={p.language === l} onPress={() => set({ language: l })} />)}</Row>
         <Row label="Home state">{STATES.map((st) => <Chip key={st} label={st} selected={p.homeState === st} onPress={() => pickState(st)} />)}</Row>
+        <Row label="Your region (optional, for festivals)">{subRegionsFor(p.homeState).map((r) => <Chip key={r} label={r} selected={p.region === r} onPress={() => set({ region: p.region === r ? null : r })} />)}</Row>
         <Row label="Home town">{ROUTES.filter((r) => r.state === p.homeState).map((r) => <Chip key={r.id} label={r.to} selected={p.homeRouteId === r.id} onPress={() => set({ homeRouteId: r.id })} />)}</Row>
       </Glass>
       <Glass>

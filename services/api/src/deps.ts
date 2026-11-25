@@ -5,6 +5,7 @@ import type { Metrics } from './metrics.js';
 import type { Seed } from './seed.js';
 import type { Clock, Store } from './store.js';
 import type { StorageAdapter } from './persist.js';
+import type { SarvamClient } from './sarvam/client.js';
 import type { Traits } from '../../../shared/contract/src/index.js';
 
 /** Turns the ops fallback switch on/off (Flagsmith Admin API in live mode, memory in mock). */
@@ -22,6 +23,10 @@ export interface Deps {
   clock: Clock;
   /** Shared storage across instances (Upstash Redis); omitted or memory = in-process store only. */
   persist?: StorageAdapter;
+  /** Live Sarvam client for alert translation; omitted = template texts only. */
+  sarvam?: SarvamClient;
+  /** Raw Flagsmith `festival_calendar` value (remote config); omitted or null = file / built-in calendar. */
+  remoteCalendar?: () => Promise<unknown>;
 }
 
 export function traitsFor(deps: Deps, identity: string): Traits {

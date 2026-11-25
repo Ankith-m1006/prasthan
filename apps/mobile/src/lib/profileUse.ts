@@ -6,10 +6,10 @@ import type { Profile, TravellingWith } from '../state/profile';
 const ROUTES = routesJson.routes;
 
 /** Traits Flagsmith segments use (Tamil Nadu -> Pongal mode). Optional age/gender are NOT sent. */
-export type ProfileTraits = Traits & { travel_mode?: string; travelling_with?: string };
+export type ProfileTraits = Traits & { travel_mode?: string; travelling_with?: string; region?: string };
 export function profileTraits(p: Profile): ProfileTraits {
   const town = ROUTES.find((r) => r.id === p.homeRouteId)?.to;
-  return { role: 'traveller', language: p.language, home_state: p.homeState, home_town: town, travel_mode: p.mode, travelling_with: p.travellingWith };
+  return { role: 'traveller', language: p.language, home_state: p.homeState, home_town: town, travel_mode: p.mode, travelling_with: p.travellingWith, ...(p.region ? { region: p.region } : {}) };
 }
 
 const PEOPLE: Record<TravellingWith, number> = { alone: 1, family: 3, kids: 3, elders: 2 };

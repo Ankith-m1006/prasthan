@@ -10,6 +10,7 @@ import { allNewServiceTexts } from '../i18n/templates.js';
 import { nextId, snapshot } from '../store.js';
 import { waitingCount } from './trips.js';
 import partnerAccountRoutes from './partnerAccounts.js';
+import { translateForWaiting } from '../festivals.js';
 
 function partnerOr404(deps: Deps, id: string): Partner {
   const p = deps.seed.partners.find((x) => x.id === id);
@@ -66,6 +67,7 @@ export default async function partnerRoutes(app: FastifyInstance, deps: Deps): P
     deps.store.services.push(...services);
     const alert = newServiceAlert(deps, partner, r);
     deps.store.alerts.push(alert);
+    await translateForWaiting(deps, alert); // Sarvam text per waiting traveller's language (templates stay as fallback)
     snapshot(deps.store, deps.config.storeSnapshot);
     const after = routeDemand(deps.seed, deps.store, r.routeId, r.date) ?? { want: 0, have: r.count * r.seats, gap: 0 };
     return { services, alert, notified: waitingCount(deps, r.routeId, r.date), demandAfter: after };

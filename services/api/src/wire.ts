@@ -54,11 +54,36 @@ export function flagsFor(config: Config, metrics: Metrics, log: (m: string) => v
   return { flags, ops: flagsmithOps(admin, memory, () => mock.clearOverrides(), log) };
 }
 
+/** The flag holds either the calendar itself or {version, url} pointing at a versioned JSON file (fetched, 4 s). */
+export async function resolveCalendarValue(raw: unknown, fetchImpl: typeof fetch = fetch): Promise<unknown> {
+  const v = typeof raw === 'string' ? (JSON.parse(raw) as unknown) : raw;
+  if (!v || typeof v !== 'object' || Array.isArray(v)) return v ?? null;
+  const o = v as { url?: unknown; festivals?: unknown };
+  if (o.festivals || typeof o.url !== 'string' || !o.url.startsWith('https://')) return v;
+  const res = await fetchImpl(o.url, { signal: AbortSignal.timeout(4000) });
+  return res.ok ? await res.json() : null;
+}
+
+/** Flagsmith `festival_calendar` (environment value), read at most once a minute; undefined without a server key. */
+export function remoteCalendarFor(config: Config, env = process.env): (() => Promise<unknown>) | undefined {
+  if (config.flagsmithMode !== 'live' || !env.FLAGSMITH_SERVER_KEY) return undefined;
+  const source = makeFlagsmith(env.FLAGSMITH_SERVER_KEY, loadFlagDefs());
+  let at = 0; let value: unknown = null;
+  return async () => {
+    if (Date.now() - at < 60_000) return value;
+    at = Date.now();
+    try { value = await resolveCalendarValue((await source.getEnvironmentFlags()).getFlag('festival_calendar').value); } catch { value = null; }
+    return value;
+  };
+}
+
 export async function wireAll(config: Config, log: (m: string) => void = () => {}): Promise<Wired> {
   const seed = loadSeed(config.seedDir);
   const metrics = createMetrics();
   const fl = flagsFor(config, metrics, log);
   const base: Deps = { config, seed, store: createStore(), flags: fl.flags, ops: fl.ops, metrics, clock: demoClock(config.demoToday), persist: adapterFromEnv() };
   const { live, mock } = sarvamClients(config, seed);
+  if (live !== mock) base.sarvam = live; // alert translation only with a real key
+  base.remoteCalendar = remoteCalendarFor(config);
   return wireVoice(base, live, mock);
 }
