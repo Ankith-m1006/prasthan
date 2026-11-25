@@ -3,8 +3,8 @@
 Updated: 25 Nov 2026, with every push. Builder so far: one session on Ankith's home laptop, working directly on `main`.
 
 ## Where we are
-- Current phase: Z-02 README written (clean-clone check running). LIVE: https://prasthan-ten.vercel.app. Done: P0, A-01..A-03, B-01..B-03, B-05 (+gifting card), C-02, Z-02 draft.
-- Last finished step: README.md (setup, sponsors, flag table, limits, AI use), docs/SUBMISSION.md ticks, secrets grep clean. Split roles tested locally: ROLE=voice + ROLE=api over HTTP; killing voice -> api answers with rules (llm=fallback), /v1/ops/state voiceHealthy=false.
+- Current phase: Z-02 done. LIVE: https://prasthan-ten.vercel.app. Done on main: P0, A-01, A-02, A-03, B-01, B-02, B-03, B-05 (+gifting card), C-02, Z-02.
+- Last finished step: clean clone in a temp folder: api install + check (57 tests) OK, app install + typecheck + jest (10) OK. Web app built against the real api (MOCK_ALL=1) verified in headless Chrome: speak -> alert me -> add 6 buses -> 16 notified -> Kannada alert, no console errors. Split ROLE=api/voice tested; killing voice -> traveller still answered (rules).
 - Next exact step: Ankith: screenshots into docs/img/, record video, put VIDEO_URL in README, make repo public, submit form by 16:45. Session C: C-01/C-03/C-04 on branch session-c (C-02 scripts already on main). Optional if time: A-04 context.dev.
 
 ## Commands
