@@ -3,15 +3,27 @@
 Updated: 25 Nov 2026, with every push. Builder so far: one session on Ankith's home laptop, working directly on `main`.
 
 ## Where we are
-- Current phase: B-05 done. LIVE: https://prasthan-ten.vercel.app (mock web build). Done: P0, A-01..A-03, B-01..B-03, B-05 (+ gifting card).
-- Last finished step: Vercel deploy verified (full demo loop, no console errors).
-- Next exact step: C-02 load + break/fix scripts + CI (only if origin/session-c has not started scripts/ or infra/load), then Z-02 README (`codex/Z-02-readme-video.md`) with AI-use section.
+- Current phase: C-02 done by the home builder (status/C.md left untouched for Session C). LIVE: https://prasthan-ten.vercel.app. Done: P0, A-01..A-03, B-01..B-03, B-05, C-02.
+- Last finished step: C-02: 15 s rush vs MOCK_ALL api = ~21k requests, 0 errors; demo-reset + traveller check OK; scripts --help OK; ci.yml written.
+- Next exact step: Z-02 README (`codex/Z-02-readme-video.md`) incl. AI-use section and honest mocked list.
 
 ## Commands
 - app checks: `cd apps/mobile && npm install && npm run typecheck && npm test`
 - app offline web: `cd apps/mobile && EXPO_PUBLIC_APP_MOCK=1 npx expo start --web`
 - api checks: `cd services/api && npm install && npm run check`
 - api dev (offline): `MOCK_ALL=1 npm --prefix services/api run dev` (port 8787)
+
+## C-02 (done on main by the home builder; Session C: copy this into status/C.md when you merge)
+- C-02 (home builder): infra/load/rush.mjs (no dependencies, plain fetch; autocannon skipped to keep installs lean on flaky Wi-Fi):
+  --url --minutes --connections; mix 50% alerts / 25% config / 20% options / 5% voice (silent WAV, header x-load-test: 1 so
+  the api uses the mock Sarvam client but still goes through the voice service); p50/p95/p99 + errors per route every 10 s.
+  Check: 15 s, 10 connections vs MOCK_ALL api: ~21k requests, 0 errors, p95 11-19 ms.
+- scripts/demo-break.mjs (FAULT_MODE=crash_on_voice or --oom 64Mi, rush, 5 s timeline: voice pods + "traveller answers: OK|FAIL"),
+  scripts/demo-fix.mjs (manual NudgeBee runbook: ops fallback on -> FAULT_MODE=none -> rollout status -> fallback off),
+  scripts/demo-reset.mjs; shared helpers in scripts/demo-lib.mjs. All print commands before running; OPS_TOKEN only SET/MISSING.
+  Env: PRASTHAN_URL (default http://localhost:8080 = k3d LB), PRASTHAN_NS (default prasthan). All have --help.
+- .github/workflows/ci.yml: api (npm ci + check), app (typecheck + jest), scripts (--help smoke; runs scripts/package.json tests if C adds one).
+- No scripts/package.json created on purpose, so C-01 can add its own without a conflict.
 
 ## What is mocked
 - Everything (no sponsor keys on the home laptop): `MOCK_ALL=1` on the api, `EXPO_PUBLIC_APP_MOCK=1` on the app.
