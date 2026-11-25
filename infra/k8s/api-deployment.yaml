@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata: { name: prasthan-api, namespace: prasthan, labels: { app: prasthan-api } }
+spec:
+  replicas: 2
+  selector: { matchLabels: { app: prasthan-api } }
+  template:
+    metadata:
+      labels: { app: prasthan-api }
+      annotations: { prometheus.io/scrape: "true", prometheus.io/port: "8787", prometheus.io/path: "/metrics" }
+    spec:
+      containers:
+        - name: api
+          image: prasthan:dev
+          imagePullPolicy: IfNotPresent
+          env:
+            - { name: ROLE, value: api }
+            - { name: VOICE_URL, value: "http://prasthan-voice:8787" }
+          envFrom: [ { secretRef: { name: prasthan-env } } ]
+          ports: [ { containerPort: 8787 } ]
+          resources:
+            requests: { cpu: 100m, memory: 128Mi }
+            limits: { cpu: 500m, memory: 256Mi }
+          readinessProbe: { httpGet: { path: /health, port: 8787 }, periodSeconds: 5 }
+          livenessProbe: { httpGet: { path: /health, port: 8787 }, periodSeconds: 10, failureThreshold: 3 }
