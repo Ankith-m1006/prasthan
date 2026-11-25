@@ -1,0 +1,108 @@
+{
+  "model": "bulbul:v3",
+  "speaker": "priya",
+  "sampleRateHz": 24000,
+  "channels": 1,
+  "scenes": [
+    {
+      "scene": 1,
+      "file": "scene-01.wav",
+      "seconds": 14.14254,
+      "startSeconds": 0.0,
+      "endSeconds": 14.14254,
+      "endHoldSeconds": 1.08656
+    },
+    {
+      "scene": 2,
+      "file": "scene-02.wav",
+      "seconds": 12.00921,
+      "startSeconds": 14.14254,
+      "endSeconds": 26.15175,
+      "endHoldSeconds": 1.08656
+    },
+    {
+      "scene": 3,
+      "file": "scene-03.wav",
+      "seconds": 9.64387,
+      "startSeconds": 26.15175,
+      "endSeconds": 35.79563,
+      "endHoldSeconds": 1.08656
+    },
+    {
+      "scene": 4,
+      "file": "scene-04.wav",
+      "seconds": 16.48521,
+      "startSeconds": 35.79563,
+      "endSeconds": 52.28083,
+      "endHoldSeconds": 6.58656
+    },
+    {
+      "scene": 5,
+      "file": "scene-05.wav",
+      "seconds": 12.09454,
+      "startSeconds": 52.28083,
+      "endSeconds": 64.37538,
+      "endHoldSeconds": 1.08656
+    },
+    {
+      "scene": 6,
+      "file": "scene-06.wav",
+      "seconds": 10.81454,
+      "startSeconds": 64.37538,
+      "endSeconds": 75.18992,
+      "endHoldSeconds": 1.08656
+    },
+    {
+      "scene": 7,
+      "file": "scene-07.wav",
+      "seconds": 13.20388,
+      "startSeconds": 75.18992,
+      "endSeconds": 88.39379,
+      "endHoldSeconds": 1.08656
+    },
+    {
+      "scene": 8,
+      "file": "scene-08.wav",
+      "seconds": 13.71588,
+      "startSeconds": 88.39379,
+      "endSeconds": 102.10967,
+      "endHoldSeconds": 1.08656
+    },
+    {
+      "scene": 9,
+      "file": "scene-09.wav",
+      "seconds": 11.41188,
+      "startSeconds": 102.10967,
+      "endSeconds": 113.52154,
+      "endHoldSeconds": 1.08656
+    },
+    {
+      "scene": 10,
+      "file": "scene-10.wav",
+      "seconds": 15.16654,
+      "startSeconds": 113.52154,
+      "endSeconds": 128.68808,
+      "endHoldSeconds": 1.08656
+    },
+    {
+      "scene": 11,
+      "file": "scene-11.wav",
+      "seconds": 14.73987,
+      "startSeconds": 128.68808,
+      "endSeconds": 143.42796,
+      "endHoldSeconds": 1.08656
+    },
+    {
+      "scene": 12,
+      "file": "scene-12.wav",
+      "seconds": 7.57188,
+      "startSeconds": 143.42796,
+      "endSeconds": 150.99983,
+      "endHoldSeconds": 1.08656
+    }
+  ],
+  "full": {
+    "file": "full.wav",
+    "seconds": 150.99983333333333
+  }
+}
