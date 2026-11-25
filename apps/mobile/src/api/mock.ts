@@ -1,7 +1,7 @@
 // MockClient: the whole api on bundled SYNTHETIC seed data, in memory, no network (EXPO_PUBLIC_APP_MOCK=1, or after
 // 2 failed api calls). Same shapes as the real api (shared/contract), so screens don't care which one they talk to.
 import type {
-  AddServicesRequest, Alert, DeepLink, DemandCell, GiftOrder, GiftOrderRequest, Lang, Mode, Partner, Service, Traits, Trip, TripIntent,
+  AddServicesRequest, Alert, DeepLink, DemandCell, FlagsView, GiftOrder, GiftOrderRequest, Lang, Mode, Partner, Service, Traits, Trip, TripIntent,
   VoiceIntentResponse, Warning,
 } from '@contract';
 import alertsJson from '../../../../seed/alerts.json';
@@ -26,15 +26,16 @@ const FORECAST = forecastJson.cells;
 const LABEL = 'Seeded demo data';
 const nowIso = () => `2027-01-05T${new Date(Date.now() + 5.5 * 3600_000).toISOString().slice(11, 19)}+05:30`;
 
-interface MockState { traits: Map<string, Traits>; trips: Trip[]; services: Service[]; alerts: Alert[]; orders: GiftOrder[]; n: number; switches: DemoSwitches }
-export const mockState: MockState = { traits: new Map(), trips: [], services: [], alerts: [], orders: [], n: 9000, switches: {} };
+interface MockState { traits: Map<string, Traits>; trips: Trip[]; services: Service[]; alerts: Alert[]; orders: GiftOrder[]; n: number; switches: DemoSwitches; live: FlagsView | null }
+export const mockState: MockState = { traits: new Map(), trips: [], services: [], alerts: [], orders: [], n: 9000, switches: {}, live: null };
 const nextId = (p: string) => `${p}-${(mockState.n += 1)}`;
 
-function traitsOf(id: string): Traits {
+export function traitsOf(id: string): Traits {
   const p = PARTNERS.find((x) => x.id === id);
   return mockState.traits.get(id) ?? (p ? { role: 'partner', partner_type: p.type, partner_id: p.id } : { role: 'traveller', language: 'kn-IN', home_state: 'Karnataka' });
 }
-export const flagsNow = (id = currentIdentity()) => mockFlags(id, traitsOf(id), mockState.switches);
+/** Live Flagsmith flags win when the app has them (set by state/flags.tsx); else the bundled mock rules. */
+export const flagsNow = (id = currentIdentity()): FlagsView => mockState.live ?? mockFlags(id, traitsOf(id), mockState.switches);
 
 function routeDemand(routeId: string, date: string) {
   const c = FORECAST.find((x) => x.routeId === routeId && x.date === date);

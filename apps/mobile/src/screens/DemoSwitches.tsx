@@ -18,7 +18,7 @@ export function DemoSwitches() {
   };
   return (
     <Glass>
-      <H2>Demo switches (Flagsmith, simulated offline)</H2>
+      <H2>Demo switches (Flagsmith unreachable, simulated)</H2>
       <Small>In the live setup these are Flagsmith flags with segments, changed from the dashboard or by the NudgeBee runbook. This offline copy flips them in the browser so you can see what each one does.</Small>
       <Small style={{ marginTop: 10 }}>festival_mode (now: {flags.festival_mode.title})</Small>
       <View style={{ flexDirection: 'row', gap: 8, flexWrap: 'wrap', marginTop: 4 }}>
