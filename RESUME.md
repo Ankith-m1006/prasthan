@@ -18,7 +18,17 @@ Updated: 25 Nov 2026, with every push. Builder so far: one session on Ankith's h
 - Checks: typecheck OK, jest 22/22 (new __tests__/profile.test.ts).
 - Next exact step: when the live-API web deploy commit is on origin/main, rebase, run the live-API export command from that section, redeploy prasthan-ten, verify welcome -> profile -> speak at 430 px, screenshot docs/img/ui-430-00-profile.png.
 
-## LIVE API ON VERCEL: https://prasthan-api.vercel.app (project "prasthan-api") - DEPLOYED + VERIFIED (mock mode)
+## WEB APP ON THE LIVE API (25 Nov ~14:10, verified in production)
+- https://prasthan-ten.vercel.app now calls https://prasthan-api.vercel.app (health: sarvam live, flagsmith live). Rollback target (offline build): promote prasthan-p1hup864s-ankith-ms-projects-8b28c506.vercel.app.
+- Build + deploy (web, live api + live flags), from apps/mobile:
+  `EXPO_PUBLIC_API_URL=https://prasthan-api.vercel.app EXPO_PUBLIC_APP_MOCK=0 EXPO_PUBLIC_FLAGSMITH_ENV_KEY=<client env key> npx expo export --platform web && node scripts/prepare-vercel.mjs && cd dist && (vercel link --project prasthan --yes) && vercel deploy --prod --yes`
+- Verified in headless Chrome at 430 px: welcome -> guest profile -> typed Kannada trip -> /v1/intent/parse 200 (BLR-HBL, reply audio audio/wav from Sarvam) -> Alert me (/v1/trips 200) -> Partners -> Demo State RTC -> Add 6 buses (/v1/partners/op-staterte/services 200, "15 waiting travellers notified") -> Kannada alert listed -> /v1/tts 200 live audio/wav (~570 KB base64) -> About "flags: live from Flagsmith". 19 api calls, all 200, 0 console errors, 0 CORS errors, app never fell back to offline data. Profile flow script: 0 errors, screenshot docs/img/ui-430-00-profile.png.
+- Direct api checks: /v1/tts returns JSON {audioBase64, mime: audio/wav, source: live} (contract shape, not a raw audio body), ~190-540 KB WAV, 3-10 s for Kannada. /v1/voice/intent with a Sarvam-synthesised Kannada WAV -> transcript "ನಮಸ್ಕಾರ, ಶುಕ್ರವಾರ ರಾತ್ರಿ Hubballi-ಗೆ bus ಇದೆ." -> BLR-HBL, 2027-01-08 (live Sarvam STT; intent parser = rules).
+- Real now: Sarvam STT + TTS (reply voice), Flagsmith flags (app SDK + api), api over HTTPS. Still synthetic: demand, partners, routes, alerts store (seeded demo data, in memory per serverless instance). Intent understanding shows "rules".
+- Resilience (app): Alert me / add buses / demand board failures show a friendly message, never a crash; the operator's new alert is kept locally so a poll on a fresh api instance cannot drop it; 25 s api timeout (a cold start took 21.6 s once); slow TTS falls back to the browser voice and never flips the app to offline data; after a fallback the app retries live after 20 s and switches back.
+- Known risk: serverless cold starts (up to ~20 s) and in-memory state per instance: a trip saved on one instance may not count in "notified" on another. Warm the api (open /health) a minute before the demo.
+
+## LIVE API ON VERCEL: https://prasthan-api.vercel.app (project "prasthan-api") - DEPLOYED + VERIFIED (keys added 25 Nov: sarvam live, flagsmith live)
 - Owner: api agent (services/api + this section). Do NOT touch apps/mobile or the "prasthan" web project from here.
 - Code (committed): services/api/api/index.ts (Fastify app built once per warm instance, `app.server.emit('request')`),
   services/api/vercel.json (all paths -> /api/index, maxDuration 60, includeFiles seed/, config/flagsmith/, apps/mobile/assets/audio/),
