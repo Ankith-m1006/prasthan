@@ -9,6 +9,11 @@ import { AUDIO_DIR, audioTurn, textTurn, useFallback, type TurnInput, type Voice
 
 const AUDIO_MIMES = ['audio/webm', 'audio/ogg', 'audio/mp4', 'audio/m4a', 'audio/x-m4a', 'audio/aac', 'audio/wav', 'audio/x-wav', 'audio/wave', 'audio/mpeg', 'audio/mp3'];
 
+/** 'audio/webm;codecs=opus' -> 'audio/webm' (browsers add codec parameters). */
+export function cleanMime(m: string | undefined): string {
+  return (m ?? '').split(';')[0].trim().toLowerCase();
+}
+
 function lang(v: unknown, fallback: Lang = 'kn-IN'): Lang {
   return LANGS.includes(v as Lang) ? (v as Lang) : fallback;
 }
@@ -54,7 +59,8 @@ export default async function voiceRoutes(app: FastifyInstance, deps: VoiceDeps)
     try { data = await readMultipart(req); } catch { throw new HttpError(413, 'too_large', 'Audio must be under 2 MB (about 20 s)'); }
     const flags = await flagsFor(req);
     const language = lang(data.fields.language, lang(traitsFor(deps, identityOf(req.headers['x-prasthan-identity'])).language));
-    const mime = AUDIO_MIMES.includes(data.mime) ? data.mime : 'audio/wav';
+    const bare = cleanMime(data.mime);
+    const mime = AUDIO_MIMES.includes(bare) ? bare : 'audio/wav';
     return audioTurn(deps, flags, data.audio, mime, data.name, turn(deps, req, language, data.fields.refDate, data.fields.context));
   });
 

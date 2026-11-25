@@ -2,8 +2,8 @@
 //
 // Verified on docs.sarvam.ai (25 Nov 2026, via the .md versions of these pages):
 // - TTS  https://docs.sarvam.ai/api/api-guides-tutorials/text-to-speech/overview : POST /text-to-speech,
-//        JSON {text, language_code, model, speaker}; response {audios: [base64 WAV]}. bulbul:v3 is the default model.
-//        (The prep kit also mentioned target_language_code; we retry once with that name if the first call is a 400/422.)
+//        JSON {text, language_code, model, speaker, pace, speech_sample_rate, enable_preprocessing, temperature};
+//        response {audios: [base64 WAV]}. Re-checked 25 Nov 15:05: bulbul:v4-flash is newest; voices in voices.ts.
 // - STT  https://docs.sarvam.ai/api/api-guides-tutorials/speech-to-text/overview : POST /speech-to-text, model saaras:v4,
 //        mode transcribe|translate|verbatim|translit|codemix, max 30 s audio; accepts webm, ogg/opus, mp4/m4a, wav, mp3, aac.
 //        So no ffmpeg conversion is needed. Multipart field `file` + `language_code` and response `transcript` /
@@ -15,6 +15,8 @@
 import type { Lang } from '../../../../shared/contract/src/index.js';
 import { fetchRetry, TimeoutError } from '../http.js';
 import { SARVAM_BASE, SarvamError, type ChatMessage, type SarvamClient } from './client.js';
+import { TTS_SETTINGS, voicesFor } from './voices.js';
+import { toSpoken } from '../voice/spoken.js';
 
 const TIMEOUT_MS = 8000;
 const CHAT_TIMEOUT_MS = 7000;
@@ -74,17 +76,24 @@ export class LiveSarvamClient implements SarvamClient {
     return content;
   }
 
+  /** Natural voice: bulbul:v4-flash persona for the language (fallback bulbul:v3 + the flag speaker), 24 kHz WAV,
+   *  pace 1.0, enable_preprocessing on, and the text rewritten for speech first (no ids, arrows, "Rs"). One call per reply. */
   async tts(text: string, lang: Lang, model: string, speaker: string): Promise<string | null> {
-    const base = { text: text.slice(0, 2500), model, speaker };
-    let out: Record<string, unknown>;
-    try {
-      out = await this.call('/text-to-speech', JSON.stringify({ ...base, language_code: lang }), true);
-    } catch (err) {
-      if (!(err instanceof SarvamError && (err.status === 400 || err.status === 422))) throw err;
-      out = await this.call('/text-to-speech', JSON.stringify({ ...base, target_language_code: lang }), true);
+    const spoken = toSpoken(text, lang).slice(0, 2500) || text.slice(0, 2500);
+    let lastErr: unknown = null;
+    for (const v of voicesFor(lang, model, speaker)) {
+      try {
+        const body = { text: spoken, language_code: lang, model: v.model, speaker: v.speaker, ...TTS_SETTINGS };
+        const out = await this.call('/text-to-speech', JSON.stringify(body), true);
+        const audios = out.audios as string[] | undefined;
+        if (audios?.[0]) return audios[0];
+      } catch (err) {
+        lastErr = err;
+        if (!(err instanceof SarvamError && (err.status === 400 || err.status === 422))) throw err;
+      }
     }
-    const audios = out.audios as string[] | undefined;
-    return audios?.[0] ?? null;
+    if (lastErr) throw lastErr;
+    return null;
   }
 
   async translate(text: string, from: Lang, to: Lang): Promise<string> {
