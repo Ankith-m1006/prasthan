@@ -32,7 +32,7 @@ export function Options({ options, lang, hints = [] }: { options: OptionsRespons
           ) : null}
         </Glass>
       ) : null}
-      <H2>Book on the official sites</H2>
+      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}><Icon name={options.mode === 'train' ? 'train' : options.mode === 'air' ? 'plane' : 'bus'} size={26} /><H2>Book on the official sites</H2></View>
       <Small>We only link out. No prices, no ranking, no tickets sold here.</Small>
       <View style={wide ? { flexDirection: 'row', flexWrap: 'wrap', columnGap: 12, marginTop: 8 } : { marginTop: 8 }}>
       {options.links.map((l) => (

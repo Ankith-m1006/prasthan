@@ -23,6 +23,7 @@ import bpJson from '../../../../seed/boarding-points.json';
 
 const pointName = (id: string) => bpJson.boardingPoints.find((b) => b.id === id)?.name.split(' (')[0] ?? id;
 
+const GROUP_ICON: Record<PartnerType, 'bus' | 'gift' | 'shop'> = { bus_operator: 'bus', sweet_shop: 'gift', quick_commerce: 'shop' };
 const GROUPS: Array<[PartnerType, string]> = [['bus_operator', 'Bus operators'], ['sweet_shop', 'Sweet shops'], ['quick_commerce', 'Quick commerce (roadmap)']];
 const DATES = ['2027-01-12', '2027-01-13', '2027-01-14', '2027-01-15', '2027-01-16', '2027-01-17'];
 const UNIT: Record<PartnerType, string> = { bus_operator: 'seats', sweet_shop: 'capacity', quick_commerce: 'served' };
@@ -83,7 +84,7 @@ export default function Partners() {
     <Screen demoTag title="Partners" subtitle="One demand board for every business.">
       {GROUPS.map(([type, name]) => (
         <View key={type}>
-          <Small style={s.group}>{name}</Small>
+          <View style={[s.groupHead, { marginTop: 14 }]}><Icon name={GROUP_ICON[type]} size={18} color={colors.inkSoft} /><Small style={[s.group, { marginTop: 0 }]}>{name}</Small></View>
           <View style={s.chips}>{partners.filter((p) => p.type === type).map((p) => <View key={p.id} style={s.partner}><Monogram name={p.name} id={p.id} size={34} /><Chip label={partnerName(p.name)} selected={p.id === current?.id} onPress={() => void pick(p)} /></View>)}</View>
         </View>
       ))}
