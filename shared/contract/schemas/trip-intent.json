@@ -122,6 +122,9 @@
             },
             "partnerId": {
               "type": "string"
+            },
+            "unit": {
+              "type": "string"
             }
           }
         }
@@ -151,8 +154,26 @@
     },
     "parser": {
       "enum": [
+        "sarvam-llm",
         "llm",
         "rules"
+      ]
+    },
+    "travellingWith": {
+      "anyOf": [
+        {
+          "type": "null"
+        },
+        {
+          "enum": [
+            "alone",
+            "family",
+            "elders",
+            "kids",
+            "friends",
+            "partner"
+          ]
+        }
       ]
     }
   }

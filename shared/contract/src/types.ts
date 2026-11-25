@@ -10,7 +10,8 @@ export type FollowUpField = 'to' | 'date' | 'mode' | 'people';
 
 export interface Traveller { id: string; displayName?: string; language: Lang; homeState?: string; homeTown?: string }
 
-export interface GiftAsk { itemId: string; qty: number; partnerId?: string }
+export interface GiftAsk { itemId: string; qty: number; partnerId?: string; unit?: string }
+export type TravellingWith = 'alone' | 'family' | 'elders' | 'kids' | 'friends' | 'partner';
 
 export interface TripIntent {
   id: string; travellerId: string;
@@ -28,7 +29,10 @@ export interface TripIntent {
   language: Lang;
   transcript: string;
   confidence: number;
-  parser: 'llm' | 'rules';
+  /** v2: 'sarvam-llm' when Sarvam's chat model understood it; 'llm' is the old v1 name (still accepted). */
+  parser: 'sarvam-llm' | 'llm' | 'rules';
+  /** v2, optional: who the traveller goes with (LLM path only). */
+  travellingWith?: TravellingWith | null;
 }
 
 export interface Route { id: string; to: string; toLocal: string; aliases: string[]; state: string; homeLanguage: Lang; modes: Mode[]; boardingPoints: string[] }

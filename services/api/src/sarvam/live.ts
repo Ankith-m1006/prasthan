@@ -8,13 +8,16 @@
 //        mode transcribe|translate|verbatim|translit|codemix, max 30 s audio; accepts webm, ogg/opus, mp4/m4a, wav, mp3, aac.
 //        So no ffmpeg conversion is needed. Multipart field `file` + `language_code` and response `transcript` /
 //        `language_code` are from earlier Sarvam API versions: UNVERIFIED on today's page.
-// - Chat https://docs.sarvam.ai/api/token-factory/chat-completions : OpenAI-compatible /v1/chat/completions, model sarvam-105b.
+// - Chat https://docs.sarvam.ai/api/token-factory/chat-completions : OpenAI-compatible /v1/chat/completions, model sarvam-105b (sarvam-m is deprecated).
+//        Re-checked 25 Nov 14:30 (api-reference/chat/chat-completions-v1): reasoning_effort null = reasoning off,
+//        max_tokens includes reasoning tokens (the earlier 600-token call ran out), response_format json_object supported.
 // - Translate: POST /translate {input, source_language_code, target_language_code, model} -> {translated_text}: UNVERIFIED.
 import type { Lang } from '../../../../shared/contract/src/index.js';
 import { fetchRetry, TimeoutError } from '../http.js';
 import { SARVAM_BASE, SarvamError, type ChatMessage, type SarvamClient } from './client.js';
 
 const TIMEOUT_MS = 8000;
+const CHAT_TIMEOUT_MS = 7000;
 
 export interface LiveOptions { apiKey: string; badModel?: boolean; baseUrl?: string; fetchImpl?: typeof fetchRetry }
 
@@ -28,12 +31,12 @@ export class LiveSarvamClient implements SarvamClient {
     this.doFetch = opts.fetchImpl ?? fetchRetry;
   }
 
-  private async call(path: string, body: BodyInit, json: boolean): Promise<Record<string, unknown>> {
+  private async call(path: string, body: BodyInit, json: boolean, timeoutMs = TIMEOUT_MS): Promise<Record<string, unknown>> {
     const headers: Record<string, string> = { 'api-subscription-key': this.opts.apiKey };
     if (json) headers['content-type'] = 'application/json';
     let res: Response;
     try {
-      res = await this.doFetch(`${this.base}${path}`, { method: 'POST', headers, body }, { timeoutMs: TIMEOUT_MS });
+      res = await this.doFetch(`${this.base}${path}`, { method: 'POST', headers, body }, { timeoutMs });
     } catch (err) {
       throw new SarvamError(err instanceof TimeoutError ? 'timeout' : 'http', `sarvam ${path} failed`);
     }
@@ -54,12 +57,20 @@ export class LiveSarvamClient implements SarvamClient {
     return { transcript: out.transcript, language: typeof out.language_code === 'string' ? (out.language_code as Lang) : null };
   }
 
+  /** sarvam-105b with reasoning off (reasoning tokens count toward max_tokens), small output, JSON mode.
+   *  If the json_object response_format is rejected (400/422), retry once without it. */
   async chat(messages: ChatMessage[]): Promise<string> {
-    const body = JSON.stringify({ model: 'sarvam-105b', messages, temperature: 0.1, max_tokens: 600 });
-    const out = await this.call('/v1/chat/completions', body, true);
-    const choices = out.choices as Array<{ message?: { content?: string } }> | undefined;
+    const base = { model: 'sarvam-105b', messages, temperature: 0.1, max_tokens: 350, reasoning_effort: null };
+    let out: Record<string, unknown>;
+    try {
+      out = await this.call('/v1/chat/completions', JSON.stringify({ ...base, response_format: { type: 'json_object' } }), true, CHAT_TIMEOUT_MS);
+    } catch (err) {
+      if (!(err instanceof SarvamError && (err.status === 400 || err.status === 422))) throw err;
+      out = await this.call('/v1/chat/completions', JSON.stringify(base), true, CHAT_TIMEOUT_MS);
+    }
+    const choices = out.choices as Array<{ message?: { content?: string | null } }> | undefined;
     const content = choices?.[0]?.message?.content;
-    if (typeof content !== 'string') throw new SarvamError('bad_response', 'no chat content');
+    if (typeof content !== 'string' || !content.trim()) throw new SarvamError('bad_response', 'no chat content');
     return content;
   }
 

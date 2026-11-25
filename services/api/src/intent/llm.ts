@@ -1,85 +1,132 @@
-// LLM intent parsing with sarvam-105b: JSON-only prompt, ajv validation, one retry with the error, then rules.
+// LLM intent parsing with Sarvam's chat model (sarvam-105b, reasoning off): strict JSON prompt, ajv validation,
+// one corrective retry on invalid output, an overall deadline, then the rule parser. Never throws.
 import { Ajv2020 } from 'ajv/dist/2020.js';
-import type { TripIntent } from '../../../../shared/contract/src/index.js';
+import type { TravellingWith, TripIntent } from '../../../../shared/contract/src/index.js';
 import type { ChatMessage } from '../sarvam/client.js';
-import { parseRules, type ParseInput, type ParseWorld } from './rules.js';
+import { findKey, LEXICON, parseRules, type ParseInput, type ParseWorld } from './rules.js';
 
-/** The part of the intent the LLM fills. */
+/** What the LLM fills. gift.item may be a known itemId or a free-form sweet name (mapped to an itemId). */
 export interface LlmFields {
-  to: string | null; routeId: string | null; dateFrom: string | null; dateTo: string | null;
-  timeWindow: TripIntent['timeWindow']; mode: TripIntent['mode']; people: number;
-  boardingPoint: string | null; festivalId: string | null; gift: TripIntent['gift'];
+  from: string | null; to: string | null; routeId: string | null; dateFrom: string | null; dateTo: string | null;
+  timeWindow: TripIntent['timeWindow']; mode: TripIntent['mode']; people: number; travellingWith: TravellingWith | null;
+  boardingPoint: string | null; festivalId: string | null; gift: { item: string; qty: number; unit: string | null } | null;
 }
 
 const nullable = (t: object) => ({ anyOf: [t, { type: 'null' }] });
+const DATE = { type: 'string', pattern: '^\\d{4}-\\d{2}-\\d{2}$' };
 export const LLM_SCHEMA = {
   type: 'object',
   required: ['to', 'routeId', 'dateFrom', 'timeWindow', 'mode', 'people'],
   properties: {
-    to: nullable({ type: 'string' }), routeId: nullable({ type: 'string' }),
-    dateFrom: nullable({ type: 'string', pattern: '^\\d{4}-\\d{2}-\\d{2}$' }), dateTo: nullable({ type: 'string', pattern: '^\\d{4}-\\d{2}-\\d{2}$' }),
+    from: nullable({ type: 'string' }), to: nullable({ type: 'string' }), routeId: nullable({ type: 'string' }),
+    dateFrom: nullable(DATE), dateTo: nullable(DATE),
     timeWindow: { enum: ['morning', 'afternoon', 'evening', 'night', 'any'] }, mode: nullable({ enum: ['bus', 'train', 'air'] }),
-    people: { type: 'integer', minimum: 1, maximum: 20 }, boardingPoint: nullable({ type: 'string' }), festivalId: nullable({ type: 'string' }),
-    gift: nullable({ type: 'object', required: ['itemId', 'qty'], properties: { itemId: { type: 'string' }, qty: { type: 'number' } } }),
+    people: { type: 'integer', minimum: 1, maximum: 20 },
+    travellingWith: nullable({ enum: ['alone', 'family', 'elders', 'kids', 'friends', 'partner'] }),
+    boardingPoint: nullable({ type: 'string' }), festivalId: nullable({ type: 'string' }),
+    gift: nullable({ type: 'object', required: ['item', 'qty'], properties: { item: { type: 'string' }, qty: { type: 'number', exclusiveMinimum: 0 }, unit: nullable({ type: 'string' }) } }),
   },
 } as const;
 
 const ajv = new Ajv2020({ allErrors: true, strict: false });
 const validate = ajv.compile<LlmFields>(LLM_SCHEMA);
+const GIFT_IDS = Object.keys(LEXICON.items);
+const BOARDING_IDS = Object.keys(LEXICON.boardingPoints);
+export const LLM_DEADLINE_MS = 15000;
 
 export function systemPrompt(world: ParseWorld, refDate: string): string {
-  const routes = world.routes.map((r) => ({ id: r.id, to: r.to, aliases: r.aliases }));
-  const fests = world.festivals.map((f) => ({ id: f.id, name: f.name, date: f.date, travelWindow: f.travelWindow }));
+  const routes = world.routes.map((r) => `${r.id}=${r.to}`).join(', ');
+  const fests = world.festivals.map((f) => `${f.id} (${f.name}, ${f.date}${f.travelWindow ? `, travel ${f.travelWindow.from}..${f.travelWindow.to}` : ''})`).join('; ');
   return [
-    'You turn a traveller\'s sentence (any Indian language, code-mixed allowed) into JSON for a trip FROM Bengaluru.',
-    `Today is ${refDate}. Weekdays mean the next such day; with a festival word, the weekday inside that festival's travelWindow.`,
-    `Routes (use routeId and the canonical "to"; null if none matches): ${JSON.stringify(routes)}`,
-    `Festivals: ${JSON.stringify(fests)}`,
-    'Boarding point ids: MAJESTIC, SATELLITE, SHANTINAGAR, KR_PURAM, ELECTRONIC_CITY, KSR, SMVT, KIA. Gift itemIds: mysore-pak, dharwad-peda, ellu-bella, sakkare-acchu, gift-box-s.',
-    `Reply with ONLY one JSON object matching this JSON Schema, no prose: ${JSON.stringify(LLM_SCHEMA)}`,
-    'Unknown fields are null; people defaults to 1; timeWindow defaults to "any".',
+    'Extract a festival trip home from one sentence (Kannada, Hindi, Tamil, Telugu, English or code-mixed, any script). Trips start in Bengaluru.',
+    `Today is ${refDate}. A weekday means the next such day; with a festival, the weekday inside its travel window. A range ("Friday or Saturday") -> dateFrom..dateTo.`,
+    `routeId must be one of: ${routes}; null if none. "to" = that route's town.`,
+    `festivalId one of: ${fests}; else null.`,
+    `boardingPoint one of ${BOARDING_IDS.join(', ')} or null. timeWindow: raatri/raat/night->night, beligge/subah->morning, sanje/shaam->evening.`,
+    `travellingWith: ajji/ajja/amma/appa/dadi/nani/parents->elders, family/maneyavaru->family, makkalu/bacche/kids->kids, friends->friends, wife/husband->partner, alone->alone, else null.`,
+    `gift: a sweet or gift to pre-order; item = one of ${GIFT_IDS.join(', ')} if it matches, qty number, unit (kg, box, piece) or null. No gift -> null.`,
+    'people: count of travellers incl. the speaker (default 1; "with ajji" = 2).',
+    `Reply with ONLY one minified JSON object matching this JSON Schema, no prose, no markdown: ${JSON.stringify(LLM_SCHEMA)}`,
   ].join('\n');
 }
 
 export function extractJson(text: string): unknown {
-  const start = text.indexOf('{');
-  const end = text.lastIndexOf('}');
+  const clean = text.replace(/<think>[\s\S]*?<\/think>/g, '');
+  const start = clean.indexOf('{');
+  const end = clean.lastIndexOf('}');
   if (start < 0 || end <= start) throw new Error('no JSON object');
-  return JSON.parse(text.slice(start, end + 1));
+  return JSON.parse(clean.slice(start, end + 1));
+}
+
+/** Maps the LLM's gift item (id or free name) to a known itemId, or null. */
+export function giftItemId(item: string): string | null {
+  const s = item.toLowerCase().trim();
+  if (GIFT_IDS.includes(s)) return s;
+  return findKey(s, LEXICON.items)?.key ?? findKey(s.replace(/-/g, ' '), LEXICON.items)?.key ?? null;
 }
 
 function toIntent(f: LlmFields, input: ParseInput, world: ParseWorld): TripIntent {
   const route = world.routes.find((r) => r.id === f.routeId) ?? null;
   const base = parseRules({ ...input, text: '' }, world);
+  const itemId = f.gift ? giftItemId(f.gift.item) : null;
+  const gift = f.gift && itemId ? { itemId, qty: f.gift.qty, ...(f.gift.unit ? { unit: f.gift.unit } : {}) } : null;
   const intent: TripIntent = {
-    ...base, to: route?.to ?? null, routeId: route?.id ?? null, dateFrom: f.dateFrom, dateTo: f.dateTo ?? f.dateFrom,
-    timeWindow: f.timeWindow, mode: f.mode, people: f.people, boardingPoint: f.boardingPoint ?? null,
-    festivalId: f.festivalId ?? null, gift: f.gift ?? null, transcript: input.text, confidence: 0.86, parser: 'llm',
+    ...base, from: f.from && f.from.trim() ? f.from : base.from, to: route?.to ?? null, routeId: route?.id ?? null,
+    dateFrom: f.dateFrom, dateTo: f.dateTo ?? f.dateFrom, timeWindow: f.timeWindow, mode: f.mode, people: f.people,
+    boardingPoint: f.boardingPoint && BOARDING_IDS.includes(f.boardingPoint) ? f.boardingPoint : null,
+    festivalId: world.festivals.some((x) => x.id === f.festivalId) ? f.festivalId : null,
+    gift, travellingWith: f.travellingWith ?? null, transcript: input.text, confidence: 0.86, parser: 'sarvam-llm',
   };
   intent.needsFollowUp = [...(intent.to ? [] : ['to' as const]), ...(intent.dateFrom ? [] : ['date' as const])];
   return intent;
 }
 
-/** chat() is the Sarvam chat call (live or mock). Never throws: falls back to the rule parser. */
-export async function parseWithLlm(
-  chat: (m: ChatMessage[]) => Promise<string>, input: ParseInput, world: ParseWorld,
-): Promise<{ intent: TripIntent; usedLlm: boolean }> {
+function withDeadline<T>(p: Promise<T>, ms: number): Promise<T> {
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  const timeout = new Promise<never>((_, reject) => { timer = setTimeout(() => reject(new Error('llm deadline')), ms); });
+  return Promise.race([p, timeout]).finally(() => clearTimeout(timer));
+}
+
+async function tryLlm(chat: (m: ChatMessage[]) => Promise<string>, input: ParseInput, world: ParseWorld): Promise<TripIntent | null> {
   const messages: ChatMessage[] = [
     { role: 'system', content: systemPrompt(world, input.refDate) },
     { role: 'user', content: input.text },
   ];
   for (let attempt = 0; attempt < 2; attempt += 1) {
-    try {
-      const raw = await chat(messages);
-      const data = extractJson(raw);
-      if (validate(data)) return { intent: toIntent(data, input, world), usedLlm: true };
-      messages.push({ role: 'assistant', content: raw }, { role: 'user', content: `Invalid: ${ajv.errorsText(validate.errors)}. Reply with corrected JSON only.` });
-    } catch {
-      if (attempt === 1) break;
-      messages.push({ role: 'user', content: 'Reply with one JSON object only.' });
+    const raw = await chat(messages); // network errors/timeouts are retried inside the client; they end the LLM path here
+    let data: unknown;
+    try { data = extractJson(raw); } catch {
+      messages.push({ role: 'assistant', content: raw.slice(0, 400) }, { role: 'user', content: 'Reply with one JSON object only.' });
+      continue;
     }
+    if (validate(data)) return toIntent(data, input, world);
+    messages.push({ role: 'assistant', content: raw.slice(0, 400) }, { role: 'user', content: `Invalid: ${ajv.errorsText(validate.errors)}. Reply with corrected JSON only.` });
   }
+  return null;
+}
+
+/** chat() is the Sarvam chat call (live or mock). Never throws: falls back to the rule parser. Follow-up context is merged. */
+export async function parseWithLlm(
+  chat: (m: ChatMessage[]) => Promise<string>, input: ParseInput, world: ParseWorld, deadlineMs = LLM_DEADLINE_MS,
+): Promise<{ intent: TripIntent; usedLlm: boolean }> {
+  try {
+    const intent = await withDeadline(tryLlm(chat, input, world), deadlineMs);
+    if (intent) return { intent: mergeContext(input.context, intent), usedLlm: true };
+  } catch { /* timeout / network / bad response: rules below */ }
   return { intent: parseRules(input, world), usedLlm: false };
+}
+
+/** Follow-up answers ("Saturday") only fill what the LLM left empty from the previous turn. */
+function mergeContext(prev: TripIntent | null | undefined, next: TripIntent): TripIntent {
+  if (!prev) return next;
+  const keep = <K extends keyof TripIntent>(k: K): TripIntent[K] => (next[k] === null || next[k] === undefined ? prev[k] : next[k]);
+  const merged: TripIntent = {
+    ...next, to: keep('to'), routeId: keep('routeId'), dateFrom: keep('dateFrom'), dateTo: keep('dateTo'), mode: keep('mode'),
+    boardingPoint: keep('boardingPoint'), festivalId: keep('festivalId'), gift: keep('gift'), travellingWith: keep('travellingWith'),
+    timeWindow: next.timeWindow === 'any' ? prev.timeWindow : next.timeWindow, people: next.people === 1 ? prev.people : next.people,
+  };
+  merged.needsFollowUp = [...(merged.to ? [] : ['to' as const]), ...(merged.dateFrom ? [] : ['date' as const])];
+  return merged;
 }
 
 /** Mock chat: answers like the LLM would, using the rule parser on the last user line. */
@@ -87,7 +134,11 @@ export function mockChat(world: ParseWorld, refDate: string): (m: ChatMessage[])
   return (messages) => {
     const text = [...messages].reverse().find((m) => m.role === 'user' && !m.content.startsWith('Invalid') && !m.content.startsWith('Reply'))?.content ?? '';
     const i = parseRules({ text, language: 'en-IN', refDate, travellerId: 'mock', id: 'mock' }, world);
-    const fields: LlmFields = { to: i.to, routeId: i.routeId, dateFrom: i.dateFrom, dateTo: i.dateTo, timeWindow: i.timeWindow, mode: i.mode, people: i.people, boardingPoint: i.boardingPoint, festivalId: i.festivalId, gift: i.gift };
+    const fields: LlmFields = {
+      from: i.from, to: i.to, routeId: i.routeId, dateFrom: i.dateFrom, dateTo: i.dateTo, timeWindow: i.timeWindow, mode: i.mode,
+      people: i.people, travellingWith: null, boardingPoint: i.boardingPoint, festivalId: i.festivalId,
+      gift: i.gift ? { item: i.gift.itemId, qty: i.gift.qty, unit: null } : null,
+    };
     return JSON.stringify(fields);
   };
 }
