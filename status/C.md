@@ -8,10 +8,10 @@ Branch: session-c. Contract version: 1.
 - C-02 was already delivered on main by the home builder.
 
 ## Next exact step
-- Install WSL 2 and Docker Desktop, start the Docker engine, then install k3d and kubectl and run node infra/k8s/k3d-up.mjs.
+- Install and start Docker Desktop on the venue laptop. From a new PowerShell window confirm docker info succeeds, then run node infra/k8s/k3d-up.mjs.
 
 ## Blockers
-- Docker and k3d were unavailable on PATH. WSL reports it is not installed. C-04 paused at user request.
+- WSL now reports default version 2. Docker Desktop, the Docker CLI and the engine are unavailable. k3d v5.9.0, matching kubectl v1.35.5 and Helm v4.3.2 are installed on the user PATH with release checksums verified. All six Kubernetes resources passed static validation against Kubernetes v1.35.5. No cluster or NudgeBee recovery timing yet.
 
 ## Commands
 - From the checkout: npm --prefix scripts ci, npm --prefix scripts test, npm --prefix scripts run flags:import:dry, npm --prefix scripts run flags:import.
@@ -29,3 +29,6 @@ C-03 image definition, Dockerfile-specific context allowlist, six Kubernetes res
 ## Request to Session A
 
 - Investigate the 600-token chat completion limit with sarvam-105b on the full trip prompt. In a diagnostic replay both attempts returned HTTP 200, finish_reason length, 600 completion tokens and no message content. The voice route correctly used rules. A short chat probe returned content with the expected field name. Validate a completion budget or supported reasoning setting against the eight-second timeout before changing the client.
+## C-04 preparation
+
+Runbook prepared in docs/NUDGEBEE-RUNBOOK.md. Read-only Flagsmith check returned HTTP 200 for the Development fallback flag; it is off. No live flag changes were made. After Docker startup, connect the venue cluster and verify the NudgeBee agent before fault injection. The checkout still needs FLAGSMITH_SERVER_KEY for live flag consumption and OPS_TOKEN for the authenticated ops route. Alert, approval, traveller continuity and recovery timings are pending rehearsal.
