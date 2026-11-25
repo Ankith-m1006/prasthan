@@ -15,6 +15,7 @@ import partnersJson from '../../../../seed/partners.json';
 import qcJson from '../../../../seed/qc-demand.json';
 import routesJson from '../../../../seed/routes.json';
 import { dateLabel, mockReply } from '../lib/format';
+import { pickupCells, shopsNear } from '../lib/gifts';
 import { miniParse, UTTERANCES } from '../lib/miniParse';
 import { currentIdentity } from '../state/identity';
 import { mockFlags, type DemoSwitches } from './mockFlags';
@@ -143,8 +144,22 @@ export function createMockClient(): Api {
       mockState.alerts.push(alert);
       return ok({ services, alert, notified: waiting(r.routeId, r.date), demandAfter: routeDemand(r.routeId, r.date) ?? { want: 0, have: 0, gap: 0 } });
     },
-    giftOrder: (b: GiftOrderRequest) => { const first = b.items?.[0] ?? { itemId: b.itemId ?? '', qty: b.qty ?? 1 }; const order: GiftOrder = { id: nextId('ord'), partnerId: b.partnerId, travellerId: b.travellerId, itemId: first.itemId, qty: first.qty, ...(b.items ? { items: b.items } : {}), pickupPoint: b.pickupPoint ?? 'MAJESTIC', pickupDate: b.pickupDate, readyBy: b.readyBy, status: 'placed', payment: 'pay_at_pickup_demo' }; mockState.orders.push(order); return ok({ order }); },
+    giftOrder: (b: GiftOrderRequest) => { const first = b.items?.[0] ?? { itemId: b.itemId ?? '', qty: b.qty ?? 1 }; const lines = b.items ?? [first]; const shopItems = PARTNERS.find((x) => x.id === b.partnerId)?.items ?? []; const totalInr = lines.reduce((a, l) => a + (shopItems.find((i) => i.id === l.itemId)?.priceInr ?? 0) * l.qty, 0);
+      const order: GiftOrder = { id: nextId('ord'), partnerId: b.partnerId, travellerId: b.travellerId, itemId: first.itemId, qty: first.qty, items: lines, totalInr, pickupPoint: b.pickupPoint ?? 'MAJESTIC', pickupDate: b.pickupDate, readyBy: b.readyBy, status: 'placed', payment: 'pay_at_pickup_demo' }; mockState.orders.push(order); return ok({ order }); },
     orders: (id) => ok({ orders: [...(ordersJson.orders as GiftOrder[]), ...mockState.orders].filter((o) => o.partnerId === id) }),
+    shops: (bp) => {
+      const near = shopsNear(PARTNERS, bp);
+      return ok({ shops: near.shops.map((p) => ({ partner: p, boardingPoint: p.boardingPoint ?? '', atBoardingPoint: p.boardingPoint === bp, distanceKm: p.boardingPoint === bp ? 0 : 5, walkMinutes: p.boardingPoint === bp ? 4 : null })), boardingPoint: bp, label: LABEL });
+    },
+    order: (id) => {
+      const o = [...mockState.orders, ...(ordersJson.orders as GiftOrder[])].find((x) => x.id === id);
+      return o ? ok({ order: o }) : Promise.reject(new Error('unknown order'));
+    },
+    pickups: (id, date) => {
+      const p = PARTNERS.find((x) => x.id === id)!;
+      const all = [...(ordersJson.orders as GiftOrder[]), ...mockState.orders].filter((o) => o.partnerId === id && (!date || o.pickupDate === date));
+      return ok({ partner: p, cells: pickupCells(all, p), label: LABEL });
+    },
     opsState: () => ok({ fallbackActive: Boolean(mockState.switches.fallback), voiceHealthy: true }),
   };
 }

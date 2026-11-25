@@ -1,7 +1,7 @@
 // "Take sweets home": shops near the boarding point -> items with prices + steppers -> pickup time before the bus
 // -> confirm -> order id, pickup point, pay at pickup. Saved in "My orders" on this phone.
 import { router } from 'expo-router';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import type { Partner, TripIntent } from '@contract';
 import bpJson from '../../../../../seed/boarding-points.json';
@@ -18,7 +18,7 @@ const pointName = (id: string) => bpJson.boardingPoints.find((b) => b.id === id)
 
 export function GiftFlow({ intent }: { intent: TripIntent }) {
   const [open, setOpen] = useState(Boolean(intent.gift));
-  const [all, setAll] = useState<Partner[]>([]);
+  const [near, setNear] = useState<{ shops: Partner[]; exact: boolean; walk: Record<string, number | null> }>({ shops: [], exact: false, walk: {} });
   const [shopId, setShopId] = useState<string | null>(null);
   const [basket, setBasket] = useState<Basket>({});
   const [slot, setSlot] = useState<string | null>(null);
@@ -27,8 +27,14 @@ export function GiftFlow({ intent }: { intent: TripIntent }) {
   const [done, setDone] = useState<SavedBasket | null>(null);
 
   useEffect(() => { if (intent.gift) setOpen(true); }, [intent.gift]);
-  useEffect(() => { if (open && !all.length) void api.partners('sweet_shop').then((r) => setAll(r.partners)).catch(() => setError('Could not load the shops just now.')); }, [open, all.length]);
-  const near = useMemo(() => shopsNear(all, intent.boardingPoint), [all, intent.boardingPoint]);
+  useEffect(() => {
+    if (!open) return;
+    const bp = intent.boardingPoint;
+    void api.shops(bp)
+      .then((r) => setNear({ shops: r.shops.map((x) => x.partner), exact: Boolean(r.shops[0]?.atBoardingPoint), walk: Object.fromEntries(r.shops.map((x) => [x.partner.id, x.walkMinutes])) }))
+      .catch(() => api.partners('sweet_shop').then((r) => setNear({ ...shopsNear(r.partners, bp), walk: {} }))) // older api: filter here
+      .catch(() => setError('Could not load the shops just now.'));
+  }, [open, intent.boardingPoint]);
   const shop = near.shops.find((s) => s.id === shopId) ?? near.shops[0] ?? null;
   useEffect(() => { if (shop) setBasket(basketFromAsk(shop.items ?? [], intent.gift)); }, [shop?.id, intent.gift]); // eslint-disable-line react-hooks/exhaustive-deps
   const depart = departureFor(intent.timeWindow);
@@ -43,12 +49,10 @@ export function GiftFlow({ intent }: { intent: TripIntent }) {
     const pickupPoint = shop.boardingPoint ?? intent.boardingPoint ?? 'MAJESTIC';
     setBusy(true); setError(null);
     try {
-      const saved = [];
-      for (const l of lines) {
-        const r = await api.giftOrder({ travellerId: intent.travellerId, partnerId: shop.id, itemId: l.item.id, qty: l.qty, pickupDate: date, readyBy, departTime: depart, pickupPoint, intentId: intent.id });
-        saved.push({ orderId: r.order.id, itemId: l.item.id, name: l.item.name, unit: l.item.unit, qty: l.qty, priceInr: l.item.priceInr });
-      }
-      const b: SavedBasket = { id: saved[0].orderId, shopId: shop.id, shopName: partnerName(shop.name), pickupPoint, pickupName: pointName(pickupPoint), pickupDate: date, readyBy, lines: saved, total, status: 'placed', createdAt: new Date().toISOString() };
+      // one order, every line (contract v2 items[]); the first line also goes as itemId/qty for older apis
+      const r = await api.giftOrder({ travellerId: intent.travellerId, partnerId: shop.id, itemId: lines[0].item.id, qty: lines[0].qty, items: lines.map((l) => ({ itemId: l.item.id, qty: l.qty })), pickupDate: date, readyBy, departTime: depart, pickupPoint, intentId: intent.id });
+      const saved = lines.map((l) => ({ orderId: r.order.id, itemId: l.item.id, name: l.item.name, unit: l.item.unit, qty: l.qty, priceInr: l.item.priceInr }));
+      const b: SavedBasket = { id: saved[0].orderId, shopId: shop.id, shopName: partnerName(shop.name), pickupPoint, pickupName: pointName(pickupPoint), pickupDate: date, readyBy, lines: saved, total: r.order.totalInr ?? total, status: 'placed', createdAt: new Date().toISOString() };
       ordersStore.add(b);
       setDone(b);
     } catch {
@@ -67,7 +71,7 @@ export function GiftFlow({ intent }: { intent: TripIntent }) {
       <Small>{near.exact ? `Shops at ${pointName(intent.boardingPoint ?? '')}` : 'Nearest shops on your way'} - ready before your {depart} departure</Small>
       <View style={s.chips}>
         {near.shops.map((p) => (
-          <View key={p.id} style={s.shopChip}><Monogram name={p.name} id={p.id} size={30} /><Chip label={partnerName(p.name)} selected={p.id === shop?.id} onPress={() => { setShopId(p.id); setSlot(null); }} /></View>
+          <View key={p.id} style={s.shopChip}><Monogram name={p.name} id={p.id} size={30} /><Chip label={`${partnerName(p.name)}${near.walk[p.id] ? `, ${near.walk[p.id]} min walk` : ''}`} selected={p.id === shop?.id} onPress={() => { setShopId(p.id); setSlot(null); }} /></View>
         ))}
       </View>
       {(shop?.items ?? []).map((i) => (

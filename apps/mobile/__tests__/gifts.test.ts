@@ -89,3 +89,15 @@ describe('mic, notifications, fonts, logos', () => {
     expect(partnerName('Sihi Mane Sweets (demo)')).toBe('Sihi Mane Sweets');
   });
 });
+
+describe('shop pickups (v2 multi-item orders)', () => {
+  it('counts every line per pickup point and day', () => {
+    const { pickupCells } = jest.requireActual('../src/lib/gifts') as typeof import('../src/lib/gifts');
+    const s: Partner = { id: 's', type: 'sweet_shop', name: 'S', boardingPoint: 'MAJESTIC', items: [
+      { id: 'a', name: 'A', nameLocal: '', unit: 'kg', priceInr: 100, readyInMinutes: 30, dailyCapacity: 9 },
+      { id: 'b', name: 'B', nameLocal: '', unit: 'box', priceInr: 50, readyInMinutes: 30, dailyCapacity: 9 }] };
+    const base = { partnerId: 's', travellerId: 't', pickupPoint: 'MAJESTIC', pickupDate: '2027-01-14', status: 'placed' as const, payment: 'pay_at_pickup_demo' as const };
+    const cells = pickupCells([{ ...base, id: '1', itemId: 'a', qty: 2, readyBy: '21:00', items: [{ itemId: 'a', qty: 2 }, { itemId: 'b', qty: 1 }] }, { ...base, id: '2', itemId: 'a', qty: 1, readyBy: '20:30' }], s);
+    expect(cells).toEqual([{ pickupPoint: 'MAJESTIC', pickupDate: '2027-01-14', orders: 2, firstReadyBy: '20:30', items: [{ itemId: 'a', name: 'A', unit: 'kg', qty: 3 }, { itemId: 'b', name: 'B', unit: 'box', qty: 1 }], totalInr: 350 }]);
+  });
+});

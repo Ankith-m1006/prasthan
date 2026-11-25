@@ -1,7 +1,7 @@
 // The app's view of the api (docs/ARCHITECTURE.md section 4). HttpClient and MockClient both implement it.
 import type {
   AddServicesRequest, AddServicesResponse, AlertsResponse, ConfigResponse, DemandResponse, GiftOrderRequest, GiftOrderResponse,
-  IdentifyResponse, Lang, Mode, OpsStateResponse, OptionsResponse, OrdersResponse, PartnersResponse, PartnerType, Traits,
+  IdentifyResponse, Lang, PickupsResponse, ShopsResponse, Mode, OpsStateResponse, OptionsResponse, OrdersResponse, PartnersResponse, PartnerType, Traits,
   TripIntent, TripResponse, TtsResponse, VoiceIntentResponse,
 } from '@contract';
 
@@ -22,5 +22,11 @@ export interface Api {
   addServices(partnerId: string, req: AddServicesRequest): Promise<AddServicesResponse>;
   giftOrder(req: GiftOrderRequest): Promise<GiftOrderResponse>;
   orders(partnerId: string): Promise<OrdersResponse>;
+  /** v2: sweet shops nearest the boarding point first. */
+  shops(boardingPoint: string | null): Promise<ShopsResponse>;
+  /** v2: one order's current status (shop marks it ready / picked up). */
+  order(id: string): Promise<GiftOrderResponse>;
+  /** v2: shop side, what to have ready per pickup point and day. */
+  pickups(partnerId: string, date?: string): Promise<PickupsResponse>;
   opsState(): Promise<OpsStateResponse>;
 }

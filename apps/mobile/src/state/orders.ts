@@ -26,7 +26,7 @@ export function parseBaskets(raw: string | null): SavedBasket[] {
 
 /** The GiftOrders inside the saved baskets (so the shop side can show them even if the api instance forgot). */
 export function basketOrders(baskets: SavedBasket[], travellerId: string): GiftOrder[] {
-  return baskets.flatMap((b) => b.lines.map((l) => ({ id: l.orderId, partnerId: b.shopId, travellerId, itemId: l.itemId, qty: l.qty, pickupPoint: b.pickupPoint, pickupDate: b.pickupDate, readyBy: b.readyBy, status: b.status, payment: 'pay_at_pickup_demo' as const })));
+  return baskets.filter((b) => b.lines.length).map((b) => ({ id: b.id, partnerId: b.shopId, travellerId, itemId: b.lines[0].itemId, qty: b.lines[0].qty, items: b.lines.map((l) => ({ itemId: l.itemId, qty: l.qty })), totalInr: b.total, pickupPoint: b.pickupPoint, pickupDate: b.pickupDate, readyBy: b.readyBy, status: b.status, payment: 'pay_at_pickup_demo' as const }));
 }
 
 function createStore(kv: KV) {

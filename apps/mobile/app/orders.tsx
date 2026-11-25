@@ -1,9 +1,11 @@
 // My orders: sweets pre-orders placed from this phone (saved on this device). Pay at pickup; no payment in the app.
 import { router } from 'expo-router';
+import { useEffect } from 'react';
+import { api } from '../src/api';
 import { StyleSheet, Text, View } from 'react-native';
 import { dateLabel } from '../src/lib/format';
 import { rupees } from '../src/lib/gifts';
-import { useOrders } from '../src/state/orders';
+import { ordersStore, useOrders } from '../src/state/orders';
 import { colors, fonts, type as t } from '../src/theme/tokens';
 import { Body, Button, Chip, Screen, Small } from '../src/ui/kit';
 import { SoftRule } from '../src/ui/backdrop';
@@ -13,6 +15,9 @@ const STATUS: Record<string, string> = { placed: 'Placed', ready: 'Ready for pic
 
 export default function MyOrders() {
   const orders = useOrders();
+  useEffect(() => { // refresh status from the shop (ready / picked up); keep what we have if the api forgot the order
+    for (const b of ordersStore.all()) void api.order(b.id).then((r) => { if (r.order.status !== b.status) ordersStore.setStatus(b.id, r.order.status); }).catch(() => undefined);
+  }, []);
   return (
     <Screen title="My orders" subtitle="Sweets to take home. Pay at pickup.">
       {orders.length === 0 ? <Body>No orders yet. Say your trip home, then tap "Take sweets home".</Body> : null}
