@@ -8,7 +8,7 @@ Branch: session-c. Contract version: 1.
 - C-02 was already delivered on main by the home builder.
 
 ## Next exact step
-- Build the C-03 Docker image definition, manifests and k3d helpers. Verify the local cluster when Docker is ready.
+- Install WSL 2 and Docker Desktop, start the Docker engine, then install k3d and kubectl and run node infra/k8s/k3d-up.mjs.
 
 ## Blockers
 - Docker and k3d were unavailable on PATH. WSL reports it is not installed. C-04 follows a working C-03 cluster.
@@ -16,4 +16,4 @@ Branch: session-c. Contract version: 1.
 ## Commands
 - From the checkout: npm --prefix scripts ci, npm --prefix scripts test, npm --prefix scripts run flags:import:dry, npm --prefix scripts run flags:import.
 
-C-03 checkpoint: image definition, build-context allowlist and Kubernetes manifests prepared. Next: deployment helpers and validation.
+C-03 image definition, Dockerfile-specific context allowlist, six Kubernetes resources and deployment helpers are committed. YAML parsing and Node syntax checks passed. Running k3d-up stopped at Docker preflight. Image size, pod readiness, ingress, voice routing and metrics remain unverified.
