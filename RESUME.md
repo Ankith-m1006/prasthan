@@ -4,7 +4,8 @@ Updated: 25 Nov 2026, with every push. Builder so far: one session on Ankith's h
 
 ## Where we are
 - Current phase: Z-02 done. LIVE: https://prasthan-ten.vercel.app. Done on main: P0, A-01, A-02, A-03, B-01, B-02, B-03, B-05 (+gifting card), C-02, Z-02.
-- Last finished step: clean clone in a temp folder: api install + check (57 tests) OK, app install + typecheck + jest (10) OK. Web app built against the real api (MOCK_ALL=1) verified in headless Chrome: speak -> alert me -> add 6 buses -> 16 notified -> Kannada alert, no console errors. Split ROLE=api/voice tested; killing voice -> traveller still answered (rules).
+- UI redesign (25 Nov ~13:30, home builder): airy, no cards, frosted glass panels only where grouping is needed, soft festival glow behind headers, pill buttons/chips (44-52 px), floating frosted tab bar on desktop. Colours unchanged. New files apps/mobile/src/ui/glass.ts + backdrop.tsx; Card replaced by Section/Glass in kit.tsx. Behaviour, api client and contracts untouched. Checked in headless Chrome at 430 px and 1280 px: type sample -> trip card -> links + warning -> Alert me -> Partners -> add 6 buses -> 16 notified -> Kannada alert -> About flags, 0 console errors. Screenshots: docs/img/ui-*.png. Redeployed to https://prasthan-ten.vercel.app.
+- Last finished step (before redesign): clean clone in a temp folder: api install + check (57 tests) OK, app install + typecheck + jest (10) OK. Web app built against the real api (MOCK_ALL=1) verified in headless Chrome: speak -> alert me -> add 6 buses -> 16 notified -> Kannada alert, no console errors. Split ROLE=api/voice tested; killing voice -> traveller still answered (rules).
 - Next exact step: Ankith: screenshots into docs/img/, record video, put VIDEO_URL in README, make repo public, submit form by 16:45. Session C: C-01/C-03/C-04 on branch session-c (C-02 scripts already on main). Optional if time: A-04 context.dev.
 
 ## Commands

@@ -5,7 +5,7 @@ import { View } from 'react-native';
 import { mockState } from '../api/mock';
 import type { DemoSwitches as Sw } from '../api/mockFlags';
 import { useFlags } from '../state/flags';
-import { Card, Chip, H2, Small } from '../ui/kit';
+import { Chip, Glass, H2, Small } from '../ui/kit';
 
 export function DemoSwitches() {
   const { refresh, flags } = useFlags();
@@ -17,7 +17,7 @@ export function DemoSwitches() {
     void refresh();
   };
   return (
-    <Card>
+    <Glass>
       <H2>Demo switches (Flagsmith, simulated offline)</H2>
       <Small>In the live setup these are Flagsmith flags with segments, changed from the dashboard or by the NudgeBee runbook. This offline copy flips them in the browser so you can see what each one does.</Small>
       <Small style={{ marginTop: 10 }}>festival_mode (now: {flags.festival_mode.title})</Small>
@@ -36,6 +36,6 @@ export function DemoSwitches() {
         <Chip label="20% pilot" selected={!sw.giftingAll} onPress={() => set({ giftingAll: false })} />
         <Chip label="100%" selected={Boolean(sw.giftingAll)} onPress={() => set({ giftingAll: true })} />
       </View>
-    </Card>
+    </Glass>
   );
 }

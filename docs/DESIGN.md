@@ -4,6 +4,14 @@ Feel: festive, Indian, calm. Like a Sankranti morning doorstep: white kolam on a
 
 Ankith likes Sarvam AI's website look (Indian motifs, custom icons). **We do not copy it.** No Sarvam logos, illustrations, icons or SVGs, and nothing traced from them. Being a sponsor does not give us a licence. Everything below is our own or from a named open licence.
 
+## Surfaces (25 Nov redesign: airy, no cards)
+
+- No boxed cards and no hard borders. Content flows in sections with generous space; rows are separated by fading hairlines (`SoftRule`) or the dotted kolam rule (`MotifRule`).
+- Frosted panels (`Glass` in `src/ui/kit.tsx`) only where grouping is truly needed: trip card, typing box, Add buses, demo switches. Tinted glass (`Glass tintColor`) for warnings, the gifting offer and the quick-commerce roadmap.
+- Web: CSS `backdrop-filter` blur, soft radial glows and diffuse shadows (`src/ui/glass.ts`); native: translucent fills, no extra dependency.
+- A warm festival-colour glow sits behind every header (`Backdrop`, follows the festival accent). Pill buttons (52 px) and pill chips (44 px); radius 28-32 on panels.
+- Tab bar: frosted bar on phones, a floating frosted pill on wide screens.
+
 ## Palette (original; tokens for both app and web)
 
 | Token | Hex | Use |

@@ -14,7 +14,9 @@ import { GiftCard } from '../../src/screens/speak/GiftCard';
 import { useFlags } from '../../src/state/flags';
 import { getIdentity, setIdentity, travellerTraits } from '../../src/state/identity';
 import { colors, fonts, space, type as t } from '../../src/theme/tokens';
-import { Body, Button, Card, Chip, Screen, Small } from '../../src/ui/kit';
+import { Body, Button, Chip, Glass, Screen, Section, Small } from '../../src/ui/kit';
+import { alpha, frost } from '../../src/ui/glass';
+import { SoftRule } from '../../src/ui/backdrop';
 import { Diya } from '../../src/ui/motifs';
 import { Icon } from '../../src/ui/icons';
 
@@ -71,34 +73,35 @@ export default function Speak() {
 
   return (
     <Screen title={flags.festival_mode.greeting[lang] ?? flags.festival_mode.greeting['en-IN'] ?? 'Prasthan'} subtitle={`${flags.festival_mode.title} - say your trip home in your own language`}>
-      <View style={s.chips}>{LANGS.map(([l, name]) => <Chip key={l} label={name} selected={l === lang} onPress={() => pickLang(l)} />)}</View>
+      <View style={s.langs}>{LANGS.map(([l, name]) => <Chip key={l} label={name} selected={l === lang} onPress={() => pickLang(l)} />)}</View>
       <MicButton state={rec.state} elapsed={rec.elapsed} busy={busy} accent={accent.accent} disabled={voiceOff} onPressIn={() => void rec.start()} onPressOut={() => void rec.stop()} />
       <Text style={s.powered}>Powered by Sarvam AI</Text>
       {voiceOff ? <Small style={{ textAlign: 'center' }}>Voice is switched off right now. Please type.</Small> : null}
-      <Pressable accessibilityRole="button" onPress={() => setTyping(!typing)} style={s.typeLink}>
+      <Pressable accessibilityRole="button" onPress={() => setTyping(!typing)} style={[s.typeLink, frost(0.6, 12)]}>
         <Icon name="keyboard" size={20} /><Text style={s.typeText}>{typing ? 'hide typing' : 'or type'}</Text>
       </Pressable>
       {typing || voiceOff ? (
-        <Card>
+        <Glass>
           <TextInput value={text} onChangeText={setText} placeholder="Going home to Hubli for Sankranti, Friday night" placeholderTextColor={colors.inkSoft}
             style={s.input} onSubmitEditing={() => sendText(text)} accessibilityLabel="Type your trip" returnKeyType="send" />
           <Button label="Send" onPress={() => sendText(text)} disabled={busy} />
           <Small>Or tap a sample sentence (synthetic test lines):</Small>
           <View style={[s.chips, { marginTop: 6 }]}>{samples.map((u) => <Chip key={u.id} label={u.text} onPress={() => { setText(u.text); sendText(u.text, u.language); }} />)}</View>
-        </Card>
+        </Glass>
       ) : null}
       {error ? <Body style={{ color: colors.kumkum }}>{error}</Body> : null}
       {turn ? <ReplyCard turn={turn} /> : null}
       {intent ? <TripCard intent={intent} onChange={setIntent} /> : null}
       {options && intent ? <Options options={options} lang={lang} /> : null}
       {intent?.routeId && intent.dateFrom ? (
-        <Card edge={colors.mangoLeaf}>
+        <Section>
+          <SoftRule />
           <View style={s.alertRow}>
-            <Diya lit={Boolean(saved)} size={34} />
-            <View style={{ flex: 1 }}><Button tone="leaf" label={saved ? 'Alert is on' : 'Alert me when a new bus opens'} onPress={() => void alertMe()} /></View>
+            <View style={s.diya}><Diya lit={Boolean(saved)} size={34} /></View>
+            <View style={{ flexShrink: 1 }}><Button tone="leaf" label={saved ? 'Alert is on' : 'Alert me when a new bus opens'} onPress={() => void alertMe()} /></View>
           </View>
-          {saved ? <Body>{saved}</Body> : null}
-        </Card>
+          {saved ? <Body style={{ textAlign: 'center', color: colors.mangoLeaf }}>{saved}</Body> : null}
+        </Section>
       ) : null}
       {flags.gifting_enabled && intent?.routeId ? <GiftCard intent={intent} /> : null}
     </Screen>
@@ -107,10 +110,10 @@ export default function Speak() {
 
 function ReplyCard({ turn }: { turn: VoiceIntentResponse }) {
   return (
-    <Card>
+    <Section>
       {turn.transcript ? <Small>You said: {turn.transcript}</Small> : null}
-      <View style={{ flexDirection: 'row', gap: space.sm, alignItems: 'center', marginTop: 6 }}>
-        <Pressable accessibilityRole="button" accessibilityLabel="Play reply again" onPress={() => playReply(turn.reply)}><Icon name="speaker" size={28} /></Pressable>
+      <View style={{ flexDirection: 'row', gap: space.md, alignItems: 'center', marginTop: 8 }}>
+        <Pressable accessibilityRole="button" accessibilityLabel="Play reply again" onPress={() => playReply(turn.reply)} style={[s.play, frost(0.75, 12)]}><Icon name="speaker" size={24} /></Pressable>
         <Text style={s.reply}>{turn.reply.text}</Text>
       </View>
       <View style={[s.chips, { marginTop: 8 }]}>
@@ -118,16 +121,19 @@ function ReplyCard({ turn }: { turn: VoiceIntentResponse }) {
         <Chip label={`understanding: ${turn.intent.parser === 'llm' ? 'Sarvam LLM' : 'rules'}`} />
         <Chip label={`reply: ${SOURCE_LABEL[turn.source.tts]}`} tone={turn.source.tts === 'live' ? 'ok' : 'normal'} />
       </View>
-    </Card>
+    </Section>
   );
 }
 
 const s = StyleSheet.create({
   chips: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
+  langs: { flexDirection: 'row', flexWrap: 'wrap', gap: 8, justifyContent: 'center', marginTop: 4 },
+  play: { width: 48, height: 48, borderRadius: 24, alignItems: 'center', justifyContent: 'center' },
+  diya: { width: 52, height: 52, borderRadius: 26, alignItems: 'center', justifyContent: 'center', backgroundColor: alpha(colors.marigold, 0.14) },
   powered: { textAlign: 'center', fontFamily: fonts.body, fontSize: t.small, color: colors.inkSoft },
-  typeLink: { flexDirection: 'row', alignSelf: 'center', alignItems: 'center', gap: 6, padding: 10, minHeight: 48 },
-  typeText: { fontFamily: fonts.bodyBold, fontSize: t.body, color: colors.ink, textDecorationLine: 'underline' },
-  input: { borderWidth: 1, borderColor: colors.templeStone, borderRadius: 12, padding: 12, fontSize: t.body, fontFamily: fonts.body, color: colors.ink, backgroundColor: colors.paper, minHeight: 52 },
+  typeLink: { flexDirection: 'row', alignSelf: 'center', alignItems: 'center', gap: 8, paddingHorizontal: 20, paddingVertical: 10, minHeight: 48, borderRadius: 999, marginTop: 10, marginBottom: 4 },
+  typeText: { fontFamily: fonts.bodyBold, fontSize: t.body, color: colors.ink },
+  input: { borderRadius: 999, paddingHorizontal: 22, paddingVertical: 14, fontSize: t.body, fontFamily: fonts.body, color: colors.ink, backgroundColor: 'rgba(255, 255, 255, 0.9)', minHeight: 54, marginBottom: 6 },
   reply: { flex: 1, fontFamily: fonts.kannada, fontSize: t.card, color: colors.ink, lineHeight: 34 },
-  alertRow: { flexDirection: 'row', alignItems: 'center', gap: 12 },
+  alertRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 14, flexWrap: 'wrap' },
 });

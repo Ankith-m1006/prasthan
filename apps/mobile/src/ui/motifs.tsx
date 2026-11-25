@@ -93,10 +93,14 @@ export function Diya({ size = 28, lit = true }: { size?: number; lit?: boolean }
 /** Bengaluru -> hometown as a dotted kolam-style line between two dots. */
 export function RouteLine({ color = colors.ink }: { color?: string }) {
   return (
-    <Svg width="100%" height={18} viewBox="0 0 200 18" preserveAspectRatio="none">
-      <Circle cx={8} cy={9} r={6} fill={colors.marigold} />
-      <Path d="M 18 9 Q 60 -2 100 9 T 182 9" stroke={color} strokeWidth={2} strokeDasharray="2 6" strokeLinecap="round" fill="none" />
-      <Circle cx={192} cy={9} r={6} fill={colors.mangoLeaf} />
-    </Svg>
+    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+      <View style={{ width: 12, height: 12, borderRadius: 6, backgroundColor: colors.marigold }} />
+      <View style={{ flex: 1, height: 18 }}>
+        <Svg width="100%" height={18} viewBox="0 0 200 18" preserveAspectRatio="none">
+          <Path d="M 2 9 Q 50 -2 100 9 T 198 9" stroke={color} strokeWidth={2} strokeDasharray="2 6" strokeLinecap="round" fill="none" opacity={0.6} />
+        </Svg>
+      </View>
+      <View style={{ width: 12, height: 12, borderRadius: 6, backgroundColor: colors.mangoLeaf }} />
+    </View>
   );
 }

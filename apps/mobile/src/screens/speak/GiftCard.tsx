@@ -3,7 +3,7 @@ import { useState } from 'react';
 import type { TripIntent } from '@contract';
 import { api } from '../../api';
 import { colors } from '../../theme/tokens';
-import { Body, Button, Card, H2, Small } from '../../ui/kit';
+import { Body, Button, Glass, H2, Small } from '../../ui/kit';
 
 export function GiftCard({ intent }: { intent: TripIntent }) {
   const [done, setDone] = useState<string | null>(null);
@@ -13,11 +13,12 @@ export function GiftCard({ intent }: { intent: TripIntent }) {
     setDone(`Order ${res.order.id}: ready by ${res.order.readyBy}, pay at pickup (demo).`);
   };
   return (
-    <Card edge={colors.turmeric}>
+    <Glass tintColor={colors.marigold}>
       <H2>Sweets for home?</H2>
+
       <Body>{qty} kg Mysore pak from Sihi Mane Sweets (demo shop), 4 min walk from Majestic. Ready before your bus.</Body>
       {done ? <Body style={{ color: colors.mangoLeaf }}>{done}</Body> : <Button label="Pre-order, pay at pickup" onPress={() => void order()} />}
       <Small>Shown to the gifting pilot group (Flagsmith staged rollout). No payment in the app.</Small>
-    </Card>
+    </Glass>
   );
 }
