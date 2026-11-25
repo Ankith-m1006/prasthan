@@ -68,7 +68,7 @@ export function FlagsProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     void refresh();
-    const unsubs = [subscribeIdentity(() => void refresh()), onModeChange(() => setOffline(true)), onFocus(() => void refresh())];
+    const unsubs = [subscribeIdentity(() => void refresh()), onModeChange(() => setOffline(isOfflineData())), onFocus(() => void refresh())];
     return () => unsubs.forEach((u) => u());
   }, [refresh]);
 
