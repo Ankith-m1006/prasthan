@@ -1,0 +1,569 @@
+{
+  "version": "2026-12_2027-04.v1",
+  "notes": "Dates use Indian local observances. National means widely observed across India; it does not specify bank or office closures. Empty states and regions indicate nationwide coverage. Rush windows are planning estimates from two days before the first day through one day after the last, not measured traffic. A false verification flag means the observance needs local confirmation.",
+  "festivals": [
+    {
+      "id": "hanumana-jayanti-2026",
+      "name": "Hanumana Jayanti (Margashira)",
+      "nameLocal": "ಹನುಮ ಜಯಂತಿ",
+      "date": "2026-12-22",
+      "type": "regional",
+      "states": [
+        "Karnataka"
+      ],
+      "regions": [
+        "North Karnataka",
+        "Hampi–Anegundi"
+      ],
+      "rushStart": "2026-12-20",
+      "rushEnd": "2026-12-23",
+      "tip": "Check the return bus from Gangavathi before heading towards Anegundi.",
+      "verified": true,
+      "source": "https://www.drikpanchang.com/kannada/calendar/kannada-calendar.html?geoname-id=1277333&year=2026"
+    },
+    {
+      "id": "datta-jayanti-2026",
+      "name": "Datta Jayanti",
+      "nameLocal": "ದತ್ತ ಜಯಂತಿ",
+      "date": "2026-12-23",
+      "type": "regional",
+      "states": [
+        "Karnataka",
+        "Maharashtra"
+      ],
+      "regions": [
+        "North Karnataka",
+        "Ganagapur"
+      ],
+      "rushStart": "2026-12-21",
+      "rushEnd": "2026-12-24",
+      "tip": "Allow time between the train stop at Ganagapur Road and the village.",
+      "verified": true,
+      "source": "https://www.drikpanchang.com/kannada/calendar/kannada-calendar.html?geoname-id=1277333&year=2026"
+    },
+    {
+      "id": "christmas-2026",
+      "name": "Christmas",
+      "nameLocal": "क्रिसमस",
+      "date": "2026-12-25",
+      "type": "national",
+      "states": [],
+      "regions": [],
+      "rushStart": "2026-12-23",
+      "rushEnd": "2026-12-26",
+      "tip": "Reserve both legs of a Christmas weekend trip before leaving home.",
+      "verified": true,
+      "source": "https://www.timeanddate.com/holidays/india/christmas"
+    },
+    {
+      "id": "uttarayan-2027",
+      "name": "Uttarayan kite day",
+      "nameLocal": "ઉત્તરાયણ",
+      "date": "2027-01-14",
+      "type": "regional",
+      "states": [
+        "Gujarat"
+      ],
+      "regions": [
+        "Ahmedabad",
+        "Surat"
+      ],
+      "rushStart": "2027-01-12",
+      "rushEnd": "2027-01-15",
+      "tip": "Check the return train before making plans for an evening rooftop gathering.",
+      "verified": true,
+      "source": "https://gujarattourism.com/content/dam/gujrattourism/images/articles/festivals_6.pdf"
+    },
+    {
+      "id": "bhogi-2027",
+      "name": "Bhogi",
+      "nameLocal": "భోగి",
+      "date": "2027-01-14",
+      "type": "regional",
+      "states": [
+        "Andhra Pradesh",
+        "Telangana",
+        "Tamil Nadu"
+      ],
+      "regions": [
+        "Coastal Andhra",
+        "Telangana plateau"
+      ],
+      "rushStart": "2027-01-12",
+      "rushEnd": "2027-01-15",
+      "tip": "For a morning celebration, look for a service that arrives the previous evening.",
+      "verified": true,
+      "source": "https://www.drikpanchang.com/tamil/tamil-calendar.html?geoname-id=1264527&year=2027"
+    },
+    {
+      "id": "sankranti-2027",
+      "name": "Makara Sankranti",
+      "nameLocal": "ಮಕರ ಸಂಕ್ರಾಂತಿ",
+      "date": "2027-01-15",
+      "type": "regional",
+      "states": [
+        "Karnataka",
+        "Andhra Pradesh",
+        "Telangana"
+      ],
+      "regions": [
+        "Old Mysuru",
+        "North Karnataka",
+        "Coastal Andhra"
+      ],
+      "rushStart": "2027-01-13",
+      "rushEnd": "2027-01-16",
+      "tip": "Compare Mysuru and Mandya arrival times before choosing your bus from Bengaluru.",
+      "verified": true,
+      "source": "https://www.drikpanchang.com/kannada/calendar/kannada-calendar.html?geoname-id=1277333&year=2027"
+    },
+    {
+      "id": "pongal-2027",
+      "name": "Thai Pongal",
+      "nameLocal": "தைப்பொங்கல்",
+      "date": "2027-01-15",
+      "type": "regional",
+      "states": [
+        "Tamil Nadu"
+      ],
+      "regions": [
+        "Cauvery delta",
+        "Kongu Nadu"
+      ],
+      "rushStart": "2027-01-13",
+      "rushEnd": "2027-01-16",
+      "tip": "For a delta village, check the last connection from Thanjavur or Tiruchirappalli.",
+      "verified": true,
+      "source": "https://www.drikpanchang.com/tamil/tamil-calendar.html?geoname-id=1264527&year=2027"
+    },
+    {
+      "id": "magh-bihu-2027",
+      "name": "Magh Bihu",
+      "nameLocal": "মাঘ বিহু",
+      "date": "2027-01-15",
+      "type": "regional",
+      "states": [
+        "Assam"
+      ],
+      "regions": [
+        "Brahmaputra Valley"
+      ],
+      "rushStart": "2027-01-13",
+      "rushEnd": "2027-01-16",
+      "tip": "Plan to reach home in time for the Uruka meal the evening before.",
+      "verified": true,
+      "source": "https://panchangtime.com/assamese-calendar/2027/january"
+    },
+    {
+      "id": "mattu-pongal-2027",
+      "name": "Mattu Pongal",
+      "nameLocal": "மாட்டுப் பொங்கல்",
+      "date": "2027-01-16",
+      "type": "regional",
+      "states": [
+        "Tamil Nadu"
+      ],
+      "regions": [
+        "Cauvery delta"
+      ],
+      "rushStart": "2027-01-14",
+      "rushEnd": "2027-01-17",
+      "tip": "Ask the local operator where village-bound buses leave after the morning celebrations.",
+      "verified": true,
+      "source": "https://www.drikpanchang.com/tamil/tamil-calendar.html?geoname-id=1264527&year=2027"
+    },
+    {
+      "id": "thai-pusam-2027",
+      "name": "Thai Pusam",
+      "nameLocal": "தைப்பூசம்",
+      "date": "2027-01-22",
+      "type": "regional",
+      "states": [
+        "Tamil Nadu"
+      ],
+      "regions": [
+        "Palani"
+      ],
+      "rushStart": "2027-01-20",
+      "rushEnd": "2027-01-23",
+      "tip": "Check the designated drop-off point before booking the last leg to Palani.",
+      "verified": true,
+      "source": "https://www.drikpanchang.com/tamil/tamil-calendar.html?geoname-id=1264527&year=2027"
+    },
+    {
+      "id": "republic-day-2027",
+      "name": "Republic Day",
+      "nameLocal": "गणतंत्र दिवस",
+      "date": "2027-01-26",
+      "type": "national",
+      "states": [],
+      "regions": [],
+      "rushStart": "2027-01-24",
+      "rushEnd": "2027-01-27",
+      "tip": "Check parade-day road diversions before choosing a city boarding stop.",
+      "verified": true,
+      "source": "https://www.timeanddate.com/holidays/india/republic-day"
+    },
+    {
+      "id": "saraswati-puja-2027",
+      "name": "Saraswati Puja",
+      "nameLocal": "সরস্বতী পূজা",
+      "date": "2027-02-11",
+      "type": "regional",
+      "states": [
+        "West Bengal",
+        "Bihar",
+        "Odisha",
+        "Assam"
+      ],
+      "regions": [
+        "Bengal plains",
+        "Mithila"
+      ],
+      "rushStart": "2027-02-09",
+      "rushEnd": "2027-02-12",
+      "tip": "Leave time to walk the final stretch if local puja traffic changes your stop.",
+      "verified": true,
+      "source": "https://www.drikpanchang.com/kannada/calendar/kannada-calendar.html?geoname-id=1277333&year=2027"
+    },
+    {
+      "id": "ratha-saptami-2027",
+      "name": "Ratha Saptami",
+      "nameLocal": "రథ సప్తమి",
+      "date": "2027-02-13",
+      "type": "regional",
+      "states": [
+        "Andhra Pradesh",
+        "Karnataka"
+      ],
+      "regions": [
+        "Tirupati",
+        "Old Mysuru"
+      ],
+      "rushStart": "2027-02-11",
+      "rushEnd": "2027-02-14",
+      "tip": "Check temple-town bus timings if you plan to arrive before dawn.",
+      "verified": true,
+      "source": "https://www.drikpanchang.com/kannada/calendar/kannada-calendar.html?geoname-id=1277333&year=2027"
+    },
+    {
+      "id": "attukal-pongala-2027",
+      "name": "Attukal Pongala",
+      "nameLocal": "ആറ്റുകാൽ പൊങ്കാല",
+      "date": "2027-02-22",
+      "type": "regional",
+      "states": [
+        "Kerala"
+      ],
+      "regions": [
+        "Thiruvananthapuram"
+      ],
+      "rushStart": "2027-02-20",
+      "rushEnd": "2027-02-23",
+      "tip": "Check the day's city bus diversions before choosing a stop near Attukal.",
+      "verified": true,
+      "source": "https://www.drikpanchang.com/malayalam/calendar/malayalam-calendar.html?geoname-id=1273874&year=2027"
+    },
+    {
+      "id": "maha-shivaratri-2027",
+      "name": "Maha Shivaratri",
+      "nameLocal": "महाशिवरात्रि",
+      "date": "2027-03-06",
+      "type": "national",
+      "states": [],
+      "regions": [],
+      "rushStart": "2027-03-04",
+      "rushEnd": "2027-03-07",
+      "tip": "Check late-night return services if staying for a temple vigil.",
+      "verified": true,
+      "source": "https://www.drikpanchang.com/calendars/indian/indiancalendar.html?year=2027"
+    },
+    {
+      "id": "eid-al-fitr-2027",
+      "name": "Eid al-Fitr",
+      "nameLocal": "عید الفطر",
+      "date": "2027-03-10",
+      "type": "national",
+      "states": [],
+      "regions": [],
+      "rushStart": "2027-03-08",
+      "rushEnd": "2027-03-11",
+      "tip": "Confirm the local moon-sighting announcement before fixing a nonrefundable return.",
+      "verified": false,
+      "source": "https://www.drikpanchang.com/calendars/indian/indiancalendar.html?year=2027"
+    },
+    {
+      "id": "holi-2027",
+      "name": "Holi",
+      "nameLocal": "होली",
+      "date": "2027-03-22",
+      "type": "national",
+      "states": [],
+      "regions": [],
+      "rushStart": "2027-03-20",
+      "rushEnd": "2027-03-23",
+      "tip": "Check morning service hours and keep the return ticket accessible offline.",
+      "verified": true,
+      "source": "https://www.drikpanchang.com/calendars/indian/indiancalendar.html?year=2027"
+    },
+    {
+      "id": "good-friday-2027",
+      "name": "Good Friday",
+      "nameLocal": "ദുഃഖവെള്ളി",
+      "date": "2027-03-26",
+      "type": "national",
+      "states": [],
+      "regions": [],
+      "rushStart": "2027-03-24",
+      "rushEnd": "2027-03-27",
+      "tip": "If travelling for Easter too, compare a Sunday return with a Monday departure.",
+      "verified": true,
+      "source": "https://www.drikpanchang.com/calendars/indian/indiancalendar.html?year=2027"
+    },
+    {
+      "id": "easter-2027",
+      "name": "Easter Sunday",
+      "nameLocal": "ഈസ്റ്റർ",
+      "date": "2027-03-28",
+      "type": "national",
+      "states": [],
+      "regions": [],
+      "rushStart": "2027-03-26",
+      "rushEnd": "2027-03-29",
+      "tip": "Allow time for the connection from morning services to your return train.",
+      "verified": true,
+      "source": "https://www.drikpanchang.com/calendars/indian/indiancalendar.html?year=2027"
+    },
+    {
+      "id": "yugadi-2027",
+      "name": "Yugadi",
+      "nameLocal": "ಯುಗಾದಿ",
+      "date": "2027-04-07",
+      "type": "regional",
+      "states": [
+        "Karnataka"
+      ],
+      "regions": [
+        "Old Mysuru",
+        "North Karnataka"
+      ],
+      "rushStart": "2027-04-05",
+      "rushEnd": "2027-04-08",
+      "tip": "Check the overnight Hubballi service as well as morning departures to Mysuru.",
+      "verified": true,
+      "source": "https://www.drikpanchang.com/kannada/calendar/kannada-calendar.html?geoname-id=1277333&year=2027"
+    },
+    {
+      "id": "ugadi-2027",
+      "name": "Ugadi",
+      "nameLocal": "ఉగాది",
+      "date": "2027-04-07",
+      "type": "regional",
+      "states": [
+        "Andhra Pradesh",
+        "Telangana"
+      ],
+      "regions": [
+        "Rayalaseema",
+        "Coastal Andhra",
+        "Telangana plateau"
+      ],
+      "rushStart": "2027-04-05",
+      "rushEnd": "2027-04-08",
+      "tip": "Confirm your district bus stand before taking a connecting service from Hyderabad.",
+      "verified": true,
+      "source": "https://www.drikpanchang.com/calendars/indian/indiancalendar.html?year=2027"
+    },
+    {
+      "id": "gudi-padwa-2027",
+      "name": "Gudi Padwa",
+      "nameLocal": "गुढी पाडवा",
+      "date": "2027-04-07",
+      "type": "regional",
+      "states": [
+        "Maharashtra"
+      ],
+      "regions": [
+        "Konkan",
+        "Western Maharashtra"
+      ],
+      "rushStart": "2027-04-05",
+      "rushEnd": "2027-04-08",
+      "tip": "Allow time between a Mumbai suburban train and your onward Konkan service.",
+      "verified": true,
+      "source": "https://www.drikpanchang.com/calendars/indian/indiancalendar.html?year=2027"
+    },
+    {
+      "id": "chaiti-chhath-2027",
+      "name": "Chaiti Chhath",
+      "nameLocal": "चैती छठ",
+      "date": "2027-04-10",
+      "endDate": "2027-04-13",
+      "type": "regional",
+      "states": [
+        "Bihar"
+      ],
+      "regions": [
+        "Patna",
+        "Mithila",
+        "Magadh"
+      ],
+      "rushStart": "2027-04-08",
+      "rushEnd": "2027-04-14",
+      "tip": "Plan around the evening offering on April 12 and the dawn offering on April 13.",
+      "verified": true,
+      "source": "https://astroscorpio.com/chaiti-chhath/2027"
+    },
+    {
+      "id": "pana-sankranti-2027",
+      "name": "Pana Sankranti",
+      "nameLocal": "ପଣା ସଂକ୍ରାନ୍ତି",
+      "date": "2027-04-14",
+      "type": "regional",
+      "states": [
+        "Odisha"
+      ],
+      "regions": [
+        "Coastal Odisha"
+      ],
+      "rushStart": "2027-04-12",
+      "rushEnd": "2027-04-15",
+      "tip": "Check onward bus times from Bhubaneswar before setting out for a village celebration.",
+      "verified": true,
+      "source": "https://festivals.odiyacalendar.org/pana-sankranti/2027"
+    },
+    {
+      "id": "puthandu-2027",
+      "name": "Puthandu",
+      "nameLocal": "தமிழ்ப் புத்தாண்டு",
+      "date": "2027-04-14",
+      "type": "regional",
+      "states": [
+        "Tamil Nadu"
+      ],
+      "regions": [
+        "Chennai",
+        "Cauvery delta"
+      ],
+      "rushStart": "2027-04-12",
+      "rushEnd": "2027-04-15",
+      "tip": "Check the boarding terminal on your Chennai ticket before leaving for the station.",
+      "verified": true,
+      "source": "https://www.drikpanchang.com/tamil/tamil-calendar.html?geoname-id=1264527&year=2027"
+    },
+    {
+      "id": "vaisakhi-2027",
+      "name": "Vaisakhi",
+      "nameLocal": "ਵਿਸਾਖੀ",
+      "date": "2027-04-14",
+      "type": "regional",
+      "states": [
+        "Punjab"
+      ],
+      "regions": [
+        "Majha",
+        "Malwa",
+        "Doaba"
+      ],
+      "rushStart": "2027-04-12",
+      "rushEnd": "2027-04-15",
+      "tip": "For an Amritsar visit, allow time between the station and the gurdwara.",
+      "verified": true,
+      "source": "https://www.drikpanchang.com/calendars/indian/indiancalendar.html?year=2027"
+    },
+    {
+      "id": "bisu-parba-2027",
+      "name": "Bisu Parba",
+      "nameLocal": "ಬಿಸು ಪರ್ಬೊ",
+      "date": "2027-04-15",
+      "type": "regional",
+      "states": [
+        "Karnataka"
+      ],
+      "regions": [
+        "Coastal Karnataka",
+        "Tulu Nadu"
+      ],
+      "rushStart": "2027-04-13",
+      "rushEnd": "2027-04-16",
+      "tip": "Confirm the local observance with your hosts before booking to Mangaluru or Udupi.",
+      "verified": false,
+      "source": "https://udaya.app/festival/bisu-parba/"
+    },
+    {
+      "id": "vishu-2027",
+      "name": "Vishu",
+      "nameLocal": "വിഷു",
+      "date": "2027-04-15",
+      "type": "regional",
+      "states": [
+        "Kerala"
+      ],
+      "regions": [
+        "Malabar",
+        "Travancore"
+      ],
+      "rushStart": "2027-04-13",
+      "rushEnd": "2027-04-16",
+      "tip": "Choose a previous-evening arrival if you want to be home for Vishukkani at dawn.",
+      "verified": true,
+      "source": "https://www.drikpanchang.com/malayalam/calendar/malayalam-calendar.html?geoname-id=1273874&year=2027"
+    },
+    {
+      "id": "pohela-boishakh-2027",
+      "name": "Pohela Boishakh",
+      "nameLocal": "পয়লা বৈশাখ",
+      "date": "2027-04-15",
+      "type": "regional",
+      "states": [
+        "West Bengal"
+      ],
+      "regions": [
+        "Kolkata",
+        "Bengal plains"
+      ],
+      "rushStart": "2027-04-13",
+      "rushEnd": "2027-04-16",
+      "tip": "Check the last suburban train if you plan to spend the evening in Kolkata.",
+      "verified": true,
+      "source": "https://www.drikpanchang.com/festivals/pohela-boishakh/pohela-boishakh-date-time.html?geoname-id=1275004&year=2027"
+    },
+    {
+      "id": "swaminarayan-jayanti-2027",
+      "name": "Swaminarayan Jayanti",
+      "nameLocal": "સ્વામિનારાયણ જયંતિ",
+      "date": "2027-04-15",
+      "type": "regional",
+      "states": [
+        "Gujarat"
+      ],
+      "regions": [
+        "Ahmedabad",
+        "Saurashtra"
+      ],
+      "rushStart": "2027-04-13",
+      "rushEnd": "2027-04-16",
+      "tip": "Confirm the evening assembly time before selecting a return bus.",
+      "verified": true,
+      "source": "https://www.drikpanchang.com/kannada/calendar/kannada-calendar.html?geoname-id=1277333&year=2027"
+    },
+    {
+      "id": "thrissur-pooram-2027",
+      "name": "Thrissur Pooram",
+      "nameLocal": "തൃശ്ശൂർ പൂരം",
+      "date": "2027-04-17",
+      "type": "regional",
+      "states": [
+        "Kerala"
+      ],
+      "regions": [
+        "Thrissur"
+      ],
+      "rushStart": "2027-04-15",
+      "rushEnd": "2027-04-18",
+      "tip": "Check the city's designated bus stand for the day before travelling to the festival grounds.",
+      "verified": true,
+      "source": "https://www.drikpanchang.com/malayalam/calendar/malayalam-calendar.html?geoname-id=1273874&year=2027"
+    }
+  ]
+}
