@@ -8,14 +8,14 @@ Branch: session-c. Contract version: 1.
 - C-02 was already delivered on main by the home builder.
 
 ## Next exact step
-- Capture the NudgeBee finding for pod prasthan-voice-7f5fbdb78-7vd5s in the signed-in dashboard, then confirm the restored voice deployment. Save the actual finding at docs/img/nudgebee-finding.png.
+- Capture the NudgeBee finding for pod prasthan-voice-7f5fbdb78-7vd5s in the signed-in dashboard, from the incident history for 15:17 to 15:25 IST on 25 Nov. Save the actual finding at docs/img/nudgebee-finding.png.
 
 ## Blockers
 - This session has cluster access through Ubuntu WSL but no connected dashboard browser or NudgeBee user API token. The dashboard finding and screenshot remain unverified.
 ## Commands
 - From the checkout: npm --prefix scripts ci, npm --prefix scripts test, npm --prefix scripts run flags:import:dry, npm --prefix scripts run flags:import.
 
-The venue cluster is single-node K3s v1.37.2 in Ubuntu WSL. The Prasthan image was built with Buildah and imported into the connected K3s containerd. Both API replicas and one voice replica were Ready before fault injection. Ingress /health returned HTTP 200 with role api and ok true.
+The venue cluster is single-node K3s v1.37.2 in Ubuntu WSL. The Prasthan image was built with Buildah and imported into the connected K3s containerd. The local image measured 263 MB. Both API replicas and one voice replica were Ready before fault injection. Ingress /health returned HTTP 200 with role api and ok true.
 
 ## A-02 live Sarvam check, 25 Nov
 
@@ -33,7 +33,7 @@ The venue cluster is single-node K3s v1.37.2 in Ubuntu WSL. The Prasthan image w
 - 15:17:33 injected FAULT_MODE=crash_on_voice into the voice deployment. Only voice received the fault.
 - 15:18:17 first observed CrashLoopBackOff for prasthan-voice-7f5fbdb78-7vd5s. Both API pods remained Running. All three NudgeBee agent pods were Running.
 - At 15:18:48 a traveller request during the incident returned HTTP 200, BLR-HBL, 2027-01-15 via rules. Prometheus reported both API scrape targets up and the failing voice target down.
-- An automatic reset is armed. Dashboard finding, screenshot and recovery verification pending.
+- By 15:25:10 the automatic reset restored FAULT_MODE=none. The replacement voice pod was Ready with zero restarts, both API replicas were Running and the voice health endpoint was healthy from an API pod. The failed voice pod restarted six times during the demo. Dashboard finding and screenshot are still pending.
 
 ## Festival calendar
 
