@@ -1,0 +1,72 @@
+{
+  "_about": "Rule-parser words per language (kn, ta, te, hi, od, bn, en + Roman Kannada). Best effort except Kannada; matching is lower-case substring, with a stem rule for words ending in a vowel sign.",
+  "weekdays": {
+    "0": ["sunday", "ಭಾನುವಾರ", "bhanuvara", "bhaanuvaara", "ஞாயிறு", "ఆదివార", "रविवार", "ରବିବାର", "রবিবার"],
+    "1": ["monday", "ಸೋಮವಾರ", "somavara", "somavaara", "திங்கள்", "సోమవార", "सोमवार", "ସୋମବାର", "সোমবার"],
+    "2": ["tuesday", "ಮಂಗಳವಾರ", "mangalavara", "mangalavaara", "செவ்வாய்", "మంగళవార", "मंगलवार", "ମଙ୍ଗଳବାର", "মঙ্গলবার"],
+    "3": ["wednesday", "ಬುಧವಾರ", "budhavara", "budhavaara", "புதன்", "బుధవార", "बुधवार", "ବୁଧବାର", "বুধবার", "budhvaar", "budhabara", "budhbar"],
+    "4": ["thursday", "ಗುರುವಾರ", "guruvara", "guruvaara", "வியாழன்", "గురువార", "गुरुवार", "बृहस्पतिवार", "ଗୁରୁବାର", "বৃহস্পতিবার", "guruvaaram"],
+    "5": ["friday", "ಶುಕ್ರವಾರ", "shukravara", "shukravaara", "வெள்ளி", "శుక్రవార", "शुक्रवार", "ଶୁକ୍ରବାର", "শুক্রবার"],
+    "6": ["saturday", "ಶನಿವಾರ", "shanivara", "shanivaara", "சனிக்கிழமை", "శనివార", "शनिवार", "ଶନିବାର", "শনিবার"]
+  },
+  "relativeDays": {
+    "0": ["today", "tonight", "ಇವತ್ತು", "ಇಂದು", "ivattu", "இன்று", "ఈరోజు", "ఈ రోజు", "आज", "ଆଜି", "আজ"],
+    "1": ["tomorrow", "ನಾಳೆ", "naale", "நாளை", "రేపు", "कल", "କାଲି", "আগামীকাল"]
+  },
+  "festivals": {
+    "pongal-2027": ["pongal", "பொங்கல்", "பொங்கலுக்கு"],
+    "sankranti-2027": ["sankranti", "sankranthi", "sankrantige", "ಸಂಕ್ರಾಂತಿ", "సంక్రాంతి", "संक्रांति", "ସଂକ୍ରାନ୍ତି", "সংক্রান্তি", "makar"]
+  },
+  "windows": {
+    "night": ["night", "raatri", "raathiri", "raat", "ರಾತ್ರಿ", "ராத்திரி", "இரவு", "రాత్రి", "रात", "ରାତି", "রাত"],
+    "morning": ["morning", "ಬೆಳಿಗ್ಗೆ", "beligge", "காலை", "ఉదయం", "सुबह", "ସକାଳ", "সকাল"],
+    "afternoon": ["afternoon", "ಮಧ್ಯಾಹ್ನ", "மதியம்", "మధ్యాహ్నం", "दोपहर", "ମଧ୍ୟାହ୍ନ", "দুপুর"],
+    "evening": ["evening", "ಸಂಜೆ", "sanje", "மாலை", "సాయంత్రం", "शाम", "ସନ୍ଧ୍ୟା", "সন্ধ্যা"]
+  },
+  "modes": {
+    "bus": ["bus", "bass", "ಬಸ್", "பஸ்", "பேருந்து", "బస్", "बस", "ବସ", "বাস"],
+    "train": ["train", "rail", "ಟ್ರೈನ್", "ರೈಲು", "ட்ரெயின்", "ரயில்", "ట్రైన్", "రైలు", "ट्रेन", "रेल", "ଟ୍ରେନ", "ট্রেন"],
+    "air": ["flight", "plane", "ವಿಮಾನ", "விமான", "విమాన", "फ्लाइट", "हवाई", "ବିମାନ", "বিমান"]
+  },
+  "people": {
+    "1": ["alone", "just me", "solo", "only me", "ಒಬ್ಬ", "ಒಬ್ಬಳ", "obbane", "obbale", "தனியா", "ஒருவர்", "ఒక్కడ", "ఒక్కర", "अकेल", "एक व्यक्ति", "ଏକା", "ଜଣେ", "একা", "one person"],
+    "2": ["two of us", "two people", "2 people", "ಇಬ್ರು", "ಇಬ್ಬರು", "ಎರಡು ಜನ", "ibru", "ibbaru", "ரெண்டு", "இரண்டு", "இருவர்", "ఇద్దర", "दो लोग", "दो जन", "हम दो", "ଦୁଇଜଣ", "ଦୁଇ ଜଣ", "দুজন", "দু'জন"],
+    "3": ["three of us", "three people", "3 people", "ಮೂವರು", "ಮೂರು ಜನ", "mooru jana", "muru jana", "மூணு", "மூன்று", "ముగ్గుర", "तीन", "ତିନିଜଣ", "ତିନି ଜଣ", "তিনজন"],
+    "4": ["four of us", "four people", "4 people", "ನಾಲ್ಕು", "ನಾಲ್ವರು", "naalku", "nalku", "நாலு", "நான்கு", "నలుగుర", "चार", "ଚାରିଜଣ", "ଚାରି ଜଣ", "চারজন"],
+    "5": ["five of us", "five people", "5 people", "ಐದು ಜನ", "aidu jana", "ஐந்து", "ఐదుగుర", "पांच", "पाँच", "ପାଞ୍ଚଜଣ", "পাঁচজন"],
+    "6": ["six of us", "six people", "6 people", "ಆರು ಜನ", "aaru jana", "ஆறு பேர்", "ఆరుగుర", "छह", "ଛଅଜଣ", "ছয়জন"]
+  },
+  "quantities": {
+    "1": ["one", "ಒಂದು", "ondu", "ஒரு", "ఒక", "एक", "ଏକ", "এক"],
+    "2": ["two", "ಎರಡು", "eradu", "ரெண்டு", "இரண்டு", "రెండు", "दो", "ଦୁଇ", "দুই"],
+    "3": ["three", "ಮೂರು", "mooru", "மூணு", "మూడు", "तीन", "ତିନି", "তিন"],
+    "4": ["four", "ನಾಲ್ಕು", "naalku", "நாலு", "నాలుగు", "चार", "ଚାରି", "চার"],
+    "5": ["five", "ಐದು", "aidu", "ஐந்து", "ఐదు", "पांच", "ପାଞ୍ଚ", "পাঁচ"]
+  },
+  "kg": ["kg", "ಕೆಜಿ", "kilo", "ಕಿಲೋ", "கிலோ", "కిలో", "किलो", "କିଲୋ", "কেজি"],
+  "dayOfMonth": {
+    "12": ["ಹನ್ನೆರಡ", "hanneradu", "12th"],
+    "13": ["ಹದಿಮೂರ", "hadimoora", "13th"],
+    "14": ["ಹದಿನಾಲ್ಕ", "hadinaalka", "14th"],
+    "15": ["ಹದಿನೈದ", "hadinaida", "15th"],
+    "16": ["ಹದಿನಾರ", "hadinaara", "16th"],
+    "17": ["ಹದಿನೇಳ", "hadinela", "17th"]
+  },
+  "items": {
+    "mysore-pak": ["mysore pak", "mysorepak", "ಮೈಸೂರು ಪಾಕ್", "ಮೈಸೂರ್ ಪಾಕ್", "மைசூர் பாக்", "మైసూర్ పాక్", "मैसूर पाक"],
+    "dharwad-peda": ["dharwad peda", "peda", "ಪೇಡ", "ಧಾರವಾಡ ಪೇಡ"],
+    "ellu-bella": ["ellu bella", "ಎಳ್ಳು ಬೆಲ್ಲ"],
+    "sakkare-acchu": ["sakkare acchu", "ಸಕ್ಕರೆ ಅಚ್ಚು"],
+    "gift-box-s": ["gift box", "ಗಿಫ್ಟ್ ಬಾಕ್ಸ್"]
+  },
+  "boardingPoints": {
+    "MAJESTIC": ["majestic", "ಮೆಜೆಸ್ಟಿಕ್", "kempegowda bus"],
+    "SATELLITE": ["satellite", "ಸ್ಯಾಟಲೈಟ್", "mysuru road", "mysore road"],
+    "SHANTINAGAR": ["shantinagar", "shanthinagar", "ಶಾಂತಿನಗರ"],
+    "KR_PURAM": ["kr puram", "k r puram", "ಕೆ.ಆರ್. ಪುರಂ", "ಕೆಆರ್ ಪುರಂ"],
+    "ELECTRONIC_CITY": ["electronic city", "e-city", "ecity", "ಎಲೆಕ್ಟ್ರಾನಿಕ್ ಸಿಟಿ"],
+    "KSR": ["ksr", "city railway station", "ಕೆಎಸ್ಆರ್"],
+    "SMVT": ["smvt", "baiyappanahalli", "ಬೈಯಪ್ಪನಹಳ್ಳಿ"],
+    "KIA": ["airport", "kia", "ವಿಮಾನ ನಿಲ್ದಾಣ"]
+  }
+}
