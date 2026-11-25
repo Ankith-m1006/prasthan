@@ -8,7 +8,7 @@ import { alpha, frost, glow, tint } from './glass';
 import { KolamGrid } from './motifs';
 
 export function Screen({ children, title, subtitle }: { children: ReactNode; title?: string; subtitle?: string }) {
-  const { flags, offlineData, accent } = useFlags();
+  const { flags, offlineData, accent, source } = useFlags();
   const wide = useWindowDimensions().width >= 760;
   return (
     <View style={s.root}>
@@ -22,6 +22,7 @@ export function Screen({ children, title, subtitle }: { children: ReactNode; tit
               <Text style={[s.title, wide && s.titleWide]} accessibilityRole="header">{title}</Text>
               {subtitle ? <Text style={[s.subtitle, wide && { textAlign: 'center' }]}>{subtitle}</Text> : null}
               {offlineData ? <View style={{ marginTop: space.sm, alignSelf: wide ? 'center' : 'flex-start' }}><Chip label="Offline demo data" tone="soft" /></View> : null}
+              <Text style={[s.flagNote, wide && { textAlign: 'center' }]} testID="flag-source">{source === 'offline' ? 'flags: offline defaults' : 'flags: live from Flagsmith'}</Text>
               <MotifRule />
             </View>
           ) : null}
@@ -104,6 +105,7 @@ export const s = StyleSheet.create({
   title: { fontFamily: fonts.display, fontSize: 34, lineHeight: 46, color: colors.ink, letterSpacing: -0.3 },
   titleWide: { fontSize: 48, lineHeight: 62, textAlign: 'center' },
   subtitle: { fontFamily: fonts.body, fontSize: t.body, lineHeight: 26, color: colors.inkSoft, maxWidth: 620 },
+  flagNote: { fontFamily: fonts.body, fontSize: t.small, color: colors.inkSoft, marginTop: 6, opacity: 0.85 },
   section: { paddingVertical: space.lg },
   glass: { borderRadius: 32, padding: 22, marginVertical: space.md },
   btn: { minHeight: 52, borderRadius: radius.pill, paddingHorizontal: 26, paddingVertical: 12, flexDirection: 'row', alignItems: 'center', gap: space.md, marginVertical: 6 },

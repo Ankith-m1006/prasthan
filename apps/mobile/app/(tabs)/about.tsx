@@ -2,15 +2,18 @@
 import { Linking, Text } from 'react-native';
 import { api, isForcedMock } from '../../src/api';
 import { DemoSwitches } from '../../src/screens/DemoSwitches';
+import { LiveFlagValues } from '../../src/screens/LiveFlags';
+import { useFlags } from '../../src/state/flags';
 import { Body, H2, Screen, Section, Small, s as ks } from '../../src/ui/kit';
 
 export default function About() {
+  const { source } = useFlags();
   return (
     <Screen title="ಪ್ರಸ್ಥಾನ Prasthan" subtitle="Say your festival trip home, in your own language.">
       <Section>
         <Body>Prasthan understands your trip, sends you to the official booking sites, warns you about rush nights and touts, and tells you when a new bus opens. It shows bus operators the buses that are missing.</Body>
       </Section>
-      {api.kind === 'mock' ? <DemoSwitches /> : null}
+      {source === 'live' ? <LiveFlagValues /> : api.kind === 'mock' ? <DemoSwitches /> : null}
       <H2>Powered by</H2>
       <Section>
         <Body>Powered by Sarvam AI (speech to text, understanding, text to speech).</Body>
@@ -21,7 +24,7 @@ export default function About() {
       <Section>
         <Body>Seeded demo data: travellers, demand, operators and shops are invented for this demo.</Body>
         <Body>We never show prices, never scrape and never sell tickets. Booking links open the official or public sites.</Body>
-        {isForcedMock() ? <Body>This copy runs fully offline on bundled demo data (no live voice, no live flags).</Body> : null}
+        {isForcedMock() ? <Body>{source === 'live' ? 'This copy runs on bundled demo data and mock voice; its flags are read live from Flagsmith.' : 'This copy runs fully offline on bundled demo data (no live voice, no live flags).'}</Body> : null}
       </Section>
       <H2>AI use</H2>
       <Section>
