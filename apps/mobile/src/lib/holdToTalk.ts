@@ -1,6 +1,6 @@
-// Pure hold-to-talk rules (tested): ignore taps under 400 ms, cap recordings at 20 s.
+// Pure tap-to-talk rules (tested): tap starts, tap stops; stops under 400 ms are ignored, recordings stop by themselves at 12 s.
 export const MIN_HOLD_MS = 400;
-export const MAX_RECORD_MS = 20_000;
+export const MAX_RECORD_MS = 12_000;
 
 export type HoldDecision = 'ignore' | 'send' | 'send_capped';
 
@@ -12,7 +12,7 @@ export function decideHold(pressedAt: number, releasedAt: number): HoldDecision 
 
 export function timerLabel(ms: number): string {
   const s = Math.min(Math.floor(ms / 1000), MAX_RECORD_MS / 1000);
-  return `0:${String(s).padStart(2, '0')} / 0:20`;
+  return `0:${String(s).padStart(2, '0')} / 0:${String(MAX_RECORD_MS / 1000).padStart(2, '0')}`;
 }
 
 // Web recording formats. Chrome / Android Chrome / Firefox record webm+opus; Safari on iOS (before 18.4) only mp4+aac.

@@ -23,7 +23,8 @@ describe('hold to talk', () => {
   it('ignores short taps and caps long holds', () => {
     expect(decideHold(0, 300)).toBe('ignore');
     expect(decideHold(0, 1500)).toBe('send');
-    expect(decideHold(0, 25_000)).toBe('send_capped');
-    expect(timerLabel(4200)).toBe('0:04 / 0:20');
+    expect(decideHold(0, 12_000)).toBe('send_capped');
+    expect(timerLabel(4200)).toBe('0:04 / 0:12');
+    expect(timerLabel(30_000)).toBe('0:12 / 0:12');
   });
 });

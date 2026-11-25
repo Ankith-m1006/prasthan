@@ -1,24 +1,44 @@
-// Plays a reply: Sarvam audio (base64 WAV) or a cached clip URL via expo-audio; otherwise, on web, the browser's
-// own speech voice if it has one for the language; otherwise nothing (the screen shows the text big).
+// Plays a reply. Order: Sarvam audio in the reply (WAV, played as-is at its own sample rate) -> cached clip ->
+// a fresh Sarvam /v1/tts call -> the browser's speech voice (robotic; LAST resort only) -> nothing (text is shown big).
+// Web: one shared <audio> element, unlocked inside a tap (unlockAudio), so replies that arrive later still play on iOS.
 import { createAudioPlayer } from 'expo-audio';
 import { Platform } from 'react-native';
 import type { Lang, VoiceReply } from '@contract';
 import { api } from '../api';
 
 const API_URL = (process.env.EXPO_PUBLIC_API_URL ?? '').replace(/\/$/, '');
+const isWeb = Platform.OS === 'web' && typeof window !== 'undefined';
+// 0.05 s of silence (8 kHz mono WAV) to unlock the element in a gesture
+const SILENT_WAV = 'data:audio/wav;base64,UklGRkgDAABXQVZFZm10IBAAAAABAAEAQB8AAIA+AAACABAAZGF0YSQDAAAAAAAA' + 'A'.repeat(1067) + '=';
 
-function playUri(uri: string): boolean {
-  try {
-    const p = createAudioPlayer({ uri });
-    p.play();
-    return true;
-  } catch {
-    return false;
+let el: HTMLAudioElement | null = null;
+function audioEl(): HTMLAudioElement {
+  if (!el) { el = new Audio(); el.preload = 'auto'; el.setAttribute('playsinline', ''); }
+  return el;
+}
+
+/** Call inside a tap handler (mic, Send, Alert me, play). Safe to call often. */
+export function unlockAudio(): void {
+  if (!isWeb) return;
+  const a = audioEl();
+  if (a.dataset.unlocked === '1' || !a.paused) return;
+  a.src = SILENT_WAV;
+  a.play().then(() => { a.dataset.unlocked = '1'; }).catch(() => undefined);
+}
+
+async function playUri(uri: string): Promise<boolean> {
+  if (isWeb) {
+    const a = audioEl();
+    try { window.speechSynthesis?.cancel(); } catch { /* ignore */ }
+    a.pause();
+    a.src = uri;
+    try { await a.play(); return true; } catch { return false; }
   }
+  try { createAudioPlayer({ uri }).play(); return true; } catch { return false; }
 }
 
 function browserSpeak(text: string, lang: Lang): boolean {
-  if (Platform.OS !== 'web' || typeof window === 'undefined' || !('speechSynthesis' in window)) return false;
+  if (!isWeb || !('speechSynthesis' in window)) return false;
   const voices = window.speechSynthesis.getVoices();
   const voice = voices.find((v) => v.lang === lang) ?? voices.find((v) => v.lang.startsWith(lang.slice(0, 2)));
   if (!voice) return false;
@@ -30,20 +50,27 @@ function browserSpeak(text: string, lang: Lang): boolean {
   return true;
 }
 
-/** Returns how the reply was voiced, for the honesty chip. */
-export function playReply(reply: VoiceReply): 'sarvam' | 'clip' | 'browser' | 'none' {
-  if (reply.audioBase64 && playUri(`data:${reply.mime ?? 'audio/wav'};base64,${reply.audioBase64}`)) return 'sarvam';
-  if (reply.audioUrl && API_URL && playUri(`${API_URL}${reply.audioUrl}`)) return 'clip';
-  if (browserSpeak(reply.text, reply.language)) return 'browser';
-  return 'none';
+async function sarvam(text: string, lang: Lang): Promise<boolean | null> {
+  try {
+    const res = await api.tts(text, lang);
+    if (!res.audioBase64) return null;
+    return playUri(`data:${res.mime ?? 'audio/wav'};base64,${res.audioBase64}`);
+  } catch {
+    return null;
+  }
+}
+
+export type Voiced = 'sarvam' | 'clip' | 'browser' | 'none';
+
+/** Returns how the reply was voiced, for the honesty chip. A blocked play of real audio never falls back to the robot voice. */
+export async function playReply(reply: VoiceReply): Promise<Voiced> {
+  if (reply.audioBase64) return (await playUri(`data:${reply.mime ?? 'audio/wav'};base64,${reply.audioBase64}`)) ? 'sarvam' : 'none';
+  if (reply.audioUrl && API_URL && (await playUri(`${API_URL}${reply.audioUrl}`))) return 'clip';
+  return speakText(reply.text, reply.language);
 }
 
 export async function speakText(text: string, lang: Lang): Promise<'sarvam' | 'browser' | 'none'> {
-  try {
-    const res = await api.tts(text, lang);
-    if (res.audioBase64 && playUri(`data:${res.mime ?? 'audio/wav'};base64,${res.audioBase64}`)) return 'sarvam';
-  } catch {
-    // fall through to the browser voice
-  }
+  const live = await sarvam(text, lang);
+  if (live !== null) return live ? 'sarvam' : 'none';
   return browserSpeak(text, lang) ? 'browser' : 'none';
 }

@@ -6,7 +6,7 @@ import type { Lang, OptionsResponse, TripIntent, VoiceIntentResponse } from '@co
 import { api } from '../../src/api';
 import type { RecordedAudio } from '../../src/api/types';
 import { UTTERANCES } from '../../src/lib/miniParse';
-import { playReply } from '../../src/lib/speak';
+import { playReply, unlockAudio } from '../../src/lib/speak';
 import { useHoldToTalk } from '../../src/lib/useRecorder';
 import { MicButton } from '../../src/screens/speak/MicButton';
 import { Options } from '../../src/screens/speak/Options';
@@ -49,7 +49,7 @@ export default function Speak() {
     setTurn(res);
     setIntent(fillFromProfile(res.intent, profile)); // empty town / mode / boarding point come from the profile
     setSaved(null);
-    playReply(res.reply);
+    void playReply(res.reply);
   }, [profile]);
 
   const run = useCallback(async (job: () => Promise<VoiceIntentResponse>) => {
@@ -61,7 +61,7 @@ export default function Speak() {
 
   const onClip = useCallback((clip: RecordedAudio) => void run(() => api.voiceIntent(clip, lang, intent?.needsFollowUp.length ? intent : null)), [run, lang, intent]);
   const rec = useHoldToTalk(onClip);
-  const sendText = (s: string, l: Lang = lang) => { if (s.trim()) void run(() => api.parse(s.trim(), l, intent?.needsFollowUp.length ? intent : null)); };
+  const sendText = (s: string, l: Lang = lang) => { unlockAudio(); if (s.trim()) void run(() => api.parse(s.trim(), l, intent?.needsFollowUp.length ? intent : null)); };
 
   useEffect(() => {
     if (!intent?.routeId) { setOptions(null); return; }
@@ -71,6 +71,7 @@ export default function Speak() {
   const pickLang = (l: Lang) => { setLang(l); setIdentity({ language: l, mode: 'traveller' }); };
   const alertMe = async () => {
     if (!intent) return;
+    unlockAudio();
     void askNotifyPermission(); // web only, asked once, only after this tap
     try {
       await api.saveTrip({ ...intent, travellerId: getIdentity().traveller });
@@ -80,7 +81,7 @@ export default function Speak() {
     }
     const msg = lang === 'kn-IN' ? 'ಸರಿ, ಹೊಸ ಬಸ್ ಬಂದಾಗ ತಿಳಿಸುತ್ತೇನೆ.' : 'Done. I will tell you when a new bus opens.';
     setSaved(msg);
-    playReply({ text: msg, language: lang, audioBase64: null, mime: null });
+    void playReply({ text: msg, language: lang, audioBase64: null, mime: null }); // Sarvam /v1/tts, robot voice only as last resort
   };
   const samples = UTTERANCES.filter((u) => u.language === lang || u.language === 'en-IN');
   const voiceOff = !flags.voice_enabled;
@@ -93,7 +94,7 @@ export default function Speak() {
         {profile ? <Chip label="My usual trip home" tone="soft" onPress={() => { setTurn(null); setSaved(null); setIntent(tripFromProfile(profile, getIdentity().traveller)); }} /> : null}
       </View>
       <View style={s.langs}>{LANGS.map(([l, name]) => <Chip key={l} label={name} selected={l === lang} font={fontFor(l, l === lang)} onPress={() => pickLang(l)} />)}</View>
-      <MicButton state={rec.state} elapsed={rec.elapsed} busy={busy} accent={accent.accent} disabled={voiceOff} onPressIn={() => void rec.start()} onPressOut={() => void rec.stop()} />
+      <MicButton state={rec.state} elapsed={rec.elapsed} busy={busy} accent={accent.accent} disabled={voiceOff} onPress={rec.toggle} />
       <Text style={s.powered}>Powered by Sarvam AI</Text>
       {voiceOff ? <Small style={{ textAlign: 'center' }}>Voice is switched off right now. Please type.</Small> : null}
       <Pressable accessibilityRole="button" onPress={() => setTyping(!typing)} style={[s.typeLink, frost(0.6, 12)]}>
@@ -132,7 +133,7 @@ function ReplyCard({ turn }: { turn: VoiceIntentResponse }) {
     <Section>
       {turn.transcript ? <Small>You said: {turn.transcript}</Small> : null}
       <View style={{ flexDirection: 'row', gap: space.md, alignItems: 'center', marginTop: 8 }}>
-        <Pressable accessibilityRole="button" accessibilityLabel="Play reply again" onPress={() => playReply(turn.reply)} style={[s.play, frost(0.75, 12)]}><Icon name="speaker" size={24} /></Pressable>
+        <Pressable accessibilityRole="button" accessibilityLabel="Play reply again" onPress={() => { unlockAudio(); void playReply(turn.reply); }} style={[s.play, frost(0.75, 12)]}><Icon name="speaker" size={24} /></Pressable>
         <Text style={[s.reply, { fontFamily: fontForText(turn.reply.text) }]}>{turn.reply.text}</Text>
       </View>
       <View style={[s.chips, { marginTop: 8 }]}>
