@@ -78,3 +78,5 @@ Rule 8: public repo + README with setup instructions + demo video. Rule 5: all t
 - C-03 manifests and helpers are on session-c. Cluster acceptance awaits the local Docker engine. Production web flags verified. Next: enable Docker, rehearse cluster recovery and record the final video.
 
 - Repository made public with owner approval after a redacted full-history Gitleaks scan and an exact private-credential check across 503 reachable objects. Anonymous GitHub API verified public visibility. Mobile typecheck and 14 tests passed; API typecheck and 57 tests passed. Docker startup awaits Ankith. Video and submission are pending.
+
+- A 52-second screen recording with synchronized Kannada audio is in docs/img/voice-and-traveller-flow.mp4 and linked from README. It uses a synthesized Kannada sentence as microphone input, live Sarvam transcription and spoken reply, rules for intent, seeded demand, and live Flagsmith. The recording shows alert registration, adding six buses, the traveller alert and the flags view. Next: capture live NudgeBee recovery when Docker is ready, assemble the full submission video and upload unlisted.

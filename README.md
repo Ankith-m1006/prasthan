@@ -9,7 +9,7 @@
 - Travellers (and their parents, who may only speak Kannada, Tamil or Odia) keep refreshing four apps, and touts at Majestic fill the gap.
 
 **Live demo (offline web build, seeded demo data):** https://prasthan-ten.vercel.app
-**Demo video:** `<VIDEO_URL>`
+**Demo preview (52 seconds, Kannada audio):** [Watch the traveller and operator flow](https://raw.githubusercontent.com/Ankith-m1006/prasthan/main/docs/img/voice-and-traveller-flow.mp4)
 
 Built at Festive Hacks, 25 Nov 2026, BIEC Bengaluru. Sponsors used: **Sarvam AI, Flagsmith, NudgeBee**.
 
