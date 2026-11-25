@@ -15,11 +15,11 @@ export default function PartnerOrders() {
 }
 
 function ShopOrders({ partner }: { partner: Partner }) {
-  const { orders, setOrders, error, reload } = useShopData(partner.id);
+  const { orders, setOrders, error } = useShopData(partner.id);
   return (
     <Screen demoTag title="Orders" subtitle={`${orders.length} pre-orders from ${customerCount(orders)} customers. Pay at pickup.`}>
       {error ? <Banner text={error} /> : null}
-      <OrderList partner={partner} orders={orders} limit={50} onChange={(next) => { setOrders(next); void reload(); }} />
+      <OrderList partner={partner} orders={orders} limit={50} onChange={setOrders} />
     </Screen>
   );
 }

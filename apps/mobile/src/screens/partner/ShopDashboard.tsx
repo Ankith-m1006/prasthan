@@ -50,7 +50,7 @@ export function ShopDashboard({ partner }: { partner: Partner }) {
       <H2>Top items</H2>
       <Bars bars={bars.top} unit="" />
       <H2>Orders</H2>
-      <OrderList partner={partner} orders={orders} onChange={(next) => { setOrders(next); void reload(); }} />
+      <OrderList partner={partner} orders={orders} onChange={setOrders} />
     </Screen>
   );
 }
