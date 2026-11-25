@@ -1,7 +1,7 @@
 // In-memory demo store. Restarting the api (or POST /v1/ops/reset) resets the demo.
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
-import type { Alert, GiftOrder, Service, Traits, Trip } from '../../../shared/contract/src/index.js';
+import type { Alert, GiftOrder, Partner, Service, Traits, Trip } from '../../../shared/contract/src/index.js';
 import { REPO_ROOT } from './seed.js';
 
 export interface Store {
@@ -9,6 +9,7 @@ export interface Store {
   alerts: Alert[];       // live alerts only (seed alerts stay in Seed)
   services: Service[];   // live services added today
   orders: GiftOrder[];   // live gift orders
+  partners: Partner[];   // businesses registered from the app (v3)
   traits: Map<string, Traits>;
   counter: number;
   voiceHealthy: boolean;
@@ -16,7 +17,7 @@ export interface Store {
 }
 
 export function createStore(): Store {
-  return { trips: [], alerts: [], services: [], orders: [], traits: new Map(), counter: 9000, voiceHealthy: true };
+  return { trips: [], alerts: [], services: [], orders: [], partners: [], traits: new Map(), counter: 9000, voiceHealthy: true };
 }
 
 export function resetStore(s: Store): void {

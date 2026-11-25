@@ -8,6 +8,7 @@ import { useFlags } from '../../src/state/flags';
 import { useProfile } from '../../src/state/profile';
 import { ROUTES } from '../../src/screens/profile/options';
 import { Body, Button, H2, Screen, Section, Small, s as ks } from '../../src/ui/kit';
+import { SwitchView } from '../../src/screens/partner/SwitchView';
 
 export default function About() {
   const { source } = useFlags();
@@ -24,6 +25,7 @@ export default function About() {
         <Small>Saved only on this phone. Operators only see totals, never your details.</Small>
         <Button tone="plain" label="View or edit profile" onPress={() => router.push('/profile')} />
       </Section>
+      <SwitchView />
       {source === 'live' ? <LiveFlagValues /> : api.kind === 'mock' ? <DemoSwitches /> : null}
       <H2>Powered by</H2>
       <Section>

@@ -45,6 +45,8 @@ export interface Partner {
   routes?: string[];
   boardingPoint?: string; items?: ShopItem[];
   serves?: string[]; cutFirst?: boolean; walkMinutes?: number;
+  /** v3: a business registered from the app (POST /v1/partners/register), not seeded. */
+  registered?: boolean; seatsPerNight?: number; city?: string;
 }
 
 export interface Service { id: string; routeId: string; partnerId: string; mode: Mode; date: string; departTime: string; boardingPoint: string; seats: number; special: boolean }
@@ -129,6 +131,13 @@ export interface TripResponse { trip: Trip }
 /** v2: serverTime = pass it back as ?since= on the next poll (only newer alerts come back). */
 export interface AlertsResponse { alerts: Alert[]; source: Source; serverTime?: string; since?: string }
 export interface PartnersResponse { partners: Partner[] }
+/** v3: POST /v1/partners/register (demo, no password). Sweet shops send items, operators send routes + seatsPerNight. */
+export interface RegisterPartnerItem { name: string; priceInr: number; unit: string }
+export interface RegisterPartnerRequest {
+  type: PartnerType; name: string; boardingPoint?: string; city?: string;
+  items?: RegisterPartnerItem[]; routes?: string[]; seatsPerNight?: number;
+}
+export interface RegisterPartnerResponse { partner: Partner }
 export interface DemandResponse { partner: Partner; cells: DemandCell[]; label: string }
 
 export interface AddServicesRequest { routeId: string; date: string; departTime: string; boardingPoint: string; seats: number; count: number; mode: Mode }

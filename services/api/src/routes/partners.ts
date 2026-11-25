@@ -9,6 +9,7 @@ import { demandFor, routeDemand, shopOrders } from '../demand.js';
 import { allNewServiceTexts } from '../i18n/templates.js';
 import { nextId, snapshot } from '../store.js';
 import { waitingCount } from './trips.js';
+import partnerAccountRoutes from './partnerAccounts.js';
 
 function partnerOr404(deps: Deps, id: string): Partner {
   const p = deps.seed.partners.find((x) => x.id === id);
@@ -41,6 +42,7 @@ function newServiceAlert(deps: Deps, partner: Partner, r: AddServicesRequest): A
 }
 
 export default async function partnerRoutes(app: FastifyInstance, deps: Deps): Promise<void> {
+  await partnerAccountRoutes(app, deps); // v3: registered businesses join deps.seed.partners
   app.get('/v1/partners', async (req): Promise<PartnersResponse> => {
     const type = (req.query as { type?: string }).type;
     return { partners: deps.seed.partners.filter((p) => !type || p.type === type) };

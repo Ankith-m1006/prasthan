@@ -8,7 +8,7 @@ import type { Store } from './store.js';
 import type { Traits } from '../../../shared/contract/src/index.js';
 
 export interface StoreData {
-  trips: Store['trips']; alerts: Store['alerts']; services: Store['services']; orders: Store['orders'];
+  trips: Store['trips']; alerts: Store['alerts']; services: Store['services']; orders: Store['orders']; partners?: Store['partners'];
   traits: Array<[string, Traits]>; counter: number;
 }
 
@@ -51,12 +51,12 @@ export function adapterFromEnv(env = process.env): StorageAdapter {
 }
 
 export function toData(s: Store): StoreData {
-  return { trips: s.trips, alerts: s.alerts, services: s.services, orders: s.orders, traits: [...s.traits.entries()], counter: s.counter };
+  return { trips: s.trips, alerts: s.alerts, services: s.services, orders: s.orders, partners: s.partners, traits: [...s.traits.entries()], counter: s.counter };
 }
 
 /** Replaces the store's shared state with the stored document (instance-only fields like voiceHealthy are kept). */
 export function hydrate(s: Store, d: StoreData): void {
-  s.trips = d.trips ?? []; s.alerts = d.alerts ?? []; s.services = d.services ?? []; s.orders = d.orders ?? [];
+  s.trips = d.trips ?? []; s.alerts = d.alerts ?? []; s.services = d.services ?? []; s.orders = d.orders ?? []; s.partners = d.partners ?? [];
   s.traits = new Map(d.traits ?? []); s.counter = Math.max(s.counter, d.counter ?? 0);
 }
 
@@ -77,7 +77,7 @@ export function merge(remote: StoreData | null, local: StoreData): StoreData {
   }
   return {
     trips: [...trips.values()], alerts: unionById(remote.alerts ?? [], local.alerts), services: unionById(remote.services ?? [], local.services),
-    orders: unionById(remote.orders ?? [], local.orders), traits: [...new Map([...(remote.traits ?? []), ...local.traits]).entries()],
+    orders: unionById(remote.orders ?? [], local.orders), partners: unionById(remote.partners ?? [], local.partners ?? []), traits: [...new Map([...(remote.traits ?? []), ...local.traits]).entries()],
     counter: Math.max(remote.counter ?? 0, local.counter),
   };
 }
