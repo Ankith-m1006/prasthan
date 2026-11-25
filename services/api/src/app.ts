@@ -33,9 +33,15 @@ function routeLabel(url: string | undefined): string {
   return url ?? 'unknown';
 }
 
+/** CORS_ORIGINS=comma list (e.g. the hosted web app) limits CORS; unset = reflect any origin (local dev). */
+export function corsOrigin(env = process.env): true | Array<string | RegExp> {
+  const list = (env.CORS_ORIGINS ?? '').split(',').map((s) => s.trim()).filter(Boolean);
+  return list.length ? [...list, /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/] : true;
+}
+
 export async function buildApp(deps: Deps, extras: Extra[] = [], logger: boolean | object = false): Promise<FastifyInstance> {
   const app = Fastify({ logger, bodyLimit: 1_000_000 });
-  await app.register(cors, { origin: true });
+  await app.register(cors, { origin: corsOrigin() });
   await app.register(multipart, { limits: { fileSize: 2 * 1024 * 1024, files: 1, fields: 5 } });
 
   app.addHook('onResponse', async (req, reply) => {
