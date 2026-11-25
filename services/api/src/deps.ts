@@ -4,6 +4,7 @@ import type { FlagsProvider } from './flags/defaults.js';
 import type { Metrics } from './metrics.js';
 import type { Seed } from './seed.js';
 import type { Clock, Store } from './store.js';
+import type { StorageAdapter } from './persist.js';
 import type { Traits } from '../../../shared/contract/src/index.js';
 
 /** Turns the ops fallback switch on/off (Flagsmith Admin API in live mode, memory in mock). */
@@ -19,6 +20,8 @@ export interface Deps {
   ops: OpsSwitch;
   metrics: Metrics;
   clock: Clock;
+  /** Shared storage across instances (Upstash Redis); omitted or memory = in-process store only. */
+  persist?: StorageAdapter;
 }
 
 export function traitsFor(deps: Deps, identity: string): Traits {

@@ -99,7 +99,7 @@ export interface FlagsView {
 export interface ApiError { error: { code: string; message: string } }
 
 export type ModeState = 'live' | 'mock' | 'off';
-export interface HealthResponse { ok: boolean; role: 'all' | 'api' | 'voice'; version: string; modes: { sarvam: ModeState; flagsmith: ModeState; contextDev: ModeState } }
+export interface HealthResponse { ok: boolean; role: 'all' | 'api' | 'voice'; version: string; modes: { sarvam: ModeState; flagsmith: ModeState; contextDev: ModeState }; /** v2 */ store?: 'memory' | 'upstash' }
 
 export interface Traits { role?: 'traveller' | 'partner'; language?: Lang; home_state?: string; home_town?: string; partner_type?: PartnerType; partner_id?: string }
 export interface IdentifyRequest { identity: string; traits?: Traits }
@@ -126,7 +126,8 @@ export interface Trip { id: string; intent: TripIntent; subscribed: boolean; cre
 export interface TripRequest { intent: TripIntent }
 export interface TripResponse { trip: Trip }
 
-export interface AlertsResponse { alerts: Alert[]; source: Source }
+/** v2: serverTime = pass it back as ?since= on the next poll (only newer alerts come back). */
+export interface AlertsResponse { alerts: Alert[]; source: Source; serverTime?: string; since?: string }
 export interface PartnersResponse { partners: Partner[] }
 export interface DemandResponse { partner: Partner; cells: DemandCell[]; label: string }
 

@@ -16,6 +16,7 @@ import { LiveSarvamClient } from './sarvam/live.js';
 import { MockSarvamClient } from './sarvam/mock.js';
 import { loadSeed, type Seed } from './seed.js';
 import { createStore, demoClock } from './store.js';
+import { adapterFromEnv } from './persist.js';
 import { HttpGateway, InProcessGateway, type VoiceGateway } from './voice/gateway.js';
 import type { VoiceDeps } from './voice/pipeline.js';
 
@@ -57,7 +58,7 @@ export async function wireAll(config: Config, log: (m: string) => void = () => {
   const seed = loadSeed(config.seedDir);
   const metrics = createMetrics();
   const fl = flagsFor(config, metrics, log);
-  const base: Deps = { config, seed, store: createStore(), flags: fl.flags, ops: fl.ops, metrics, clock: demoClock(config.demoToday) };
+  const base: Deps = { config, seed, store: createStore(), flags: fl.flags, ops: fl.ops, metrics, clock: demoClock(config.demoToday), persist: adapterFromEnv() };
   const { live, mock } = sarvamClients(config, seed);
   return wireVoice(base, live, mock);
 }

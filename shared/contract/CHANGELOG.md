@@ -7,3 +7,5 @@
 - v2 (25 Nov, gifts): GET /v1/shops?boardingPoint= (ShopsResponse), POST /v1/gifts/orders accepts items[] + departTime
   (readyBy >= 15 min before), GiftOrder gains optional items/totalInr/departTime/createdAt/updatedAt, GET /v1/gifts/orders/:id,
   GET /v1/gifts/orders?travellerId=, POST /v1/gifts/orders/:id/status {status}, GET /v1/partners/:id/pickups?date= (PickupsResponse).
+- v2 (25 Nov, polling + storage): AlertsResponse gains serverTime (+ echoed since); GET /v1/alerts?since=<serverTime>&onlyMine=1
+  returns only live alerts newer than since (seeded history is excluded), cache-control no-store. HealthResponse gains store: 'memory'|'upstash'.

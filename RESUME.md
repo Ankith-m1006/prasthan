@@ -18,6 +18,17 @@ Updated: 25 Nov 2026, with every push. Builder so far: one session on Ankith's h
    - `GET /v1/gifts/orders/:id` -> `{order}` (status); `GET /v1/gifts/orders?travellerId=` -> `{orders}`.
    - Shop side: `POST /v1/gifts/orders/:id/status {status: placed|ready|picked_up|cancelled}`; `GET /v1/partners/:id/pickups?date=` -> `{cells: [{pickupPoint, pickupDate, orders, firstReadyBy, items: [{itemId, name, unit, qty}], totalInr}]}`. Existing `/v1/partners/:id/demand` now counts every line of multi-item orders.
 
+4. Notifications polling: `GET /v1/alerts?identity=<guest id>&since=<serverTime from the previous response>&onlyMine=1` -> `{alerts, source, serverTime}`. First call without `since` (full list) and keep `serverTime`; then poll every 10-20 s with it; anything returned is new -> raise a browser Notification. `since` uses the api's demo clock (2027-01-05T<IST time>), so never pass the device clock. `onlyMine=1` = only routes this traveller saved a trip for (+ route-less announcements).
+5. Shared storage: `/health` now has `store: "memory" | "upstash"`. With Upstash connected, trips / alerts / buses / orders / profile traits are shared across all serverless instances (no more "notified" miscounts or lost alerts between instances).
+
+## UPSTASH REDIS FOR THE LIVE API (ANKITH, 2 minutes, free; until then the api uses memory per instance)
+1. vercel.com -> project **prasthan-api** -> **Storage** tab (or Integrations -> Marketplace) -> **Upstash** -> **Upstash for Redis** -> Create (free plan, region close to iad1 / Washington is fine) -> name `prasthan-store`.
+2. **Connect** it to project prasthan-api (Production + Preview). It injects the env vars itself (`UPSTASH_REDIS_REST_URL` + `UPSTASH_REDIS_REST_TOKEN`, or `KV_REST_API_URL` + `KV_REST_API_TOKEN`; the api accepts both pairs). Nothing to copy by hand.
+3. Deployments -> latest -> ... -> **Redeploy** (env vars apply only after a redeploy).
+4. Check https://prasthan-api.vercel.app/health -> `"store":"upstash"`. If Redis ever fails, each request carries on from memory (logged as a warning, no crash).
+- To clear demo state on stage: `POST /v1/ops/reset` with the ops token (also clears the Redis document).
+- Limit: one JSON document, last-writer-merge; two writes in the same ~100 ms on different instances could reuse an id. Fine for a demo.
+
 ## FINAL DOCS PASS (25 Nov ~14:30, docs agent; text only, no code)
 - README.md rewritten for judges: live links (web + /health, checked live: sarvam live, flagsmith live), 60-second try-it, 4 screenshots incl. ui-430-00-profile.png + About flags, current architecture (Vercel web + Vercel API; k3d marked planned), sponsor section with honest status (Sarvam STT/TTS/translate live, intent = rules; Flagsmith 17 flags / 7 segments live; NudgeBee NOT verified, Docker unavailable per session-c status/C.md), setup mock + live (env var names only), limits, privacy, AI use (Codex + Claude Code). `<VIDEO_URL>` placeholder kept.
 - New docs/SUBMIT-TEXT.md: title + tagline, form description, 30 s pitch, 2 min talk track, 10 judge Q&A, final checklist.
