@@ -1,17 +1,17 @@
-// HTTP client for the Prasthan api. Base URL = EXPO_PUBLIC_API_URL. 10 s timeout (25 s for speech: live Sarvam
-// synthesis of a long Kannada alert takes ~10 s). No secrets in the app.
+// HTTP client for the Prasthan api. Base URL = EXPO_PUBLIC_API_URL. 25 s timeout: a serverless cold start can take
+// ~20 s and live Sarvam synthesis of a long Kannada alert ~10 s. No secrets in the app.
 import { Platform } from 'react-native';
 import type { Api, RecordedAudio } from './types';
 import { currentIdentity, getIdentity } from '../state/identity';
 
-const SPEECH_MS = 25_000;
+const TIMEOUT_MS = 25_000;
 
 export class ApiError extends Error {
   constructor(readonly status: number, readonly code: string, message: string) { super(message); }
 }
 
 export function createHttpClient(baseUrl: string): Api {
-  async function req<T>(path: string, init: RequestInit = {}, timeoutMs = 10_000): Promise<T> {
+  async function req<T>(path: string, init: RequestInit = {}, timeoutMs = TIMEOUT_MS): Promise<T> {
     const ctrl = new AbortController();
     const timer = setTimeout(() => ctrl.abort(), timeoutMs);
     try {
@@ -46,10 +46,10 @@ export function createHttpClient(baseUrl: string): Api {
       const form = await audioForm(audio);
       form.append('language', language);
       if (context) form.append('context', JSON.stringify(context));
-      return req('/v1/voice/intent', { method: 'POST', body: form }, SPEECH_MS);
+      return req('/v1/voice/intent', { method: 'POST', body: form });
     },
     parse: (text, language, context) => post('/v1/intent/parse', { text, language, context }),
-    tts: (text, language) => req('/v1/tts', { method: 'POST', body: JSON.stringify({ text, language }) }, SPEECH_MS),
+    tts: (text, language) => req('/v1/tts', { method: 'POST', body: JSON.stringify({ text, language }) }),
     options: (routeId, date, mode, people) => req(`/v1/options?routeId=${encodeURIComponent(routeId)}&date=${date ?? ''}&mode=${mode ?? ''}&people=${people}`),
     saveTrip: (intent) => post('/v1/trips', { intent }),
     alerts: (since) => req(`/v1/alerts?identity=${encodeURIComponent(getIdentity().traveller)}${since ? `&since=${encodeURIComponent(since)}` : ''}`),
