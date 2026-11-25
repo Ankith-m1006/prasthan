@@ -1,9 +1,9 @@
 # Session B status
 
-Phase: B-01 done (Expo scaffold, tokens, motifs, API client + mock). Next: B-02 speak + trip card.
+Phase: B-02 done (speak, trip card, booking links, alert me). Next: B-03 alerts + partner board.
 Branch: main (single builder on the home laptop)
 Contract version I built against: 1
-Last merged to main: B-01
+Last merged to main: B-02
 
 ## Done
 - B-01: Expo SDK 58 (React Native 0.88, React 19.3), expo-router tabs (Speak, Alerts, Partners, About), web on (react-native-web).
@@ -14,9 +14,10 @@ Last merged to main: B-01
   src/api: typed HttpClient (EXPO_PUBLIC_API_URL, identity header, 10 s timeout) + MockClient (whole api on bundled seed) +
   auto switch to mock after 2 failed calls ("Offline demo data" chip). useFlags() polls /v1/config every alert_poll_seconds.
   Mock flags = coded defaults + same segment rules + demo switches (festival / fallback / gifting) for the offline web demo.
+- B-02: Speak screen: festival greeting (flag), 7 language chips (POST /v1/identify with language + home_state), hold-to-talk mic (expo-audio, 400 ms min, 20 s cap, timer), "or type" box + sample sentences, reply card with source chips (live/demo/offline voice, LLM/rules), editable trip card (town, day, time, mode, people), official links (no prices), rush + tout warnings with seeded demand line, Alert me (diya) -> POST /v1/trips. Reply audio: Sarvam WAV, else cached clip, else browser voice, else big text. Jest 6/6. Checked in headless Chrome on the mock web build: typed sample -> Hubballi Fri 15 Jan night, KSRTC/redBus links, warnings.
 
 ## Working on now
-- B-02 Speak screen
+- B-03 Alerts + partner board
 
 ## Blocked / broken
 -

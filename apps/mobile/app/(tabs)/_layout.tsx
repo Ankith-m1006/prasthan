@@ -2,12 +2,16 @@
 import { Tabs } from 'expo-router';
 import { Icon, type IconName } from '../../src/ui/icons';
 import { colors, fonts } from '../../src/theme/tokens';
-import { useAlertsBadge } from '../../src/state/alerts';
+import { useEffect } from 'react';
+import { startAlerts, useAlertsBadge } from '../../src/state/alerts';
+import { useFlags } from '../../src/state/flags';
 
 const icon = (name: IconName) => ({ color }: { color: unknown }) => <Icon name={name} color={typeof color === 'string' ? color : colors.ink} />;
 
 export default function TabsLayout() {
   const unseen = useAlertsBadge();
+  const { flags } = useFlags();
+  useEffect(() => startAlerts(flags.alert_poll_seconds), [flags.alert_poll_seconds]);
   return (
     <Tabs
       screenOptions={{

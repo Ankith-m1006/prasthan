@@ -3,9 +3,9 @@
 Updated: 25 Nov 2026, with every push. Builder so far: one session on Ankith's home laptop, working directly on `main`.
 
 ## Where we are
-- Current phase: B-01 done (P0, A-01..A-03 also done). Next: B-02 speak + trip card.
-- Last finished step: B-01: app typecheck + jest 3/3 + `expo export --platform web` OK (mock mode).
-- Next exact step: B-02 (`codex/B-02-speak-trip.md`) in apps/mobile/app/(tabs)/index.tsx.
+- Current phase: B-02 done. Next: B-03 alerts + partner demand board.
+- Last finished step: B-02: jest 6/6, web export OK, typed sample flow verified in headless Chrome.
+- Next exact step: B-03 (`codex/B-03-alerts-partners.md`): app/(tabs)/alerts.tsx + partners.tsx (DemandBoard, Add buses sheet).
 
 ## Commands
 - app checks: `cd apps/mobile && npm install && npm run typecheck && npm test`
