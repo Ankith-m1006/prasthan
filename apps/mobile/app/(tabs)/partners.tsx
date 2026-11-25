@@ -8,7 +8,7 @@ import { api } from '../../src/api';
 import { AddBuses } from '../../src/screens/partners/AddBuses';
 import { DemandRow } from '../../src/screens/partners/DemandBoard';
 import { openLink } from '../../src/screens/speak/Options';
-import { pollAlerts } from '../../src/state/alerts';
+import { pollAlerts, rememberAlert } from '../../src/state/alerts';
 import { useFlags } from '../../src/state/flags';
 import { getIdentity, partnerTraits, setIdentity } from '../../src/state/identity';
 import { dateLabel } from '../../src/lib/format';
@@ -19,6 +19,7 @@ import { SoftRule } from '../../src/ui/backdrop';
 const GROUPS: Array<[PartnerType, string]> = [['bus_operator', 'Bus operators'], ['sweet_shop', 'Sweet shops'], ['quick_commerce', 'Quick commerce (roadmap)']];
 const DATES = ['2027-01-12', '2027-01-13', '2027-01-14', '2027-01-15', '2027-01-16', '2027-01-17'];
 const UNIT: Record<PartnerType, string> = { bus_operator: 'seats', sweet_shop: 'capacity', quick_commerce: 'served' };
+const SOFT_FAIL = 'Could not reach the demand board just now. Please try again in a moment.';
 
 export default function Partners() {
   const { flags, refresh } = useFlags();
@@ -31,22 +32,26 @@ export default function Partners() {
   const [adding, setAdding] = useState<string | null>(null);
   const [toast, setToast] = useState<string | null>(null);
 
-  useEffect(() => { void api.partners().then((r) => setPartners(r.partners)); }, []);
+  useEffect(() => { void api.partners().then((r) => setPartners(r.partners)).catch(() => setToast(SOFT_FAIL)); }, []);
   useFocusEffect(useCallback(() => {
     if (getIdentity().partner) setIdentity({ mode: 'partner' });
     return () => setIdentity({ mode: 'traveller' });
   }, []));
 
   const load = useCallback(async (p: Partner, d?: string) => {
-    setBoard(await api.demand(p.id, d));
-    if (p.type === 'sweet_shop') setOrders((await api.orders(p.id)).orders);
+    try {
+      setBoard(await api.demand(p.id, d));
+      if (p.type === 'sweet_shop') setOrders((await api.orders(p.id)).orders);
+    } catch {
+      setToast(SOFT_FAIL);
+    }
   }, []);
 
   const pick = async (p: Partner) => {
     setCurrent(p); setToast(null); setAdding(null);
     setIdentity({ partner: { id: p.id, type: p.type }, mode: 'partner' });
-    await api.identify(p.id, partnerTraits(p.id, p.type));
-    await refresh();
+    await api.identify(p.id, partnerTraits(p.id, p.type)).catch(() => undefined);
+    await refresh().catch(() => undefined);
     const d = p.type === 'quick_commerce' ? undefined : date;
     await load(p, d);
   };
@@ -56,12 +61,13 @@ export default function Partners() {
     if (!current) return;
     try {
       const res = await api.addServices(current.id, r);
+      rememberAlert(res.alert);
       setToast(`${r.count} buses added. ${res.notified} waiting travellers notified.`);
       setAdding(null);
       await load(current, date);
       void pollAlerts();
     } catch {
-      setToast('Could not add buses (is operator_add_service on for this operator?)');
+      setToast('Could not add buses just now. Please tap Add buses again in a moment.');
     }
   };
 

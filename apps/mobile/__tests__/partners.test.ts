@@ -2,7 +2,7 @@ jest.mock('expo-audio', () => ({ createAudioPlayer: () => ({ play: () => undefin
 import type { Alert, DemandCell } from '@contract';
 import { buildAddRequest } from '../src/screens/partners/AddBuses';
 import { fill } from '../src/screens/partners/DemandBoard';
-import { mergeAlerts } from '../src/state/alerts';
+import { mergeAlerts, withLocal } from '../src/state/alerts';
 import { createMockClient } from '../src/api/mock';
 
 const cell: DemandCell = { key: 'BLR-HBL|2027-01-14|night', label: 'BLR -> Hubballi, Thu 14 Jan, night', date: '2027-01-14', window: 'night', want: 2400, have: 880, gap: 1520, suggestion: 'Add 38 buses', routeId: 'BLR-HBL' };
@@ -35,5 +35,10 @@ describe('alerts list', () => {
     const next = mergeAlerts(new Set(['x', 'y']), [a('z', '2027-01-05T12:00:00+05:30'), a('x', '2027-01-04T10:00:00+05:30'), a('y', '2027-01-05T10:00:00+05:30')]);
     expect(next.sorted[0].id).toBe('z');
     expect(next.fresh).toEqual(['z']);
+  });
+  it('keeps a locally created alert when the server (fresh instance) no longer has it', () => {
+    const mine = new Map([['z', a('z', '2027-01-05T12:00:00+05:30')]]);
+    expect(withLocal([a('x', '2027-01-04T10:00:00+05:30')], mine).map((x) => x.id)).toEqual(['x', 'z']);
+    expect(withLocal([a('z', '2027-01-05T12:00:00+05:30')], mine).map((x) => x.id)).toEqual(['z']);
   });
 });

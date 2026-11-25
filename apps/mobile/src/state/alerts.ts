@@ -13,6 +13,9 @@ let known: Set<string> | null = null;
 let timer: ReturnType<typeof setInterval> | null = null;
 let pollMs = 5000;
 const listeners = new Set<() => void>();
+// Alerts this app created (add-buses response). Kept locally so a poll that lands on a fresh api instance
+// (in-memory store, serverless) never drops the alert the operator just sent.
+const local = new Map<string, Alert>();
 const emit = () => listeners.forEach((l) => l());
 
 /** Pure: live alerts (just added) first, then newest first by createdAt; and which ids are new compared with what we knew. */
@@ -23,10 +26,20 @@ export function mergeAlerts(prevKnown: Set<string> | null, incoming: Alert[]): {
   return { sorted, fresh };
 }
 
+/** Pure: server alerts plus locally remembered ones the server no longer has (tested). */
+export function withLocal(incoming: Alert[], mine: Map<string, Alert>): Alert[] {
+  const ids = new Set(incoming.map((a) => a.id));
+  return [...incoming, ...[...mine.values()].filter((a) => !ids.has(a.id))];
+}
+
+export function rememberAlert(a: Alert | undefined): void {
+  if (a?.id) local.set(a.id, a);
+}
+
 export async function pollAlerts(): Promise<void> {
   try {
     const res = await api.alerts();
-    const { sorted, fresh } = mergeAlerts(known, res.alerts);
+    const { sorted, fresh } = mergeAlerts(known, withLocal(res.alerts, local));
     known = new Set(sorted.map((a) => a.id));
     state = { alerts: sorted, fresh: new Set([...state.fresh, ...fresh]), unseen: state.unseen + fresh.length };
     emit();

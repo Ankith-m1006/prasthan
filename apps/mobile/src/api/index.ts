@@ -31,6 +31,7 @@ function withFallback(http: Api): Api {
         return out;
       } catch (err) {
         if (err instanceof ApiError && err.status < 500) throw err; // a real answer (e.g. 403), not an outage
+        if (key === 'tts') throw err; // a slow voice is not an outage: the caller falls back to the browser voice
         failures += 1;
         if (failures >= 2) { usingMock = true; listeners.forEach((l) => l()); }
         return (mock[key] as (...a: unknown[]) => Promise<unknown>)(...args);

@@ -67,7 +67,12 @@ export default function Speak() {
   const pickLang = (l: Lang) => { setLang(l); setIdentity({ language: l, mode: 'traveller' }); };
   const alertMe = async () => {
     if (!intent) return;
-    await api.saveTrip({ ...intent, travellerId: getIdentity().traveller });
+    try {
+      await api.saveTrip({ ...intent, travellerId: getIdentity().traveller });
+    } catch {
+      setError('Could not save the alert just now. Please tap Alert me again in a moment.');
+      return;
+    }
     const msg = lang === 'kn-IN' ? 'ಸರಿ, ಹೊಸ ಬಸ್ ಬಂದಾಗ ತಿಳಿಸುತ್ತೇನೆ.' : 'Done. I will tell you when a new bus opens.';
     setSaved(msg);
     playReply({ text: msg, language: lang, audioBase64: null, mime: null });
