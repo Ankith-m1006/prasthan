@@ -11,12 +11,15 @@ import { useHoldToTalk } from '../../src/lib/useRecorder';
 import { MicButton } from '../../src/screens/speak/MicButton';
 import { Options } from '../../src/screens/speak/Options';
 import { TripCard } from '../../src/screens/speak/TripCard';
-import { GiftCard } from '../../src/screens/speak/GiftCard';
+import { GiftFlow } from '../../src/screens/speak/GiftFlow';
+import { parserLabel } from '../../src/lib/gifts';
+import { useOrders } from '../../src/state/orders';
+import { askNotifyPermission } from '../../src/lib/notify';
 import { useFlags } from '../../src/state/flags';
 import { getIdentity, setIdentity, travellerTraits } from '../../src/state/identity';
 import { useProfile } from '../../src/state/profile';
 import { fillFromProfile, travelHints, tripFromProfile } from '../../src/lib/profileUse';
-import { colors, fonts, space, type as t } from '../../src/theme/tokens';
+import { colors, fontFor, fontForText, fonts, space, type as t } from '../../src/theme/tokens';
 import { Body, Button, Chip, Glass, Screen, Section, Small } from '../../src/ui/kit';
 import { alpha, frost } from '../../src/ui/glass';
 import { SoftRule } from '../../src/ui/backdrop';
@@ -24,11 +27,12 @@ import { Diya } from '../../src/ui/motifs';
 import { Icon } from '../../src/ui/icons';
 
 const LANGS: Array<[Lang, string]> = [['kn-IN', 'ಕನ್ನಡ'], ['ta-IN', 'தமிழ்'], ['te-IN', 'తెలుగు'], ['hi-IN', 'हिन्दी'], ['od-IN', 'ଓଡ଼ିଆ'], ['bn-IN', 'বাংলা'], ['en-IN', 'English']];
-const SOURCE_LABEL: Record<string, string> = { live: 'live voice', mock: 'demo voice', fallback: 'offline voice', seeded: 'seeded', context_dev: 'news' };
+const SOURCE_LABEL: Record<string, string> = { live: 'live voice', mock: 'sample voice', fallback: 'offline voice', seeded: 'seeded', context_dev: 'news' };
 
 export default function Speak() {
   const { flags, accent, refresh } = useFlags();
   const profile = useProfile();
+  const orders = useOrders();
   const [lang, setLang] = useState<Lang>(getIdentity().language);
   const [busy, setBusy] = useState(false);
   const [typing, setTyping] = useState(false);
@@ -67,6 +71,7 @@ export default function Speak() {
   const pickLang = (l: Lang) => { setLang(l); setIdentity({ language: l, mode: 'traveller' }); };
   const alertMe = async () => {
     if (!intent) return;
+    void askNotifyPermission(); // web only, asked once, only after this tap
     try {
       await api.saveTrip({ ...intent, travellerId: getIdentity().traveller });
     } catch {
@@ -81,12 +86,13 @@ export default function Speak() {
   const voiceOff = !flags.voice_enabled;
 
   return (
-    <Screen title={flags.festival_mode.greeting[lang] ?? flags.festival_mode.greeting['en-IN'] ?? 'Prasthan'} subtitle={`${flags.festival_mode.title} - say your trip home in your own language`}>
+    <Screen demoTag title={flags.festival_mode.greeting[lang] ?? flags.festival_mode.greeting['en-IN'] ?? 'Prasthan'} subtitle={`${flags.festival_mode.title} - say your trip home in your own language`}>
       <View style={s.me}>
         <Chip label={`${profile?.name || 'Guest'} - profile`} onPress={() => router.push('/profile')} />
+        {orders.length ? <Chip label={`My orders (${orders.length})`} onPress={() => router.push('/orders')} /> : null}
         {profile ? <Chip label="My usual trip home" tone="soft" onPress={() => { setTurn(null); setSaved(null); setIntent(tripFromProfile(profile, getIdentity().traveller)); }} /> : null}
       </View>
-      <View style={s.langs}>{LANGS.map(([l, name]) => <Chip key={l} label={name} selected={l === lang} onPress={() => pickLang(l)} />)}</View>
+      <View style={s.langs}>{LANGS.map(([l, name]) => <Chip key={l} label={name} selected={l === lang} font={fontFor(l, l === lang)} onPress={() => pickLang(l)} />)}</View>
       <MicButton state={rec.state} elapsed={rec.elapsed} busy={busy} accent={accent.accent} disabled={voiceOff} onPressIn={() => void rec.start()} onPressOut={() => void rec.stop()} />
       <Text style={s.powered}>Powered by Sarvam AI</Text>
       {voiceOff ? <Small style={{ textAlign: 'center' }}>Voice is switched off right now. Please type.</Small> : null}
@@ -99,7 +105,7 @@ export default function Speak() {
             style={s.input} onSubmitEditing={() => sendText(text)} accessibilityLabel="Type your trip" returnKeyType="send" />
           <Button label="Send" onPress={() => sendText(text)} disabled={busy} />
           <Small>Or tap a sample sentence (synthetic test lines):</Small>
-          <View style={[s.chips, { marginTop: 6 }]}>{samples.map((u) => <Chip key={u.id} label={u.text} onPress={() => { setText(u.text); sendText(u.text, u.language); }} />)}</View>
+          <View style={[s.chips, { marginTop: 6 }]}>{samples.map((u) => <Chip key={u.id} label={u.text} font={fontForText(u.text)} onPress={() => { setText(u.text); sendText(u.text, u.language); }} />)}</View>
         </Glass>
       ) : null}
       {error ? <Body style={{ color: colors.kumkum }}>{error}</Body> : null}
@@ -116,7 +122,7 @@ export default function Speak() {
           {saved ? <Body style={{ textAlign: 'center', color: colors.mangoLeaf }}>{saved}</Body> : null}
         </Section>
       ) : null}
-      {flags.gifting_enabled && intent?.routeId ? <GiftCard intent={intent} /> : null}
+      {(flags.gifting_enabled || intent?.gift) && intent?.routeId ? <GiftFlow key={intent.id} intent={intent} /> : null}
     </Screen>
   );
 }
@@ -127,11 +133,11 @@ function ReplyCard({ turn }: { turn: VoiceIntentResponse }) {
       {turn.transcript ? <Small>You said: {turn.transcript}</Small> : null}
       <View style={{ flexDirection: 'row', gap: space.md, alignItems: 'center', marginTop: 8 }}>
         <Pressable accessibilityRole="button" accessibilityLabel="Play reply again" onPress={() => playReply(turn.reply)} style={[s.play, frost(0.75, 12)]}><Icon name="speaker" size={24} /></Pressable>
-        <Text style={s.reply}>{turn.reply.text}</Text>
+        <Text style={[s.reply, { fontFamily: fontForText(turn.reply.text) }]}>{turn.reply.text}</Text>
       </View>
       <View style={[s.chips, { marginTop: 8 }]}>
         <Chip label={`speech: ${SOURCE_LABEL[turn.source.stt]}`} tone={turn.source.stt === 'live' ? 'ok' : 'normal'} />
-        <Chip label={`understanding: ${turn.intent.parser === 'llm' ? 'Sarvam LLM' : 'rules'}`} />
+        <Chip label={parserLabel(turn.intent.parser).text} tone={parserLabel(turn.intent.parser).ai ? 'ok' : 'normal'} />
         <Chip label={`reply: ${SOURCE_LABEL[turn.source.tts]}`} tone={turn.source.tts === 'live' ? 'ok' : 'normal'} />
       </View>
     </Section>

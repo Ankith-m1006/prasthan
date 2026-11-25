@@ -12,7 +12,7 @@ import { ordersStore, type SavedBasket } from '../../state/orders';
 import { colors, fonts, type as t } from '../../theme/tokens';
 import { Body, Button, Chip, Glass, H2, Small } from '../../ui/kit';
 import { Icon } from '../../ui/icons';
-import { Monogram } from '../../ui/logos';
+import { Monogram, partnerName } from '../../ui/logos';
 
 const pointName = (id: string) => bpJson.boardingPoints.find((b) => b.id === id)?.name ?? id;
 
@@ -45,10 +45,10 @@ export function GiftFlow({ intent }: { intent: TripIntent }) {
     try {
       const saved = [];
       for (const l of lines) {
-        const r = await api.giftOrder({ travellerId: intent.travellerId, partnerId: shop.id, itemId: l.item.id, qty: l.qty, pickupDate: date, readyBy, pickupPoint, intentId: intent.id });
+        const r = await api.giftOrder({ travellerId: intent.travellerId, partnerId: shop.id, itemId: l.item.id, qty: l.qty, pickupDate: date, readyBy, departTime: depart, pickupPoint, intentId: intent.id });
         saved.push({ orderId: r.order.id, itemId: l.item.id, name: l.item.name, unit: l.item.unit, qty: l.qty, priceInr: l.item.priceInr });
       }
-      const b: SavedBasket = { id: saved[0].orderId, shopId: shop.id, shopName: shop.name, pickupPoint, pickupName: pointName(pickupPoint), pickupDate: date, readyBy, lines: saved, total, status: 'placed', createdAt: new Date().toISOString() };
+      const b: SavedBasket = { id: saved[0].orderId, shopId: shop.id, shopName: partnerName(shop.name), pickupPoint, pickupName: pointName(pickupPoint), pickupDate: date, readyBy, lines: saved, total, status: 'placed', createdAt: new Date().toISOString() };
       ordersStore.add(b);
       setDone(b);
     } catch {
@@ -67,7 +67,7 @@ export function GiftFlow({ intent }: { intent: TripIntent }) {
       <Small>{near.exact ? `Shops at ${pointName(intent.boardingPoint ?? '')}` : 'Nearest shops on your way'} - ready before your {depart} departure</Small>
       <View style={s.chips}>
         {near.shops.map((p) => (
-          <View key={p.id} style={s.shopChip}><Monogram name={p.name} id={p.id} size={30} /><Chip label={p.name} selected={p.id === shop?.id} onPress={() => { setShopId(p.id); setSlot(null); }} /></View>
+          <View key={p.id} style={s.shopChip}><Monogram name={p.name} id={p.id} size={30} /><Chip label={partnerName(p.name)} selected={p.id === shop?.id} onPress={() => { setShopId(p.id); setSlot(null); }} /></View>
         ))}
       </View>
       {(shop?.items ?? []).map((i) => (

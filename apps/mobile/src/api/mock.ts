@@ -143,7 +143,7 @@ export function createMockClient(): Api {
       mockState.alerts.push(alert);
       return ok({ services, alert, notified: waiting(r.routeId, r.date), demandAfter: routeDemand(r.routeId, r.date) ?? { want: 0, have: 0, gap: 0 } });
     },
-    giftOrder: (b: GiftOrderRequest) => { const order: GiftOrder = { id: nextId('ord'), partnerId: b.partnerId, travellerId: b.travellerId, itemId: b.itemId, qty: b.qty, pickupPoint: b.pickupPoint ?? 'MAJESTIC', pickupDate: b.pickupDate, readyBy: b.readyBy, status: 'placed', payment: 'pay_at_pickup_demo' }; mockState.orders.push(order); return ok({ order }); },
+    giftOrder: (b: GiftOrderRequest) => { const first = b.items?.[0] ?? { itemId: b.itemId ?? '', qty: b.qty ?? 1 }; const order: GiftOrder = { id: nextId('ord'), partnerId: b.partnerId, travellerId: b.travellerId, itemId: first.itemId, qty: first.qty, ...(b.items ? { items: b.items } : {}), pickupPoint: b.pickupPoint ?? 'MAJESTIC', pickupDate: b.pickupDate, readyBy: b.readyBy, status: 'placed', payment: 'pay_at_pickup_demo' }; mockState.orders.push(order); return ok({ order }); },
     orders: (id) => ok({ orders: [...(ordersJson.orders as GiftOrder[]), ...mockState.orders].filter((o) => o.partnerId === id) }),
     opsState: () => ok({ fallbackActive: Boolean(mockState.switches.fallback), voiceHealthy: true }),
   };

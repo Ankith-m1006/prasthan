@@ -53,3 +53,21 @@ export const fonts = {
   display: 'TiroKannada_400Regular',
   kannada: 'NotoSansKannada_400Regular',
 };
+
+/** Noto Sans per script (regular + bold only, bundled in app/_layout.tsx) so all 7 languages render well. */
+const SCRIPT: Record<string, string> = {
+  'kn-IN': 'NotoSansKannada', 'ta-IN': 'NotoSansTamil', 'te-IN': 'NotoSansTelugu', 'hi-IN': 'NotoSansDevanagari', 'od-IN': 'NotoSansOriya', 'bn-IN': 'NotoSansBengali',
+};
+/** Pure: font family for text in a language (English / unknown -> Mukta, which also covers Devanagari). */
+export function fontFor(lang: string | undefined, bold = false): string {
+  const fam = lang ? SCRIPT[lang] : undefined;
+  if (!fam) return bold ? fonts.bodyBold : fonts.body;
+  return `${fam}_${bold ? '700Bold' : '400Regular'}`;
+}
+
+/** Pure: guess the language of a piece of text from its script (for text without a language tag). */
+export function scriptLang(text: string): string | undefined {
+  const ranges: Array<[RegExp, string]> = [[/[ಀ-೿]/, 'kn-IN'], [/[஀-௿]/, 'ta-IN'], [/[ఀ-౿]/, 'te-IN'], [/[ऀ-ॿ]/, 'hi-IN'], [/[଀-୿]/, 'od-IN'], [/[ঀ-৿]/, 'bn-IN']];
+  return ranges.find(([r]) => r.test(text))?.[1];
+}
+export const fontForText = (text: string, bold = false) => fontFor(scriptLang(text), bold);

@@ -26,7 +26,7 @@ export function MicButton({ state, elapsed, busy, accent, onPressIn, onPressOut,
       </View>
       <Text style={s.label}>{label}</Text>
       {listening ? <Text style={s.timer}>{timerLabel(elapsed)}</Text> : null}
-      {state === 'denied' ? <Text style={s.warn}>Microphone permission is off. Use "or type" below.</Text> : null}
+      {state === 'denied' ? <Text style={s.warn} accessibilityRole="alert">Microphone is blocked. Allow the mic for this site (tap the lock or "aA" icon next to the address, then Microphone: Allow) and hold again, or use "or type" below.</Text> : null}
       {state === 'error' ? <Text style={s.warn}>Could not start the mic here. Use "or type" below.</Text> : null}
     </View>
   );

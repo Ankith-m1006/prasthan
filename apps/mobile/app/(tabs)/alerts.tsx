@@ -7,7 +7,7 @@ import { speakText } from '../../src/lib/speak';
 import { dateLabel } from '../../src/lib/format';
 import { markSeen, useAlerts } from '../../src/state/alerts';
 import { getIdentity } from '../../src/state/identity';
-import { colors, fonts, type as t } from '../../src/theme/tokens';
+import { colors, fontForText, fonts, type as t } from '../../src/theme/tokens';
 import { Chip, Screen, Small } from '../../src/ui/kit';
 import { frost, glow, tint } from '../../src/ui/glass';
 import { SoftRule } from '../../src/ui/backdrop';
@@ -23,7 +23,7 @@ export default function Alerts() {
   useEffect(() => { markSeen(); }, [alerts.length]);
   const lang = getIdentity().language;
   return (
-    <Screen title="Alerts" subtitle="New buses, special trains and warnings, in your language">
+    <Screen demoTag title="Alerts" subtitle="New buses, special trains and warnings, in your language">
       <Toran />
       {alerts.length === 0 ? <Small>No alerts yet.</Small> : null}
       {alerts.map((a) => {
@@ -43,12 +43,12 @@ export default function Alerts() {
                 <Icon name="speaker" size={24} />
               </Pressable>
               <View style={{ flex: 1 }}>
-                <Text style={s.text}>{local ?? a.text}</Text>
+                <Text style={[s.text, { fontFamily: fontForText(local ?? a.text) }]}>{local ?? a.text}</Text>
                 {local ? <Small>{a.text}</Small> : null}
               </View>
             </View>
             <View style={[s.row, { marginTop: 6 }]}>
-              <Small>source: {a.source === 'seeded' ? 'seeded demo data' : a.source === 'context_dev' ? 'news' : a.source}</Small>
+              {a.source === 'seeded' ? null : <Small>source: {a.source === 'context_dev' ? 'news' : a.source}</Small>}
               {a.sourceUrl ? <Text style={s.link} onPress={() => openLink(a.sourceUrl!)}>open source</Text> : null}
             </View>
           </View>

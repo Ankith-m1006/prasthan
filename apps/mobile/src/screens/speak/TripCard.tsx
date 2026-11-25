@@ -3,7 +3,7 @@ import { StyleSheet, Text, View } from 'react-native';
 import type { Mode, TimeWindow, TripIntent } from '@contract';
 import routesJson from '../../../../../seed/routes.json';
 import { dateLabel, peopleLabel, WINDOW_LABEL } from '../../lib/format';
-import { colors, fonts, type as t } from '../../theme/tokens';
+import { colors, fontForText, fonts, type as t } from '../../theme/tokens';
 import { Chip, Glass, Small } from '../../ui/kit';
 import { Icon } from '../../ui/icons';
 import { RouteLine } from '../../ui/motifs';
@@ -29,7 +29,7 @@ export function TripCard({ intent, onChange }: { intent: TripIntent; onChange: (
         </View>
         <View style={{ flex: 1, paddingHorizontal: 10 }}><RouteLine /></View>
         <View style={{ alignItems: 'flex-end' }}>
-          <Text style={s.city}>{route?.toLocal ?? '?'}</Text>
+          <Text style={[s.city, { fontFamily: fontForText(route?.toLocal ?? '') }]}>{route?.toLocal ?? '?'}</Text>
           <Small>{route?.to ?? 'Which town?'}</Small>
         </View>
       </View>
