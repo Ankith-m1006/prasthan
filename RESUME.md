@@ -3,11 +3,13 @@
 Updated: 25 Nov 2026, with every push. Builder so far: one session on Ankith's home laptop, working directly on `main`.
 
 ## Where we are
-- Current phase: A-03 done (all A phases P0, A-01, A-02, A-03). Next: B-01 Expo scaffold.
-- Last finished step: A-03: 57 api tests green (npm run check).
-- Next exact step: B-01 (`codex/B-01-expo-scaffold.md`) in apps/mobile (Expo SDK 58 template + expo-router/audio/svg already installed).
+- Current phase: B-01 done (P0, A-01..A-03 also done). Next: B-02 speak + trip card.
+- Last finished step: B-01: app typecheck + jest 3/3 + `expo export --platform web` OK (mock mode).
+- Next exact step: B-02 (`codex/B-02-speak-trip.md`) in apps/mobile/app/(tabs)/index.tsx.
 
 ## Commands
+- app checks: `cd apps/mobile && npm install && npm run typecheck && npm test`
+- app offline web: `cd apps/mobile && EXPO_PUBLIC_APP_MOCK=1 npx expo start --web`
 - api checks: `cd services/api && npm install && npm run check`
 - api dev (offline): `MOCK_ALL=1 npm --prefix services/api run dev` (port 8787)
 
@@ -18,9 +20,8 @@ Updated: 25 Nov 2026, with every push. Builder so far: one session on Ankith's h
 - none
 
 ## Venue Codex sessions: what to paste next
-- Session A: (being built here) — check this file again after the next push.
-- Session B: (being built here) — check this file again after the next push.
-- Session C: `codex/C-01-flagsmith-import.md` (nothing of C is done here; k3d/NudgeBee are venue-only).
+- Session C (Ankith, venue laptop, branch `session-c`): owns C-01, C-03, C-04 (Flagsmith import, Docker/k3d, NudgeBee) + infra/docker, infra/k8s, config/flagsmith scripts, docs/NUDGEBEE-RUNBOOK.md. The home builder merges origin/session-c into main when it merges cleanly and checks pass.
+- Sessions A and B: being built on the home laptop (no venue session needed). Home builder continues B-02 -> B-03 -> B-05 + Vercel web deploy -> C-02 (only if C has not started it) -> Z-02 README.
 
 Before starting: `git pull origin main`, then create your worktree/branch from it (codex/SESSIONS.md "Folder setup").
 

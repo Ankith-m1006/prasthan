@@ -75,11 +75,15 @@ export function qcCells(seed: Seed, partner: Partner, date?: string): DemandCell
   const byDate = seed.qc.filter((c) => !date || c.date === date);
   const mine = byDate.filter((c) => serves.has(c.fulfilment));
   return (mine.length > 0 ? mine : byDate)
-    .map((c) => ({
-      key: `${c.zone}|${c.date}|${c.window}`, label: `${c.zone}, ${dateLabel(c.date)}, ${c.window}`,
-      date: c.date, window: c.window, want: c.travellersLeaving, have: 0, gap: c.travellersLeaving,
-      suggestion: `Stock ${c.topAsks[0] ?? 'gift boxes'} near ${c.zone} ${c.window}`, zone: c.zone,
-    }));
+    .map((c) => {
+      const want = c.travellersLeaving ?? c.travellersArriving ?? 0;
+      const verb = c.travellersArriving !== undefined ? 'arriving in' : 'near';
+      return {
+        key: `${c.zone}|${c.date}|${c.window}`, label: `${c.zone}, ${dateLabel(c.date)}, ${c.window}`,
+        date: c.date, window: c.window, want, have: 0, gap: want,
+        suggestion: `Stock ${c.topAsks[0] ?? 'gift boxes'} ${verb} ${c.zone} ${c.window}`, zone: c.zone,
+      };
+    });
 }
 
 export function demandFor(seed: Seed, store: Store, partner: Partner, date?: string): DemandCell[] {

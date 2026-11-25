@@ -1,6 +1,11 @@
 {
   "extends": "expo/tsconfig.base",
   "compilerOptions": {
-    "strict": true
-  }
+    "strict": true,
+    "resolveJsonModule": true,
+    "types": ["jest"],
+    "paths": { "@contract": ["../../shared/contract/src/index.ts"] }
+  },
+  "include": ["**/*.ts", "**/*.tsx", "../../shared/contract/src/**/*.ts"],
+  "exclude": ["node_modules", "dist"]
 }

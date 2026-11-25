@@ -15,7 +15,7 @@ export interface SeedIntent {
   gift: { itemId: string; qty: number } | null; wantsAlerts: boolean; createdAt: string;
 }
 export interface ForecastCell { routeId: string; date: string; timeWindow: string; wantSeats: number; seatsExist: number; gap: number; busesToClose: number }
-export interface QcCell { zone: string; date: string; window: string; travellersLeaving: number; topAsks: string[]; fulfilment: string }
+export interface QcCell { zone: string; date: string; window: string; travellersLeaving?: number; travellersArriving?: number; topAsks: string[]; fulfilment: string }
 export interface Provider { id: string; name: string; modes: Mode[]; homepage: string; searchTemplate: string | null; useTemplate: boolean }
 export interface Utterance { id: string; language: Lang; text: string; roman?: string; english?: string; expect: Record<string, unknown>; demoHero?: boolean }
 

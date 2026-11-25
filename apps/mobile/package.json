@@ -1,8 +1,11 @@
 {
-  "name": "mobile",
+  "name": "prasthan-mobile",
   "version": "1.0.0",
-  "main": "index.ts",
+  "main": "expo-router/entry",
   "dependencies": {
+    "@expo-google-fonts/mukta": "^0.4.1",
+    "@expo-google-fonts/noto-sans-kannada": "^0.4.3",
+    "@expo-google-fonts/tiro-kannada": "^0.4.0",
     "@expo/metro-runtime": "~58.0.17",
     "expo": "~58.0.26",
     "expo-audio": "~58.0.12",
@@ -21,13 +24,24 @@
   },
   "devDependencies": {
     "@types/react": "~19.3.0",
-    "typescript": "~6.0.3"
+    "typescript": "~6.0.3",
+    "jest-expo": "~58.0.15",
+    "jest": "~30.5.2",
+    "@types/jest": "~30.0.0"
   },
   "scripts": {
     "start": "expo start",
     "android": "expo start --android",
-    "ios": "expo start --ios",
-    "web": "expo start --web"
+    "web": "expo start --web",
+    "typecheck": "tsc --noEmit",
+    "test": "jest --silent",
+    "export:web": "expo export --platform web"
   },
-  "private": true
+  "private": true,
+  "jest": {
+    "preset": "jest-expo",
+    "testMatch": [
+      "**/__tests__/**/*.test.ts?(x)"
+    ]
+  }
 }
