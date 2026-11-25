@@ -1,0 +1,24 @@
+const { chromium, V, scrollTo, open } = require('./lib');
+(async () => {
+  const b = await chromium.launch({ headless: true });
+  const p = await b.newPage({ viewport: { width: 430, height: 932 } });
+  await open(p); await p.waitForTimeout(1000);
+  await V(p, 'or type', { exact: true }).click();
+  console.log('inputs', await p.locator('input:visible, textarea:visible').count());
+  await V(p, 'About', { exact: true }).click(); await p.waitForTimeout(800);
+  await V(p, 'Pongal', { exact: true }).click(); await p.waitForTimeout(1500);
+  await V(p, 'Speak', { exact: true }).click(); await p.waitForTimeout(1000);
+  let t = await p.innerText('body'); console.log('---PONGAL\n' + t.slice(0, 400));
+  await p.screenshot({ path: 'p4pongal.png' });
+  await V(p, 'About', { exact: true }).click(); await p.waitForTimeout(500);
+  await V(p, 'On', { exact: true }).click(); await p.waitForTimeout(1500);
+  await V(p, 'Speak', { exact: true }).click(); await p.waitForTimeout(1000);
+  t = await p.innerText('body'); console.log('---FALLBACK\n' + t.slice(0, 600));
+  await p.screenshot({ path: 'p4fb.png' });
+  await V(p, 'About', { exact: true }).click(); await p.waitForTimeout(500);
+  await V(p, '100%', { exact: true }).click(); await p.waitForTimeout(1500);
+  await V(p, 'Speak', { exact: true }).click(); await p.waitForTimeout(800);
+  await V(p, /ಮೈಸೂರು ಪಾಕ್/).click(); await p.waitForTimeout(2000);
+  t = await p.innerText('body'); console.log('---GIFT\n' + t.slice(-1500));
+  await b.close();
+})();

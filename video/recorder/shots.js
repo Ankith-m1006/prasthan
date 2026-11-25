@@ -1,0 +1,25 @@
+const { chromium, V, scrollTo, open } = require('./lib');
+(async () => {
+  const b = await chromium.launch({ headless: true });
+  const p = await b.newPage({ viewport: { width: 430, height: 932 }, deviceScaleFactor: 2 });
+  p.on('console', m => m.type()==='error' && console.log('CONSOLE', m.text()));
+  await open(p); await p.waitForTimeout(1500);
+  await V(p, 'or type', { exact: true }).click(); await p.waitForTimeout(400);
+  await V(p, /ಹುಬ್ಬಳ್ಳಿಗೆ ಊರಿಗೆ/).click(); await p.waitForTimeout(2000);
+  await V(p, 'hide typing', { exact: true }).click(); await p.waitForTimeout(800);
+  await scrollTo(V(p, 'Hold to speak your trip'), 215); await p.waitForTimeout(500);
+  await p.screenshot({ path: 'speak.png' });
+  await scrollTo(V(p, /^ಜನವರಿ 14 ಭಾರೀ/), 110); await p.waitForTimeout(500);
+  await p.screenshot({ path: 'trip.png' });
+  await V(p, 'Alert me when a new bus opens').click(); await p.waitForTimeout(1000);
+  await V(p, 'Partners', { exact: true }).click(); await p.waitForTimeout(800);
+  await V(p, 'Demo State RTC').click(); await p.waitForTimeout(1200);
+  await V(p, 'Add buses', { exact: true }).click(); await p.waitForTimeout(600);
+  await V(p, 'Add 6 buses', { exact: true }).click(); await p.waitForTimeout(2000);
+  await scrollTo(V(p, /waiting travellers notified/), 24); await p.waitForTimeout(500);
+  await p.screenshot({ path: 'partner.png' });
+  await V(p, 'Alerts', { exact: true }).click(); await p.waitForTimeout(1500);
+  await p.waitForTimeout(500);
+  await p.screenshot({ path: 'alerts.png' });
+  await b.close();
+})();

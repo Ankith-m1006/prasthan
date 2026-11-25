@@ -1,0 +1,30 @@
+// Headless Chrome check: home -> tap Tamil -> wait -> read text; then About.
+import { spawn } from 'node:child_process';
+const chrome = spawn('C:/Program Files/Google/Chrome/Application/chrome.exe', ['--headless=new', '--disable-gpu', '--remote-debugging-port=9333', '--user-data-dir=' + process.env.TEMP + '/cdp-prof-pr', 'about:blank'], { stdio: 'ignore' });
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+await sleep(2500);
+const tabs = await (await fetch('http://127.0.0.1:9333/json')).json();
+const ws = new WebSocket(tabs.find((t) => t.type === 'page').webSocketDebuggerUrl);
+await new Promise((r) => ws.addEventListener('open', r));
+let n = 0; const pending = new Map(); const errors = [];
+ws.addEventListener('message', (e) => { const m = JSON.parse(e.data); if (m.id && pending.has(m.id)) { pending.get(m.id)(m.result); pending.delete(m.id); } if (m.method === 'Runtime.exceptionThrown') errors.push(m.params.exceptionDetails.text); if (m.method === 'Runtime.consoleAPICalled' && m.params.type === 'error') errors.push(JSON.stringify(m.params.args.map((a) => a.value)).slice(0, 200)); });
+const send = (method, params = {}) => new Promise((r) => { const id = ++n; pending.set(id, r); ws.send(JSON.stringify({ id, method, params })); });
+const text = async () => (await send('Runtime.evaluate', { expression: 'document.body.innerText', returnByValue: true })).result.value;
+await send('Runtime.enable');
+await send('Page.navigate', { url: process.argv[2] });
+await sleep(9000);
+const t1 = await text();
+console.log('LEN', t1.length, JSON.stringify(t1.slice(0,300)), (await send('Runtime.evaluate', { expression: 'location.href', returnByValue: true })).result.value); console.log('HOME note:', t1.match(/flags: [^\n]+/)?.[0], '| has Sankranti:', /Sankranti/.test(t1));
+await send('Runtime.evaluate', { expression: `(() => { const el = [...document.querySelectorAll('div,span')].find((d) => d.textContent === 'தமிழ்' && d.children.length === 0); el.click(); return !!el; })()`, returnByValue: true });
+await sleep(9000);
+const t2 = await text();
+console.log('AFTER TAMIL note:', t2.match(/flags: [^\n]+/)?.[0], '| Pongal:', /Pongal|பொங்கல்/.test(t2));
+console.log(t2.split('\n').filter((l) => /Pongal|பொங்கல்|Sankranti/.test(l)).slice(0, 4).join(' || '));
+// About via in-app tab link
+await send('Runtime.evaluate', { expression: `(() => { const a = [...document.querySelectorAll('a')].find((x) => /about/.test(x.getAttribute('href') || '')); if (a) a.click(); return !!a; })()`, returnByValue: true });
+await sleep(6000);
+const t3 = await text();
+console.log('ABOUT:', t3.split('\n').filter((l) => /identity|festival_mode|voice_fallback|gifting|reply_style|flags:/.test(l)).join(' || '));
+console.log('errors:', errors.length, errors.slice(0, 3));
+ws.close(); chrome.kill();
+process.exit(0);
