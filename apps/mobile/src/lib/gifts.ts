@@ -1,6 +1,6 @@
 // Pure helpers for "Take sweets home" (tested): shops near the boarding point, basket totals, pickup times that are
 // ready before the bus leaves, the shop-side grouping by pickup point + day, and the "understood by" label.
-import type { GiftOrder, Partner, ShopItem, TimeWindow } from '@contract';
+import type { GiftOrder, Partner, PickupCell, ShopItem, TimeWindow } from '@contract';
 
 /** Typical departure per time window (bus/train night services leave ~22:00). */
 const DEPART: Record<TimeWindow, string> = { morning: '07:00', afternoon: '14:00', evening: '19:00', night: '22:00', any: '21:00' };
@@ -71,4 +71,18 @@ export function mergeOrders(server: GiftOrder[], local: GiftOrder[]): GiftOrder[
 export function parserLabel(parser: string | undefined): { text: string; ai: boolean } {
   const ai = Boolean(parser && parser.includes('llm'));
   return { text: ai ? 'understood by Sarvam AI' : 'understood by rules', ai };
+}
+
+/** Lines of an order: v2 items[] when present, else the single itemId/qty (v1). */
+export const orderLines = (o: GiftOrder) => (o.items?.length ? o.items : [{ itemId: o.itemId, qty: o.qty }]);
+
+/** Shop side (offline twin of GET /v1/partners/:id/pickups): per pickup point + day, every line counted (tested). */
+export function pickupCells(orders: GiftOrder[], shop: Partner): PickupCell[] {
+  return groupOrders(orders).map((g) => {
+    const per = new Map<string, number>();
+    for (const o of g.orders) for (const l of orderLines(o)) per.set(l.itemId, (per.get(l.itemId) ?? 0) + l.qty);
+    const items = [...per.entries()].map(([itemId, qty]) => { const i = shop.items?.find((x) => x.id === itemId); return { itemId, name: i?.name ?? itemId, unit: i?.unit ?? 'kg', qty }; });
+    const totalInr = items.reduce((a, x) => a + (shop.items?.find((i) => i.id === x.itemId)?.priceInr ?? 0) * x.qty, 0);
+    return { pickupPoint: g.pickupPoint, pickupDate: g.pickupDate, orders: g.orders.length, firstReadyBy: g.firstReady, items, totalInr };
+  });
 }

@@ -61,6 +61,9 @@ export function createHttpClient(baseUrl: string): Api {
     addServices: (id, body) => post(`/v1/partners/${id}/services`, body),
     giftOrder: (body) => post('/v1/gifts/orders', body),
     orders: (id) => req(`/v1/partners/${id}/orders`),
+    shops: (bp) => req(`/v1/shops${bp ? `?boardingPoint=${encodeURIComponent(bp)}` : ''}`),
+    order: (id) => req(`/v1/gifts/orders/${encodeURIComponent(id)}`),
+    pickups: (id, date) => req(`/v1/partners/${id}/pickups${date ? `?date=${date}` : ''}`),
     opsState: () => req('/v1/ops/state'),
   };
 }

@@ -17,12 +17,13 @@ import { Banner, Body, Button, Chip, Glass, H2, Screen, Section, Small } from '.
 import { SoftRule } from '../../src/ui/backdrop';
 import { Icon } from '../../src/ui/icons';
 import { Monogram, partnerName, SiteLogo } from '../../src/ui/logos';
-import { groupOrders, mergeOrders } from '../../src/lib/gifts';
+import { mergeOrders, pickupCells } from '../../src/lib/gifts';
 import { basketOrders, ordersStore } from '../../src/state/orders';
 import bpJson from '../../../../seed/boarding-points.json';
 
 const pointName = (id: string) => bpJson.boardingPoints.find((b) => b.id === id)?.name.split(' (')[0] ?? id;
 
+const GROUP_ICON: Record<PartnerType, 'bus' | 'gift' | 'shop'> = { bus_operator: 'bus', sweet_shop: 'gift', quick_commerce: 'shop' };
 const GROUPS: Array<[PartnerType, string]> = [['bus_operator', 'Bus operators'], ['sweet_shop', 'Sweet shops'], ['quick_commerce', 'Quick commerce (roadmap)']];
 const DATES = ['2027-01-12', '2027-01-13', '2027-01-14', '2027-01-15', '2027-01-16', '2027-01-17'];
 const UNIT: Record<PartnerType, string> = { bus_operator: 'seats', sweet_shop: 'capacity', quick_commerce: 'served' };
@@ -83,7 +84,7 @@ export default function Partners() {
     <Screen demoTag title="Partners" subtitle="One demand board for every business.">
       {GROUPS.map(([type, name]) => (
         <View key={type}>
-          <Small style={s.group}>{name}</Small>
+          <View style={[s.groupHead, { marginTop: 14 }]}><Icon name={GROUP_ICON[type]} size={18} color={colors.inkSoft} /><Small style={[s.group, { marginTop: 0 }]}>{name}</Small></View>
           <View style={s.chips}>{partners.filter((p) => p.type === type).map((p) => <View key={p.id} style={s.partner}><Monogram name={p.name} id={p.id} size={34} /><Chip label={partnerName(p.name)} selected={p.id === current?.id} onPress={() => void pick(p)} /></View>)}</View>
         </View>
       ))}
@@ -120,19 +121,16 @@ export default function Partners() {
 }
 
 function Orders({ orders, partner }: { orders: GiftOrder[]; partner: Partner }) {
-  const item = (id: string) => partner.items?.find((i) => i.id === id);
-  const groups = groupOrders(orders);
+  const cells = pickupCells(orders, partner);
   return (
     <View>
       <H2>Incoming pre-orders ({orders.length})</H2>
-      <Small>Per pickup point and day. Travellers pay at pickup.</Small>
-      {groups.map((g) => (
-        <View key={g.key} style={{ marginTop: 14 }}>
-          <View style={s.groupHead}><Icon name="pin" size={20} /><Body style={{ fontWeight: '700' }}>{pointName(g.pickupPoint)} - {dateLabel(g.pickupDate)}</Body></View>
-          <Small>Prepare: {g.perItem.map((x) => `${x.qty} ${item(x.itemId)?.unit ?? 'kg'} ${item(x.itemId)?.name ?? x.itemId}`).join(', ')} - first pickup {g.firstReady}</Small>
-          {g.orders.map((o) => (
-            <Small key={o.id}>{o.readyBy}  {o.qty} {item(o.itemId)?.unit ?? 'kg'} {item(o.itemId)?.name ?? o.itemId}  ({o.id}, {o.status})</Small>
-          ))}
+      <Small>What to have ready, per pickup point and day. Travellers pay at pickup.</Small>
+      {cells.map((c) => (
+        <View key={`${c.pickupDate}|${c.pickupPoint}`} style={{ marginTop: 14 }}>
+          <View style={s.groupHead}><Icon name="pin" size={20} /><Body style={{ fontWeight: '700' }}>{pointName(c.pickupPoint)} - {dateLabel(c.pickupDate)}</Body></View>
+          <Body>{c.items.map((x) => `${x.qty} ${x.unit} ${x.name}`).join(', ')}</Body>
+          <Small>{c.orders} order{c.orders === 1 ? '' : 's'}, first pickup {c.firstReadyBy}, Rs {c.totalInr.toLocaleString('en-IN')} to collect</Small>
           <SoftRule />
         </View>
       ))}

@@ -1,12 +1,20 @@
 // Root: fonts (fall back to system fonts if they fail), flags provider, stack.
-import { useFonts, Mukta_400Regular, Mukta_700Bold } from '@expo-google-fonts/mukta';
-import { TiroKannada_400Regular } from '@expo-google-fonts/tiro-kannada';
-import { NotoSansKannada_400Regular, NotoSansKannada_700Bold } from '@expo-google-fonts/noto-sans-kannada';
-import { NotoSansTamil_400Regular, NotoSansTamil_700Bold } from '@expo-google-fonts/noto-sans-tamil';
-import { NotoSansTelugu_400Regular, NotoSansTelugu_700Bold } from '@expo-google-fonts/noto-sans-telugu';
-import { NotoSansDevanagari_400Regular, NotoSansDevanagari_700Bold } from '@expo-google-fonts/noto-sans-devanagari';
-import { NotoSansOriya_400Regular, NotoSansOriya_700Bold } from '@expo-google-fonts/noto-sans-oriya';
-import { NotoSansBengali_400Regular, NotoSansBengali_700Bold } from '@expo-google-fonts/noto-sans-bengali';
+import { useFonts } from 'expo-font';
+import { Mukta_400Regular } from '@expo-google-fonts/mukta/400Regular';
+import { Mukta_700Bold } from '@expo-google-fonts/mukta/700Bold';
+import { TiroKannada_400Regular } from '@expo-google-fonts/tiro-kannada/400Regular';
+import { NotoSansKannada_400Regular } from '@expo-google-fonts/noto-sans-kannada/400Regular';
+import { NotoSansKannada_700Bold } from '@expo-google-fonts/noto-sans-kannada/700Bold';
+import { NotoSansTamil_400Regular } from '@expo-google-fonts/noto-sans-tamil/400Regular';
+import { NotoSansTamil_700Bold } from '@expo-google-fonts/noto-sans-tamil/700Bold';
+import { NotoSansTelugu_400Regular } from '@expo-google-fonts/noto-sans-telugu/400Regular';
+import { NotoSansTelugu_700Bold } from '@expo-google-fonts/noto-sans-telugu/700Bold';
+import { NotoSansDevanagari_400Regular } from '@expo-google-fonts/noto-sans-devanagari/400Regular';
+import { NotoSansDevanagari_700Bold } from '@expo-google-fonts/noto-sans-devanagari/700Bold';
+import { NotoSansOriya_400Regular } from '@expo-google-fonts/noto-sans-oriya/400Regular';
+import { NotoSansOriya_700Bold } from '@expo-google-fonts/noto-sans-oriya/700Bold';
+import { NotoSansBengali_400Regular } from '@expo-google-fonts/noto-sans-bengali/400Regular';
+import { NotoSansBengali_700Bold } from '@expo-google-fonts/noto-sans-bengali/700Bold';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect, useState } from 'react';
