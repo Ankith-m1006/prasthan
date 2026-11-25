@@ -11,3 +11,5 @@ Branch: session-c. Contract version: 1.
 
 ## Blockers
 - Live import needs the prepared, ignored .env in this checkout. No live resources verified.
+
+Checkpoint: scripts package installed, checkout-only env reader and payload mappings added. Next: complete API client, tests and dry run.
