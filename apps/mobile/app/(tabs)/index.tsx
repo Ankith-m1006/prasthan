@@ -1,4 +1,5 @@
 // Speak (traveller home): greeting, language chips, hold-to-talk mic, "or type", trip card, booking links, Alert me.
+import { router } from 'expo-router';
 import { useCallback, useEffect, useState } from 'react';
 import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import type { Lang, OptionsResponse, TripIntent, VoiceIntentResponse } from '@contract';
@@ -13,6 +14,8 @@ import { TripCard } from '../../src/screens/speak/TripCard';
 import { GiftCard } from '../../src/screens/speak/GiftCard';
 import { useFlags } from '../../src/state/flags';
 import { getIdentity, setIdentity, travellerTraits } from '../../src/state/identity';
+import { useProfile } from '../../src/state/profile';
+import { fillFromProfile, travelHints, tripFromProfile } from '../../src/lib/profileUse';
 import { colors, fonts, space, type as t } from '../../src/theme/tokens';
 import { Body, Button, Chip, Glass, Screen, Section, Small } from '../../src/ui/kit';
 import { alpha, frost } from '../../src/ui/glass';
@@ -25,6 +28,7 @@ const SOURCE_LABEL: Record<string, string> = { live: 'live voice', mock: 'demo v
 
 export default function Speak() {
   const { flags, accent, refresh } = useFlags();
+  const profile = useProfile();
   const [lang, setLang] = useState<Lang>(getIdentity().language);
   const [busy, setBusy] = useState(false);
   const [typing, setTyping] = useState(false);
@@ -39,10 +43,10 @@ export default function Speak() {
 
   const handle = useCallback((res: VoiceIntentResponse) => {
     setTurn(res);
-    setIntent(res.intent);
+    setIntent(fillFromProfile(res.intent, profile)); // empty town / mode / boarding point come from the profile
     setSaved(null);
     playReply(res.reply);
-  }, []);
+  }, [profile]);
 
   const run = useCallback(async (job: () => Promise<VoiceIntentResponse>) => {
     setBusy(true);
@@ -73,6 +77,10 @@ export default function Speak() {
 
   return (
     <Screen title={flags.festival_mode.greeting[lang] ?? flags.festival_mode.greeting['en-IN'] ?? 'Prasthan'} subtitle={`${flags.festival_mode.title} - say your trip home in your own language`}>
+      <View style={s.me}>
+        <Chip label={`${profile?.name || 'Guest'} - profile`} onPress={() => router.push('/profile')} />
+        {profile ? <Chip label="My usual trip home" tone="soft" onPress={() => { setTurn(null); setSaved(null); setIntent(tripFromProfile(profile, getIdentity().traveller)); }} /> : null}
+      </View>
       <View style={s.langs}>{LANGS.map(([l, name]) => <Chip key={l} label={name} selected={l === lang} onPress={() => pickLang(l)} />)}</View>
       <MicButton state={rec.state} elapsed={rec.elapsed} busy={busy} accent={accent.accent} disabled={voiceOff} onPressIn={() => void rec.start()} onPressOut={() => void rec.stop()} />
       <Text style={s.powered}>Powered by Sarvam AI</Text>
@@ -92,7 +100,7 @@ export default function Speak() {
       {error ? <Body style={{ color: colors.kumkum }}>{error}</Body> : null}
       {turn ? <ReplyCard turn={turn} /> : null}
       {intent ? <TripCard intent={intent} onChange={setIntent} /> : null}
-      {options && intent ? <Options options={options} lang={lang} /> : null}
+      {options && intent ? <Options options={options} lang={lang} hints={travelHints(profile, options.mode)} /> : null}
       {intent?.routeId && intent.dateFrom ? (
         <Section>
           <SoftRule />
@@ -127,6 +135,7 @@ function ReplyCard({ turn }: { turn: VoiceIntentResponse }) {
 
 const s = StyleSheet.create({
   chips: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
+  me: { flexDirection: 'row', flexWrap: 'wrap', gap: 8, justifyContent: 'center', marginBottom: 6 },
   langs: { flexDirection: 'row', flexWrap: 'wrap', gap: 8, justifyContent: 'center', marginTop: 4 },
   play: { width: 48, height: 48, borderRadius: 24, alignItems: 'center', justifyContent: 'center' },
   diya: { width: 52, height: 52, borderRadius: 26, alignItems: 'center', justifyContent: 'center', backgroundColor: alpha(colors.marigold, 0.14) },

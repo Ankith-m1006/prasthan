@@ -3,7 +3,7 @@
 import { View } from 'react-native';
 import type { FlagsView } from '@contract';
 import { useFlags } from '../state/flags';
-import { getIdentity, currentIdentity } from '../state/identity';
+import { getIdentity, currentIdentity, travellerTraits } from '../state/identity';
 import { traitsOf } from '../api/mock';
 import { Glass, H2, Small } from '../ui/kit';
 
@@ -30,7 +30,7 @@ function show(f: FlagsView): Array<[string, string]> {
 export function LiveFlagValues() {
   const { flags } = useFlags();
   const id = currentIdentity();
-  const t = traitsOf(id);
+  const t = getIdentity().mode === 'traveller' ? travellerTraits(getIdentity().language) : traitsOf(id);
   const who = getIdentity().mode === 'partner' ? `partner ${t.partner_type ?? ''}` : `traveller, ${t.home_state ?? ''}, ${t.language ?? ''}`;
   return (
     <Glass>

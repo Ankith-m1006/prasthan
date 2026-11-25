@@ -9,7 +9,7 @@ import { liveFlags } from '../api/liveFlags';
 import { mockState, traitsOf } from '../api/mock';
 import { DEFAULT_FLAGS } from '../api/mockFlags';
 import { accentFor } from '../theme/tokens';
-import { currentIdentity, subscribeIdentity } from './identity';
+import { currentIdentity, getIdentity, subscribeIdentity, travellerTraits } from './identity';
 
 /** live = read from Flagsmith in the app; api = Flagsmith via our api server; offline = coded defaults / demo switches. */
 export type FlagSourceKind = 'live' | 'offline' | 'api';
@@ -34,8 +34,10 @@ function onFocus(cb: () => void): () => void {
 async function readLive(): Promise<FlagsView | null> {
   if (!liveFlags) return null;
   const id = currentIdentity();
+  const me = getIdentity();
+  const traits = me.mode === 'traveller' ? travellerTraits(me.language) : traitsOf(id);
   try {
-    return await liveFlags.fetch(id, traitsOf(id));
+    return await liveFlags.fetch(id, traits);
   } catch {
     return null;
   }

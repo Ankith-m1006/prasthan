@@ -1,5 +1,5 @@
-// Four tabs: Speak (traveller), Alerts, Partners, About.
-import { Tabs } from 'expo-router';
+// Four tabs: Speak (traveller), Alerts, Partners, About. No saved profile yet -> the welcome screen first.
+import { Redirect, Tabs } from 'expo-router';
 import { Icon, type IconName } from '../../src/ui/icons';
 import { colors, fonts } from '../../src/theme/tokens';
 import { frost } from '../../src/ui/glass';
@@ -7,6 +7,7 @@ import { useEffect } from 'react';
 import { useWindowDimensions } from 'react-native';
 import { startAlerts, useAlertsBadge } from '../../src/state/alerts';
 import { useFlags } from '../../src/state/flags';
+import { useProfile } from '../../src/state/profile';
 
 const icon = (name: IconName) => ({ color }: { color: unknown }) => <Icon name={name} color={typeof color === 'string' ? color : colors.ink} />;
 
@@ -14,7 +15,9 @@ export default function TabsLayout() {
   const unseen = useAlertsBadge();
   const { flags } = useFlags();
   const wide = useWindowDimensions().width >= 760;
+  const profile = useProfile();
   useEffect(() => startAlerts(flags.alert_poll_seconds), [flags.alert_poll_seconds]);
+  if (!profile) return <Redirect href="/welcome" />; // first launch: welcome -> guest profile
   return (
     <Tabs
       screenOptions={{

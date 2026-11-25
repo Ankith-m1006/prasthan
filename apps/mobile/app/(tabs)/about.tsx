@@ -1,17 +1,28 @@
 // About: what this is, sponsors as plain text, honesty lines, AI-use line.
+import { router } from 'expo-router';
 import { Linking, Text } from 'react-native';
 import { api, isForcedMock } from '../../src/api';
 import { DemoSwitches } from '../../src/screens/DemoSwitches';
 import { LiveFlagValues } from '../../src/screens/LiveFlags';
 import { useFlags } from '../../src/state/flags';
-import { Body, H2, Screen, Section, Small, s as ks } from '../../src/ui/kit';
+import { useProfile } from '../../src/state/profile';
+import { ROUTES } from '../../src/screens/profile/options';
+import { Body, Button, H2, Screen, Section, Small, s as ks } from '../../src/ui/kit';
 
 export default function About() {
   const { source } = useFlags();
+  const profile = useProfile();
+  const town = ROUTES.find((r) => r.id === profile?.homeRouteId)?.to;
   return (
     <Screen title="ಪ್ರಸ್ಥಾನ Prasthan" subtitle="Say your festival trip home, in your own language.">
       <Section>
         <Body>Prasthan understands your trip, sends you to the official booking sites, warns you about rush nights and touts, and tells you when a new bus opens. It shows bus operators the buses that are missing.</Body>
+      </Section>
+      <H2>Profile</H2>
+      <Section>
+        <Body>{profile ? `${profile.name || 'Guest'} - home ${town ?? ''}, ${profile.homeState}` : 'No profile yet.'}</Body>
+        <Small>Saved only on this phone. Operators only see totals, never your details.</Small>
+        <Button tone="plain" label="View or edit profile" onPress={() => router.push('/profile')} />
       </Section>
       {source === 'live' ? <LiveFlagValues /> : api.kind === 'mock' ? <DemoSwitches /> : null}
       <H2>Powered by</H2>

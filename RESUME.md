@@ -8,6 +8,16 @@ Updated: 25 Nov 2026, with every push. Builder so far: one session on Ankith's h
 - Last finished step (before redesign): clean clone in a temp folder: api install + check (57 tests) OK, app install + typecheck + jest (10) OK. Web app built against the real api (MOCK_ALL=1) verified in headless Chrome: speak -> alert me -> add 6 buses -> 16 notified -> Kannada alert, no console errors. Split ROLE=api/voice tested; killing voice -> traveller still answered (rules).
 - Next exact step: Eight screenshots are in docs/img/ and linked from README. Ankith: record video, put VIDEO_URL in README, submit form by 16:45. Session C: C-01/C-03/C-04 on branch session-c (C-02 scripts already on main). Optional if time: A-04 context.dev.
 
+## PROFILE + GUEST LOGIN + ROUTE DEEP LINKS (25 Nov ~14:20, profile agent)
+- Code committed (apps/mobile): first launch -> app/welcome.tsx ("Continue as guest", no OTP) -> app/profile.tsx (one screen: name, language, home state + town from seed routes, work city Bengaluru, boarding point from seed/boarding-points.json filtered by mode, usual mode, travelling with, OPTIONAL age group + gender, privacy line). Tabs layout redirects to /welcome while no profile is saved.
+- Store: src/state/profile.ts (parse/validate + subscribe; localStorage on web, memory on native via src/lib/storage.ts). Profile entry: "Name - profile" chip on Speak + "View or edit profile" in About (edit, reset).
+- Flagsmith: identity = guest id (guest-xxxxxx), traits from src/lib/profileUse.ts profileTraits (role, language, home_state, home_town, travel_mode, travelling_with; age/gender never sent). identity.ts travellerTraits() and flags.tsx readLive use them, so Tamil Nadu -> Pongal segment applies.
+- Trips: "My usual trip home" chip builds a trip from the profile; parsed trips get empty town/mode/boarding point/people filled from it (fillFromProfile). Reply language starts from the profile language.
+- Hints (Options.tsx "WHEN YOU BOOK"): 60+ or with elders -> lower berth / ask about senior concession; woman -> ladies' seats / quota, "ask at booking". Bus/train only.
+- Deep links: src/lib/deepLinks.ts. redBus route pages https://www.redbus.in/bus-tickets/bangalore-to-<slug>, checked 25 Nov (200 + route title) for 9 of 10 routes; Kolkata has no page -> homepage. Other providers stay on the homepage.
+- Checks: typecheck OK, jest 22/22 (new __tests__/profile.test.ts).
+- Next exact step: when the live-API web deploy commit is on origin/main, rebase, run the live-API export command from that section, redeploy prasthan-ten, verify welcome -> profile -> speak at 430 px, screenshot docs/img/ui-430-00-profile.png.
+
 ## LIVE API ON VERCEL: https://prasthan-api.vercel.app (project "prasthan-api") - DEPLOYED + VERIFIED (mock mode)
 - Owner: api agent (services/api + this section). Do NOT touch apps/mobile or the "prasthan" web project from here.
 - Code (committed): services/api/api/index.ts (Fastify app built once per warm instance, `app.server.emit('request')`),

@@ -4,13 +4,14 @@ import type { Lang, OptionsResponse } from '@contract';
 import { colors, fonts } from '../../theme/tokens';
 import { Body, Button, Glass, H2, Small } from '../../ui/kit';
 import { Icon } from '../../ui/icons';
+import { hasRoutePage, routeLink } from '../../lib/deepLinks';
 
 export function openLink(url: string): void {
   if (Platform.OS === 'web' && typeof window !== 'undefined') window.open(url, '_blank', 'noopener,noreferrer');
   else void Linking.openURL(url);
 }
 
-export function Options({ options, lang }: { options: OptionsResponse; lang: Lang }) {
+export function Options({ options, lang, hints = [] }: { options: OptionsResponse; lang: Lang; hints?: string[] }) {
   const wide = useWindowDimensions().width >= 760;
   return (
     <View>
@@ -34,10 +35,18 @@ export function Options({ options, lang }: { options: OptionsResponse; lang: Lan
       <Small>We only link out. No prices, no ranking, no tickets sold here.</Small>
       <View style={wide ? { flexDirection: 'row', flexWrap: 'wrap', columnGap: 12, marginTop: 8 } : { marginTop: 8 }}>
       {options.links.map((l) => (
-        <Button key={l.providerId} tone="plain" label={l.name} hint="opens official site" onPress={() => openLink(l.url)}
+        <Button key={l.providerId} tone="plain" label={l.name} hint={hasRoutePage(l.providerId, options.routeId) ? 'opens the route page' : 'opens official site'}
+          onPress={() => openLink(routeLink(l.providerId, l.url, options.routeId))}
           icon={<Icon size={20} name={l.mode === 'train' ? 'train' : l.mode === 'air' ? 'plane' : 'bus'} />} />
       ))}
       </View>
+      {hints.length > 0 ? (
+        <Glass tintColor={colors.mangoLeaf}>
+          <Small style={{ color: colors.mangoLeaf, fontFamily: fonts.bodyBold, letterSpacing: 1 }}>WHEN YOU BOOK</Small>
+          {hints.map((h) => <Body key={h}>{h}</Body>)}
+          <Small>From your profile. Rules differ by operator, so please check on the booking site.</Small>
+        </Glass>
+      ) : null}
     </View>
   );
 }
