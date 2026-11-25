@@ -8,16 +8,17 @@ Updated: 25 Nov 2026, with every push. Builder so far: one session on Ankith's h
 - Last finished step (before redesign): clean clone in a temp folder: api install + check (57 tests) OK, app install + typecheck + jest (10) OK. Web app built against the real api (MOCK_ALL=1) verified in headless Chrome: speak -> alert me -> add 6 buses -> 16 notified -> Kannada alert, no console errors. Split ROLE=api/voice tested; killing voice -> traveller still answered (rules).
 - Next exact step: Eight screenshots are in docs/img/ and linked from README. Ankith: record video, put VIDEO_URL in README, submit form by 16:45. Session C: C-01/C-03/C-04 on branch session-c (C-02 scripts already on main). Optional if time: A-04 context.dev.
 
-## LIVE API ON VERCEL: project "prasthan-api" (25 Nov ~14:50 IST, api agent) - IN PROGRESS
+## LIVE API ON VERCEL: https://prasthan-api.vercel.app (project "prasthan-api") - DEPLOYED + VERIFIED (mock mode)
 - Owner: api agent (services/api + this section). Do NOT touch apps/mobile or the "prasthan" web project from here.
 - Code (committed): services/api/api/index.ts (Fastify app built once per warm instance, `app.server.emit('request')`),
   services/api/vercel.json (all paths -> /api/index, maxDuration 60, includeFiles seed/, config/flagsmith/, apps/mobile/assets/audio/),
   repo-root .vercelignore (only matters when deploying from the repo root), CORS_ORIGINS support in src/app.ts
   (entry defaults it to https://prasthan-ten.vercel.app; localhost always allowed).
 - Vercel project prasthan-api CREATED (team ankith-ms-projects-8b28c506). Repo root is linked to it (.vercel/ is gitignored).
-- Project setting needed: Root Directory = services/api, "Include files outside root directory" = on, Framework = Other.
-  If not set yet (network kept timing out): dashboard -> prasthan-api -> Settings -> Build and Deployment -> Root Directory = services/api, Save.
-  Or CLI (Git Bash): `MSYS_NO_PATHCONV=1 vercel api /v9/projects/prasthan-api -X PATCH -d '{"rootDirectory":"services/api","framework":null,"sourceFilesOutsideRootDirectory":true}'`
+- Project settings DONE (via API): Root Directory = services/api, include files outside root = on, Framework = Other.
+- Verified from the deployed URL (node fetch, Origin https://prasthan-ten.vercel.app): /health 200 (sarvam mock, flagsmith mock),
+  /v1/config 200, /v1/intent/parse 200, /v1/tts 200 (mock: no audio), /v1/voice/intent multipart 200 KB WAV 200,
+  /v1/partners 200, CORS preflight 204 with ACAO = web origin; other origins get no ACAO. No audio clips exist in apps/mobile/assets/audio (404 is expected).
 - Deploy (from the REPO ROOT, not services/api): `vercel link --yes --project prasthan-api` (once) then `vercel deploy --prod --yes`
 - Verify: `curl https://prasthan-api.vercel.app/health` ; `curl -X POST https://prasthan-api.vercel.app/v1/intent/parse -H 'content-type: application/json' -d '{"text":"Mysore ge Friday raatri bus beku","language":"kn-IN"}'`
 - No secrets set by the agent. ANKITH, to make Sarvam REAL:
