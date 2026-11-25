@@ -19,6 +19,8 @@
     { "name": "gifting_pilot_20pct", "rules": "role = traveller AND % split 20 (Flagsmith 'percentage split' operator on identity)" }
   ],
   "flags": [
+    {"name":"festival_calendar","type":"remote_config","valueType":"json","enabled":true,"default":{"version":"2026-12_2027-04.v1","url":"https://raw.githubusercontent.com/Ankith-m1006/prasthan/6b8ba456fe4ac58807117cfe77211d20e53178a3/seed/festival-calendar.json"},"why":"Versioned festival dates and travel planning windows."},
+    {"name":"festival_calendar_enabled","type":"boolean","enabled":true,"why":"Enable the extended Indian festival calendar."},
     {
       "name": "festival_mode",
       "type": "remote_config",
