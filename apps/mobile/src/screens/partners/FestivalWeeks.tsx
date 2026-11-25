@@ -26,7 +26,7 @@ export function FestivalWeeks({ partner, version }: { partner: Partner; version:
       <Small style={s.head}>Festival weeks: demand vs seats on your routes</Small>
       <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 10, paddingVertical: 6 }}>
         {withData.map((w) => {
-          const fill = w.want ? Math.min(1, w.have / w.want) : 1;
+          const fill = w.want ? 1 - Math.min(1, w.gap / w.want) : 1; // red share = seats still missing on the packed nights
           return (
             <View key={w.festivalId} style={[s.tile, frost(0.6, 14)]}>
               <Text style={s.name}>{w.name}</Text>
