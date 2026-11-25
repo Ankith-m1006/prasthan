@@ -15,9 +15,10 @@ let pollMs = 5000;
 const listeners = new Set<() => void>();
 const emit = () => listeners.forEach((l) => l());
 
-/** Pure: newest first by createdAt, and which ids are new compared with what we knew. */
+/** Pure: live alerts (just added) first, then newest first by createdAt; and which ids are new compared with what we knew. */
 export function mergeAlerts(prevKnown: Set<string> | null, incoming: Alert[]): { sorted: Alert[]; fresh: string[] } {
-  const sorted = [...incoming].sort((a, b) => Date.parse(b.createdAt) - Date.parse(a.createdAt));
+  const live = (a: Alert) => (a.source === 'live' ? 1 : 0);
+  const sorted = [...incoming].sort((a, b) => live(b) - live(a) || Date.parse(b.createdAt) - Date.parse(a.createdAt));
   const fresh = prevKnown ? sorted.filter((a) => !prevKnown.has(a.id)).map((a) => a.id) : [];
   return { sorted, fresh };
 }
@@ -32,7 +33,7 @@ export async function pollAlerts(): Promise<void> {
     const lang = getIdentity().language;
     for (const id of fresh) {
       const a = sorted.find((x) => x.id === id);
-      if (a && getIdentity().mode === 'traveller') void speakText(a.textLocal?.[lang] ?? a.text, lang);
+      if (a) void speakText(a.textLocal?.[lang] ?? a.text, lang);
     }
   } catch {
     // offline: keep what we have

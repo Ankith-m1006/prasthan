@@ -1,7 +1,7 @@
 // HTTP client for the Prasthan api. Base URL = EXPO_PUBLIC_API_URL. 10 s timeout. No secrets in the app.
 import { Platform } from 'react-native';
 import type { Api, RecordedAudio } from './types';
-import { currentIdentity } from '../state/identity';
+import { currentIdentity, getIdentity } from '../state/identity';
 
 export class ApiError extends Error {
   constructor(readonly status: number, readonly code: string, message: string) { super(message); }
@@ -49,7 +49,7 @@ export function createHttpClient(baseUrl: string): Api {
     tts: (text, language) => post('/v1/tts', { text, language }),
     options: (routeId, date, mode, people) => req(`/v1/options?routeId=${encodeURIComponent(routeId)}&date=${date ?? ''}&mode=${mode ?? ''}&people=${people}`),
     saveTrip: (intent) => post('/v1/trips', { intent }),
-    alerts: (since) => req(`/v1/alerts?identity=${encodeURIComponent(currentIdentity())}${since ? `&since=${encodeURIComponent(since)}` : ''}`),
+    alerts: (since) => req(`/v1/alerts?identity=${encodeURIComponent(getIdentity().traveller)}${since ? `&since=${encodeURIComponent(since)}` : ''}`),
     partners: (type) => req(`/v1/partners${type ? `?type=${type}` : ''}`),
     demand: (id, date) => req(`/v1/partners/${id}/demand${date ? `?date=${date}` : ''}`),
     addServices: (id, body) => post(`/v1/partners/${id}/services`, body),

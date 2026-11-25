@@ -3,9 +3,9 @@
 Updated: 25 Nov 2026, with every push. Builder so far: one session on Ankith's home laptop, working directly on `main`.
 
 ## Where we are
-- Current phase: B-02 done. Next: B-03 alerts + partner demand board.
-- Last finished step: B-02: jest 6/6, web export OK, typed sample flow verified in headless Chrome.
-- Next exact step: B-03 (`codex/B-03-alerts-partners.md`): app/(tabs)/alerts.tsx + partners.tsx (DemandBoard, Add buses sheet).
+- Current phase: B-03 done (P0, A-01..A-03, B-01..B-03 all done). Next: B-05 polish + mock web build deployed to Vercel.
+- Last finished step: B-03: api 57 tests, app jest 10/10, full mock demo loop verified in headless Chrome (speak -> alert me -> operator adds 6 buses -> 16 notified -> Kannada alert).
+- Next exact step: B-05 polish (demo switches on About for the offline Flagsmith story), then `EXPO_PUBLIC_APP_MOCK=1 npx expo export --platform web` and deploy apps/mobile/dist to Vercel.
 
 ## Commands
 - app checks: `cd apps/mobile && npm install && npm run typecheck && npm test`
