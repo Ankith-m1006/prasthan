@@ -6,7 +6,7 @@ Updated: 25 Nov 2026, with every push. Builder so far: one session on Ankith's h
 - Current phase: Z-02 done. LIVE: https://prasthan-ten.vercel.app. Done on main: P0, A-01, A-02, A-03, B-01, B-02, B-03, B-05 (+gifting card), C-02, Z-02.
 - UI redesign (25 Nov ~13:30, home builder): airy, no cards, frosted glass panels only where grouping is needed, soft festival glow behind headers, pill buttons/chips (44-52 px), floating frosted tab bar on desktop. Colours unchanged. New files apps/mobile/src/ui/glass.ts + backdrop.tsx; Card replaced by Section/Glass in kit.tsx. Behaviour, api client and contracts untouched. Checked in headless Chrome at 430 px and 1280 px: type sample -> trip card -> links + warning -> Alert me -> Partners -> add 6 buses -> 16 notified -> Kannada alert -> About flags, 0 console errors. Screenshots: docs/img/ui-*.png. Redeployed to https://prasthan-ten.vercel.app.
 - Last finished step (before redesign): clean clone in a temp folder: api install + check (57 tests) OK, app install + typecheck + jest (10) OK. Web app built against the real api (MOCK_ALL=1) verified in headless Chrome: speak -> alert me -> add 6 buses -> 16 notified -> Kannada alert, no console errors. Split ROLE=api/voice tested; killing voice -> traveller still answered (rules).
-- Next exact step: Eight screenshots are in docs/img/ and linked from README. Ankith: record video, put VIDEO_URL in README, make repo public, submit form by 16:45. Session C: C-01/C-03/C-04 on branch session-c (C-02 scripts already on main). Optional if time: A-04 context.dev.
+- Next exact step: Eight screenshots are in docs/img/ and linked from README. Ankith: record video, put VIDEO_URL in README, submit form by 16:45. Session C: C-01/C-03/C-04 on branch session-c (C-02 scripts already on main). Optional if time: A-04 context.dev.
 
 ## LIVE FLAGSMITH IN WEB APP (25 Nov, verified in production)
 - Merged origin/session-c into main (8325618; scripts tests 5/5 pass).
@@ -53,3 +53,5 @@ Rule 8: public repo + README with setup instructions + demo video. Rule 5: all t
 ## Venue handoff (25 Nov)
 - Verified in the live Flagsmith project: 17 flags, 7 segments, 6 overrides. Live Kannada translation, synthesis and transcription passed. The full chat prompt reached its completion limit; rules recovered BLR-HBL on 2027-01-15. Details in status/C.md.
 - C-03 manifests and helpers are on session-c. Cluster acceptance awaits the local Docker engine. Production web flags verified. Next: enable Docker, rehearse cluster recovery and record the final video.
+
+- Repository made public with owner approval after a redacted full-history Gitleaks scan and an exact private-credential check across 503 reachable objects. Anonymous GitHub API verified public visibility. Mobile typecheck and 14 tests passed; API typecheck and 57 tests passed. Docker startup awaits Ankith. Video and submission are pending.

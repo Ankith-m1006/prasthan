@@ -6,7 +6,7 @@ Status 25 Nov ~12:15 (home builder): [x] = verified; the rest is for Ankith.
 Live web demo: https://prasthan-ten.vercel.app
 
 ## Repo
-- [ ] Public GitHub repo (Ankith creates it: `gh repo create <name> --public --source . --push`, or on github.com). If venue Wi-Fi blocks github.com, use the phone hotspot.
+- [x] Public GitHub repository. Verified anonymously after checking repository history for secrets.
 - [x] `git log` shows work from 11:30 onward. The prep commit is labelled "prep: docs, prompts, synthetic seed data (made before hacking; no code)".
 - [x] No secrets: run `git grep -nE "sk-nb-[A-Za-z0-9]|ser\.[A-Za-z0-9]{10,}|api-subscription-key: [A-Za-z0-9]{8,}|(SARVAM_API_KEY|FLAGSMITH_[A-Z_]*KEY|NUDGEBEE_API_TOKEN|CONTEXT_DEV_API_KEY|OPS_TOKEN)=[^ #]+"` -> must show nothing except `.env.example` names with empty values. Check `.env` is not tracked: `git ls-files .env` prints nothing.
 - [x] No node_modules, builds, APKs or big audio in git (`git count-objects -vH` under 10 MB).
